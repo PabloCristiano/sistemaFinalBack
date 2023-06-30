@@ -1,0 +1,128 @@
+Atributos Tabelas
+
+Paises 
+	-Id Primary Key
+	-Pais Not Null
+	-Sigla Not Null
+	-DDI Not Null
+	-Data Create Not Null
+	-Data alteração Not Null
+
+Estados
+	-Id Primary Key
+	-Estado Not Null
+	-UF Not Null
+	-Id Pais Foreign Key
+	-Data Create Not Null
+	-Data alteração Not Null
+
+Cidades
+	-Id Primary Key
+	-Cidade Not Null
+	-DDD Not Null
+	-Id Estado Foreing Key
+	-Data Create Not Null 
+	-Data alteração Not Null
+
+Clientes
+	-Id Primary Key
+	-Cliente Not Null
+	-Apelido 
+	-Cpf Not Null
+	-Rg 
+	-Data de Nascimento
+	-Logradouro
+	-Número
+	-Complemento
+	-Bairro
+	-Cep
+	-Id Cidade Foreign key
+	-WhatsApp 
+	-Telefone Not Null 
+	-E-mail Not Null 
+	-Senha Not Null
+	-Conf Senha Not Null
+	-Observação
+	-Data Create Not Null 
+	-Data alteração Not Null
+
+Serviços
+	-Id Primary Key
+	-Serviço Not Null
+	-Tempo Not Null
+	-Valor Not Null
+	-Comissão Not Null 
+	-Data Create Not Null 
+	-Data alteração Not Null
+
+Profissionais
+	-Id Primary key
+	-Profissional Not Null
+	-Apelido 
+	-Cpf Not Null
+	-Rg
+	-Data Nascimento Not Null
+	-Logradouro Not Null
+	-Número Not Null 
+	-Complemento 
+	-Bairro Not Null 
+	-Cep Not Null
+	-Id Cidade Foreign Key
+	-WhatsApp
+	-Telefone Not Null
+	-E-mail Not Null 
+	-Senha Not Null
+	-Conf Senha Not Null 
+	-Tipo Profissional Not Null
+	-Id Serviço Foreign Key
+	-Comissão 
+	-Data Create Not Null
+ 	-Data alteração Not Null
+
+Produtos
+	-Id Primary Key
+	-Produto Not Null 
+	-Unidade Not Null
+	-Id Categoria Foreign Key 
+	-Id Fornecedor Foreign Key
+	-Quantide Estoque 
+	-Preço de Custo 
+	-Proço de Venda Not Null 
+	-Custo da Ultima Compra 
+	-Data Ultima Compra
+	-Data ultima Venda
+	-Data Create Not Null 
+	-Data alteração Not Null
+
+Categorias
+	-Id Primary Key
+	-Categoria Not Null
+	-Data Create Not Null
+	-Data alteração Not Null
+
+
+Fornecedores
+	-Id Primary Key
+	-Razão Social Not Null
+	-Nome Fantasia 
+	-Apelido
+	-Logradouro Not Null
+	-Numero Not Null
+	-Complemento 
+	-Bairro Not Null
+	-Cep Not Null
+	-Id Cidade Foreign Key
+	-WhatsApp
+	-Telefone 
+	-E-mail 
+	-Site
+	-Contato
+	-Cnpj Not Null
+	-IE
+	-CPF Not Null
+	-RG
+	-Id Condição de Pg Foreign Key
+	-Limite de Credito
+	-Observações
+	-Data Create Not Null
+	-Data alteração Not Null
