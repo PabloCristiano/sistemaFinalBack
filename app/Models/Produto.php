@@ -31,7 +31,7 @@ class Produto extends TObject {
         $this->dataUltCompra  = '';
         $this->dataUltVenda   = '';
         $this->fornecedor = new Fornecedor();
-        $this->categoria  = new Categoria();
+        $this->categoria  = new Categorias();
     }
 
     
@@ -77,7 +77,7 @@ class Produto extends TObject {
     }
 
     
-    public function setCategoria(Categoria $categoria)
+    public function setCategoria(Categorias $categoria)
     {
         $this->categoria = $categoria;
     }
