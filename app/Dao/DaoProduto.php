@@ -13,6 +13,8 @@ use Exception;
 
 class DaoProduto implements Dao
 {
+    private $daoCategoria;
+    private $daoFornecedor;
     public function __construct()
     {
          $this->daoCategoria = new DaoCategorias();
