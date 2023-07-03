@@ -44,7 +44,16 @@ class ControllerProduto extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json($request, 200);
+        $regras = $this->rules();
+        $feedbacks = $this->feedbacks();
+        $request->validate($regras, $feedbacks);
+        $produto = $this->daoProduto->create($request->all());
+        $store = $this->daoProduto->store($produto);
+        if ($store === true) {
+            return response()->json(['success' => 'Produto Cadastrado com Sucesso', 'obj' => $store, 200]);
+        } else {
+            return response::json($store);
+        }
     }
 
     /**
@@ -101,5 +110,34 @@ class ControllerProduto extends Controller
             }
         }
         return response()->json(['error' => 'Produto não Cadastrado...'], 400);
+    }
+
+    //regras de validação
+    public function rules()
+    {
+        $regras = [
+            'produto' => 'required|min:3|max:50|unique:produtos',
+            'unidade' => 'required|integer',
+            //'valor' => 'required|numeric|between:0,9999.99',
+            //'comissao' => 'nullable|numeric',
+            //'observacoes' => 'nullable|max:150',
+        ];
+        return $regras;
+    }
+    //mensagens das regras de validação
+    public function feedbacks()
+    {
+        $feedbacks = [
+            //'servico.required' => 'O campo Serviço deve ser preenchido.',
+            //'servico.min' => 'O campo nome deve ter no mínimo 3 caracteres.',
+            //'servico.max' => 'O campo nome deve ter no máximo 50 caracteres.',
+            //'servico.unique' => 'Serviço já Cadastrado!',
+            //'tempo.required' => 'O campo Tempo deve ser preenchido.',
+            //'tempo.integer' => 'O campo Tempo deve ser um numero Inteiro.',
+            //'valor.required' => 'O campo Valor deve ser preenchido.',
+            //'comissao.numeric' => 'O campo Comissão deve ser um valor permitido',
+            //'observacoes.max' => 'O campo Observações deve conter no máximo 150 caracteres.',
+        ];
+        return $feedbacks;
     }
 }
