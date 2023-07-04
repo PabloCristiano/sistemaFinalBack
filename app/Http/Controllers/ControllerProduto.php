@@ -44,10 +44,12 @@ class ControllerProduto extends Controller
      */
     public function store(Request $request)
     {
+
         $regras = $this->rules();
         $feedbacks = $this->feedbacks();
         $request->validate($regras, $feedbacks);
         $produto = $this->daoProduto->create($request->all());
+
         $store = $this->daoProduto->store($produto);
         if ($store === true) {
             return response()->json(['success' => 'Produto Cadastrado com Sucesso', 'obj' => $store, 200]);
@@ -117,10 +119,14 @@ class ControllerProduto extends Controller
     {
         $regras = [
             'produto' => 'required|min:3|max:50|unique:produtos',
-            'unidade' => 'required|integer',
-            //'valor' => 'required|numeric|between:0,9999.99',
-            //'comissao' => 'nullable|numeric',
-            //'observacoes' => 'nullable|max:150',
+            'qtdEstoque' => 'required|integer',
+            'precoCusto' => 'required|numeric',
+            'precoVenda' => 'required|numeric',
+            'custoUltCompra' => 'required|numeric',
+            'id_categoria' => 'required|integer',
+            'categoria' => 'required|min:3|max:50',
+            'id_fornecedor' => 'required|integer',
+            'fornecedor' => 'required|min:3|max:50',
         ];
         return $regras;
     }
@@ -128,15 +134,27 @@ class ControllerProduto extends Controller
     public function feedbacks()
     {
         $feedbacks = [
-            //'servico.required' => 'O campo Serviço deve ser preenchido.',
-            //'servico.min' => 'O campo nome deve ter no mínimo 3 caracteres.',
-            //'servico.max' => 'O campo nome deve ter no máximo 50 caracteres.',
-            //'servico.unique' => 'Serviço já Cadastrado!',
-            //'tempo.required' => 'O campo Tempo deve ser preenchido.',
-            //'tempo.integer' => 'O campo Tempo deve ser um numero Inteiro.',
-            //'valor.required' => 'O campo Valor deve ser preenchido.',
-            //'comissao.numeric' => 'O campo Comissão deve ser um valor permitido',
-            //'observacoes.max' => 'O campo Observações deve conter no máximo 150 caracteres.',
+
+            'produto.required' => 'O campo Produto deve ser preenchido.',
+            'produto.min' => 'O campo nome deve ter no mínimo 3 caracteres.',
+            'produto.max' => 'O campo nome deve ter no máximo 50 caracteres.',
+            'produto.unique' => 'Serviço já Cadastrado!',
+            'qtdEstoque.required' => 'O campo Qtd Estoque deve ser preenchido.',
+            'qtdEstoque.integer' => 'O campo Qtd Estoque deve ser um numero Inteiro.',
+            'precoCusto.required' => 'O campo Preço de Custo deve ser preenchido.',
+            'precoVenda.required' => 'O campo Preço de Venda deve ser preenchido.',
+            'custoUltCompra.required' => 'O campo Custo da Últ Compra deve ser preenchido.',
+            'id_categoria.required' => 'Codigo Categoria deve ser preenchido.',
+            'id_categoria.integer' => 'Codigo Categoria deve ser um numero inteiro.',
+            'categoria.required' => 'Categoria deve ser preenchido.',
+            'categoria.min' => 'Categoria deve ter no mínimo 3 caracteres.',
+            'categoria.max' => 'Categoria deve ter no máximo 50 caracteres.',
+            'id_fornecedor.required' => 'Codigo Fornecedor deve  ser preenchido.',
+            'id_fornecedor.integer' => 'Codigo Fornecedor deve ser um numero inteiro.',
+            'fornecedor.required' => 'Fornecedor deve ser preenchido.',
+            'fornecedor.min' => 'Fornecedor deve ter no mínimo 3 caracteres.',
+            'fornecedor.max' => 'Fornecedor deve ter no máximo 50 caracteres.',
+
         ];
         return $feedbacks;
     }

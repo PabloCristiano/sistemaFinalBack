@@ -12,6 +12,7 @@ use Exception;
 
 class DaoCidade implements Dao
 {
+    private $daoEstado;
     public function __construct()
     {
         $this->daoEstado = new DaoEstado();

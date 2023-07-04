@@ -53,7 +53,7 @@ class Produto extends TObject {
     }
 
     
-    public function setUnidade(string $unidade)
+    public function setUnidade(string $unidade = null)
     {
         $this->unidade = $unidade;
     }

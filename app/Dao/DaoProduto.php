@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Dao;
 
 use App\Dao\Dao;
@@ -8,8 +9,6 @@ use App\Dao\DaoFornecedor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\QueryException;
-use Exception;
 
 class DaoProduto implements Dao
 {
@@ -17,8 +16,8 @@ class DaoProduto implements Dao
     private $daoFornecedor;
     public function __construct()
     {
-         $this->daoCategoria = new DaoCategorias();
-         $this->daoFornecedor = new DaoFornecedor();
+        $this->daoCategoria = new DaoCategorias();
+        $this->daoFornecedor = new DaoFornecedor();
     }
 
     public function all(bool $json = true)
@@ -52,8 +51,8 @@ class DaoProduto implements Dao
         $produto->setPrecoCusto($dados['precoCusto']);
         $produto->setPrecoVenda($dados['precoVenda']);
         $produto->setCustoUltCompra($dados['custoUltCompra']);
-        $produto->setDataUltCompra($dados['dataUltCompra']);
-        $produto->setDataUltVenda($dados['dataUltVenda']);
+        $produto->setDataUltCompra($dados['dataUltCompra'] ?? null);
+        $produto->setDataUltVenda($dados['dataUltVenda'] ?? null);
 
         $categoria = $this->daoCategoria->findById($dados['id_categoria'], false);
         $categorias = $this->daoCategoria->create(get_object_vars($categoria));
@@ -67,23 +66,32 @@ class DaoProduto implements Dao
 
     public function store($obj)
     {
-        // $cidade = $obj->getCidade();
-        // $ddd = $obj->getDDD();
-        // $id_estado = $obj->getEstado()->getId();
-        // DB::beginTransaction();
-        // try {
-        //     //DB::table('estados')->insert($dados);
-        //     DB::INSERT("INSERT INTO cidades (cidade,ddd,id_estado) VALUES ('$cidade','$ddd','$id_estado')");
-        //     DB::commit();
-        //     $ultimaCidade = DB::table('cidades')
-        //         ->get()
-        //         ->last();
-        //     return $ultimaCidade;
-        //     return true;
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return false;
-        // }
+        $obj->setDataUltCompra(Carbon::now());
+        $obj->setDataUltVenda(Carbon::now());
+        $produto = $obj->getProduto();
+        $unidade = $obj->getUnidade();
+        $qtdEstoque = $obj->getQtdEstoque();
+        $precoCusto = $obj->getPrecoCusto();
+        $precoVenda = $obj->getPrecoVenda();
+        $custoUltCompra = $obj->getCustoUltCompra();
+        $dataUltCompra = $obj->getDataUltCompra();
+        $dataUltVenda = $obj->getDataUltVenda();
+        $id_categoria = $obj->getCategoria()->getid();
+        $id_fornecedor = $obj->getFornecedor()->getid();
+        
+        try {
+            //DB::beginTransaction();
+            //DB::table('estados')->insert($dados);
+            DB::INSERT("INSERT INTO produtos (produto,qtdEstoque,precoCusto,precoVenda,custoUltCompra,dataUltCompra,dataUltVenda,id_categoria,id_fornecedor) VALUES ('$produto',$qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,'$dataUltCompra','$dataUltVenda',$id_categoria,$id_fornecedor)");
+            DB::commit();
+            // $ultimaCidade = DB::table('cidades')->get()->last();
+            // return $ultimaCidade;
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $error = ['error' => $th->getMessage(), 'CodigoError' => $th->getCode()];
+            return $error;
+        }
     }
 
     public function update(Request $request, $id)
