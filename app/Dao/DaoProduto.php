@@ -81,11 +81,9 @@ class DaoProduto implements Dao
         
         try {
             //DB::beginTransaction();
-            //DB::table('estados')->insert($dados);
+            //DB::table('produtos')->insert($dados);
             DB::INSERT("INSERT INTO produtos (produto,qtdEstoque,precoCusto,precoVenda,custoUltCompra,dataUltCompra,dataUltVenda,id_categoria,id_fornecedor) VALUES ('$produto',$qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,'$dataUltCompra','$dataUltVenda',$id_categoria,$id_fornecedor)");
             DB::commit();
-            // $ultimaCidade = DB::table('cidades')->get()->last();
-            // return $ultimaCidade;
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
