@@ -94,42 +94,49 @@ class DaoProduto implements Dao
 
     public function update(Request $request, $id)
     {
-        // DB::beginTransaction();
-        // try {
-        //     $cidades = $this->create($request->all());
-        //     // $dados = $this->getData($estados);
-        //     $cidades->setDataAlteracao(Carbon::now());
-        //     $cidade = $cidades->getCidade();
-        //     $ddd = $cidades->getDDD();
-        //     $id_estado = $cidades->getEstado()->getId();
-        //     $data_alt = $cidades->getDataAlteracao();
-        //     //DB::table('estados')->where('id', $dados['id'])->update($dados);
-        //    // DB::UPDATE("UPDATE cidades  SET cidade = '$cidade' , ddd = '$ddd', id_estado = '$id_estado', data_alt = '$data_alt' where id = $id ");
-        //     DB::update('UPDATE cidades SET cidade = ?,  ddd = ?, id_estado = ?, data_alt = ? WHERE id = ?', [$cidade,$ddd,$id_estado,$data_alt,$id]);
-        //     DB::commit();
-        //     return true;
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     $error = ['error' => $e->getMessage(), 'CodigoError' => $e->getCode()];
-        //     return $error;
-        // }
+        
+        try {
+            $obj = $this->create($request->all());
+            $obj->setDataUltCompra(Carbon::now());
+            $obj->setDataAlteracao(Carbon::now());
+            $produto = $obj->getProduto();
+            $unidade = $obj->getUnidade();
+            $qtdEstoque = $obj->getQtdEstoque();
+            $precoCusto = $obj->getPrecoCusto();
+            $precoVenda = $obj->getPrecoVenda();
+            $custoUltCompra = $obj->getCustoUltCompra();
+            $dataUltCompra = $obj->getDataUltCompra();
+            $dataUltVenda = $obj->getDataUltVenda();
+            $id_categoria = $obj->getCategoria()->getid();
+            $id_fornecedor = $obj->getFornecedor()->getid();
+            $data_alt = $obj->getDataAlteracao();
+            //DB::beginTransaction();
+            DB::update('UPDATE produtos SET produto = ?,  qtdEstoque = ?, precoCusto = ?, precoVenda= ?, custoUltCompra = ?, dataUltCompra= ?, dataUltVenda = ?,
+              id_categoria = ?, id_fornecedor = ?, data_alt = ? WHERE id = ?', [$produto,$qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,$dataUltCompra,$dataUltVenda,$id_categoria,$id_fornecedor,$data_alt,$id]);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $error = ['error' => $e->getMessage(), 'CodigoError' => $e->getCode()];
+            return $error;
+        }
     }
 
     public function delete($id)
     {
-        // DB::beginTransaction();
-        // try {
-        //     // DB::table('cidades')->where('id', $id)->delete();
-        //     DB::DELETE("DELETE FROM  cidades where id = '$id'");
-        //     DB::commit();
-        //     return true;
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     if ($e->getCode() === '23000') {
-        //         return $error = ['Não foi possível excluir, registro já vinculado.'];
-        //     }
-        //     return $error = ['Não foi possível excluir o registro.'];
-        // }
+        DB::beginTransaction();
+        try {
+            // DB::table('produtos')->where('id', $id)->delete();
+            DB::DELETE("DELETE FROM  produtos where id = '$id'");
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e->getCode() === '23000') {
+                return $error = ['Não foi possível excluir, registro já vinculado.'];
+            }
+            return $error = ['Não foi possível excluir o registro.'];
+        }
     }
 
     public function findById(int $id, bool $model = false)

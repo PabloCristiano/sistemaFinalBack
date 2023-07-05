@@ -89,7 +89,21 @@ class ControllerProduto extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $regras = $this->rules();
+        $regras['produto'] = 'required|min:3|max:50';
+        $feedbacks = $this->feedbacks();
+        $request->validate($regras, $feedbacks);
+        $servico = $this->daoProduto->findById($id, false);
+        if (empty($servico)) {
+            return response()->json(['error' => 'Impossível realizar  atualização, Produto não encontrado !'], 404);
+        }
+        $update = $this->daoProduto->update($request, $id);
+        if ($update === true) {
+            return response()->json(['success' => 'Produto Alterado com Sucesso.'], 200);
+        }
+        if ($update['error']) {
+            return response()->json(['erro' => $update], 404);
+        }
     }
 
     /**
@@ -100,7 +114,17 @@ class ControllerProduto extends Controller
      */
     public function destroy($id)
     {
-        //
+        $produto = $this->daoProduto->findById($id, false);
+        if (empty($produto)) {
+            return response()->json(['error' => 'Impossível realizar, Produto não encontrado !'], 404);
+        }
+        $delete = $this->daoProduto->delete($id);
+        if ($delete === true) {
+            return response()->json(['success' => 'Produto excluído com sucesso.'], 200);
+        }
+        if ($delete) {
+            return response()->json(['error' => $delete], 404);
+        }
     }
 
     public function getByid($id)
