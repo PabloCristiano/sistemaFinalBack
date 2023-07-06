@@ -54,6 +54,9 @@ Route::prefix('v1')
         
         Route::apiResource('/profissional', 'App\Http\Controllers\ControllerProfissional');
         Route::post('/profissional/{id}', 'App\Http\Controllers\ControllerProfissional@getById');
+        
+        Route::apiResource('/produto', 'App\Http\Controllers\ControllerProduto');
+        Route::post('/produto/{id}', 'App\Http\Controllers\ControllerProduto@getById');
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
