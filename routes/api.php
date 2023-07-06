@@ -43,8 +43,8 @@ Route::prefix('v1')
         Route::apiResource('/fornecedor', 'App\Http\Controllers\ControllerFornecedor');
         Route::post('/fornecedor/{id}', 'App\Http\Controllers\ControllerFornecedor@getById');
 
-        Route::apiResource('/formaspagamento', 'App\Http\Controllers\ControllerFormasPagamento');
-        Route::post('/formaspagamento/{id}', 'App\Http\Controllers\ControllerFormasPagamento@getById');
+        Route::apiResource('/formapagamento', 'App\Http\Controllers\ControllerFormasPagamento');
+        Route::post('/formapagamento/{id}', 'App\Http\Controllers\ControllerFormasPagamento@getById');
         
         Route::apiResource('/cliente', 'App\Http\Controllers\ControllerCliente');
         Route::post('/cliente/{id}', 'App\Http\Controllers\ControllerCliente@getById');
@@ -57,6 +57,7 @@ Route::prefix('v1')
         
         Route::apiResource('/produto', 'App\Http\Controllers\ControllerProduto');
         Route::post('/produto/{id}', 'App\Http\Controllers\ControllerProduto@getById');
+
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');

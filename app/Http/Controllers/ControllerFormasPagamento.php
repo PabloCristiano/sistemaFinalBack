@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Dao\DaoFormasPagamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -9,7 +7,6 @@ use Illuminate\Support\Facades\Response;
 class ControllerFormasPagamento extends Controller
 {
     private $daoFormasPagamento;
-
     public function __construct()
     {
         $this->daoFormasPagamento = new DaoFormasPagamento();
