@@ -65,6 +65,7 @@ class ControllerFormasPagamento extends Controller
             return response()->json(['erro' => $update], 404);
         }
     }
+    
 
     public function destroy($id)
     {

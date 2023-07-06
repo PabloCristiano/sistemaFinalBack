@@ -1,6 +1,5 @@
 <?php
 namespace App\Dao;
-
 use App\Dao\Dao;
 use App\Models\FormasPagamento;
 use Carbon\Carbon;
@@ -97,7 +96,6 @@ class DaoFormasPagamento implements Dao
             $dados = DB::select('select * from forma_pg where id = ?', [$id]);
             return $dados[0];
         }
-
         // $dados = DB::table('forma_pg')->where('id', $id)->first();
         $dados = DB::select('select * from forma_pg where id = ?', [$id]);
         if ($dados) {
