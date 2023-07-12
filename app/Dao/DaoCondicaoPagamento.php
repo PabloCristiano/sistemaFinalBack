@@ -17,7 +17,10 @@ class DaoCondicaoPagamento implements Dao
     {
         $this->daoParcela = new DaoParcela();
     }
-    public function all(bool $model = false){}
+    public function all(bool $model = false){
+
+        return 'Dentro da Daooooo';
+    }
 
     public function create(array $dados){}
 

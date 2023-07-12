@@ -16,7 +16,9 @@ class ControllerCondicaoPagamento extends Controller
     }
     public function index()
     {
-        //
+        
+        $condicaoPagamento = $this->daoCondicaoPagamento->all(true);
+        return response()->json($condicaoPagamento, 200);
     }
 
 
