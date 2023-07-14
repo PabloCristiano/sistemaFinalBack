@@ -82,7 +82,6 @@ class CondicaoPagamento extends TObject
 
     public function setParcelas(array $parcelas)
     {
-
         $this->parcelas = $parcelas;
     }
 }

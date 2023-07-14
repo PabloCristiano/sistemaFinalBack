@@ -24,8 +24,8 @@ class DaoParcela implements Dao
 
     public function create(array $dados)
     {
-        $parcela = new Parcela();
 
+        $parcela = new Parcela();
         if (isset($dados["id"]))
             $parcela->setId($dados["id"]);
         $parcela->setDataCadastro($dados["data_create"] ?? null);
@@ -33,28 +33,28 @@ class DaoParcela implements Dao
         $parcela->setParcela($dados["parcela"]);
         $parcela->setPrazo($dados["prazo"]);
         $parcela->setPorcentagem((float) $dados["porcentagem"]);
-        $formaPagamento = $this->daoFormasPagamento->findById($dados["idformapg"], true);
+        $fP = $this->daoFormasPagamento->findById($dados["idformapg"], false);
+        $formaPagamento = $this->daoFormasPagamento->create(get_object_vars($fP));
         $parcela->setFormasPagamento($formaPagamento);
-
         return $parcela;
     }
 
     public function store($parcela)
     {
-        DB::beginTransaction();
-        try {
-            $dados = $this->getData($parcela);
-            DB::table('parcelas')->insert($dados);
-            DB::commit();
+        // DB::beginTransaction();
+        // try {
+        //     $dados = $this->getData($parcela);
+        //     DB::table('parcelas')->insert($dados);
+        //     DB::commit();
 
-            return true;
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return $th;
-        }
+        //     return true;
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     return $th;
+        // }
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
     }
 
@@ -114,7 +114,7 @@ class DaoParcela implements Dao
     {
     }
 
-
+     //VERIFICAR NA HORA DE SALVAR NO BANCO DE DADOS !!!!!
     public function getData(Parcela $parcela)
     {
 
@@ -122,15 +122,13 @@ class DaoParcela implements Dao
             'parcela'            =>  $parcela->getParcela(),
             'prazo'              =>  $parcela->getPrazo(),
             'porcentagem'        =>  $parcela->getPorcentagem(),
-            'idformapg'          =>  $parcela->getFormasPagamento()->getId(),
+            'formaPagamento'     =>  $this->daoFormasPagamento->findById($parcela->getFormasPagamento()->getId(),true),
             'data_create'        =>  $parcela->getDataCadastro(),
             'data_alt'           =>  $parcela->getDataAlteracao(),
         ];
 
         return $dados;
     }
-
-
 
     public function gerarParcelas(array $parcelas)
     {
@@ -149,5 +147,15 @@ class DaoParcela implements Dao
             array_push($par, $dadosParcela);
         }
         return $par;
+    }
+
+    public function getDataGerarParcelas(array $obj)
+    {
+        $parcelas = [];
+        $qtd = count($obj);
+        for ($i = 0; $i < $qtd; $i++) {
+            array_push($parcelas, $this->getData($obj[$i]));
+        }
+        return $parcelas;
     }
 }

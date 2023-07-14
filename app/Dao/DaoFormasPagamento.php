@@ -91,13 +91,14 @@ class DaoFormasPagamento implements Dao
 
     public function findById(int $id, bool $model = false)
     {
+        
         if (!$model) {
             // return DB::table('forma_pg')->get()->where('id', $id)->first();
             $dados = DB::select('select * from forma_pg where id = ?', [$id]);
             return $dados[0];
         }
         // $dados = DB::table('forma_pg')->where('id', $id)->first();
-        $dados = DB::select('select * from forma_pg where id = ?', [$id]);
+        $dados = DB::select('select * from forma_pg where id = ?', [$id]);   
         if ($dados) {
             $formaspagamentos = [];
             foreach ($dados as $item) {
