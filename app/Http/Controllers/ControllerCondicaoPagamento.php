@@ -16,7 +16,7 @@ class ControllerCondicaoPagamento extends Controller
     }
     public function index()
     {
-        
+
         $condicaoPagamento = $this->daoCondicaoPagamento->all(true);
         return response()->json($condicaoPagamento, 200);
     }
@@ -53,5 +53,16 @@ class ControllerCondicaoPagamento extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getByid($id)
+    {
+        if (ctype_digit(strval($id))) {
+            $condicaoPagamento = $this->daoCondicaoPagamento->findById($id, true);
+            if ($condicaoPagamento) {
+                return response()->json($condicaoPagamento, 200);
+            }
+        }
+        return response()->json(['error' => 'Condição de Pagamento não Cadastrado...'], 400);
     }
 }

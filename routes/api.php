@@ -59,7 +59,7 @@ Route::prefix('v1')
         Route::post('/produto/{id}', 'App\Http\Controllers\ControllerProduto@getById');
         
         Route::apiResource('/condicaopagemento', 'App\Http\Controllers\ControllerCondicaoPagamento');
-        Route::post('/condicaopagemento/{id}', 'App\Http\Controllers\ControllerProduto@getById');
+        Route::post('/condicaopagemento/{id}', 'App\Http\Controllers\ControllerCondicaoPagamento@getById');
 
     });
 

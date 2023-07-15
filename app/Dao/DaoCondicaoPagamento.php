@@ -52,6 +52,22 @@ class DaoCondicaoPagamento implements Dao
 
     public function findById(int $id, bool $model = false)
     {
+        if (!$model) {
+            // return DB::table('condicao_pg')->get()->where('id', $id)->first();
+            $dados = DB::select('select * from condicao_pg where id = ?', [$id]);
+            return $dados[0];
+        }
+        // $dados = DB::table('condicao_pg')->where('id', $id)->first();
+        $dados = DB::select('select * from condicao_pg where id = ?', [$id]);
+        if ($dados) {
+            $condicaoPagamnentos = [];
+            foreach ($dados as $item) {
+                $condicaoPagamnento = $this->listarCondição(get_object_vars($item));
+                 $condicaoPagamnento_json = $this->getData($condicaoPagamnento);
+                array_push($condicaoPagamnentos, $condicaoPagamnento_json);
+            }
+            return $condicaoPagamnentos;
+        }
     }
 
     function listarCondição(array $dados)
