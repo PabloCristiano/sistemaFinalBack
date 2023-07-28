@@ -30,7 +30,10 @@ class ControllerCondicaoPagamento extends Controller
 
     public function store(Request $request)
     {
-        //
+        $regras = $this->rules();
+        $feedbacks = $this->feedbacks();
+        $request->validate($regras, $feedbacks);
+        dd($request->all());
     }
 
 
@@ -64,5 +67,37 @@ class ControllerCondicaoPagamento extends Controller
             }
         }
         return response()->json(['error' => 'Condição de Pagamento não Cadastrado...'], 400);
+    }
+
+    //regras de validação
+    public function rules()
+    {
+        $regras = [
+            'condicao_pagamento' => 'required|min:3|max:40|unique:condicao_pg',
+            'juros' => 'required|numeric|between:0,100',
+            'multa' => 'required|numeric|between:0,100',
+            'desconto' => 'required|numeric|between:0,100',
+        ];
+        return $regras;
+    }
+    //mensagens das regras de validação
+    public function feedbacks()
+    {
+        $feedbacks = [
+            'condicao_pagamento.required' => 'O campo Condição de Pagamento deve ser preenchido.',
+            'condicao_pagamento.min' => 'O campo nome deve ter no mínimo 3 caracteres.',
+            'condicao_pagamento.max' => 'O campo nome deve ter no máximo 40 caracteres.',
+            'condicao_pagamento.unique' => 'Condição de Pagamento já Cadastrada!',
+            'juros.required' => 'O campo Juros deve ser preenchido.',
+            'juros.numeric' => 'O campo Juros deve um numero Válido.',
+            'juros.between' => 'O campo Juros deve ter máximo 100%.',
+            'multa.required' => 'O campo Multa deve ser preenchido.',
+            'multa.numeric' => 'O campo Multa deve um numero Válido.',
+            'multa.between' => 'O campo Multa deve ter máximo 100%.',            
+            'desconto.required' => 'O campo Desconto deve ser preenchido.',
+            'desconto.numeric' => 'O campo Desconto deve um numero Válido.',
+            'desconto.between' => 'O campo Desconto deve ter máximo 100%.',
+        ];
+        return $feedbacks;
     }
 }
