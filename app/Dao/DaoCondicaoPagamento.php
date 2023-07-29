@@ -7,6 +7,7 @@ use App\Dao\DaoParcela;
 use App\Models\CondicaoPagamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use Carbon\Carbon;
 
 class DaoCondicaoPagamento implements Dao
@@ -20,7 +21,7 @@ class DaoCondicaoPagamento implements Dao
     public function all(bool $json = true)
     {
 
-        $itens = DB::select('select * from condicao_pg');
+        $itens = DB::select('select * from condicao_pg order by id desc');
         $listCondicao = [];
         foreach ($itens as $item) {
             $lista_condicao = $this->listarCondição(get_object_vars($item));
@@ -36,10 +37,52 @@ class DaoCondicaoPagamento implements Dao
 
     public function create(array $dados)
     {
+        $condicaoPagamento = new CondicaoPagamento();
+
+        if (isset($dados["id"])) {
+            $condicaoPagamento->setId(($dados["id"]));
+            $condicaoPagamento->setDataCadastro($dados["data_create"] ?? null);
+            $condicaoPagamento->setDataAlteracao($dados["data_alt"] ?? null);
+        }
+        $condicaoPagamento->setCondicaoPagamento($dados["condicao_pagamento"]);
+        $condicaoPagamento->setJuros((float)$dados["juros"]);
+        $condicaoPagamento->setMulta((float)$dados["multa"]);
+        $condicaoPagamento->setDesconto((float)$dados["desconto"]);
+        $totalParcelas =   $dados["qtd_parcela"];
+        $condicaoPagamento->setTotalParcelas($totalParcelas);
+        if (isset($dados["parcelas"])) {
+            $parcelas = $this->gerarParcelas($dados["parcelas"], $condicaoPagamento);
+            $condicaoPagamento->setParcelas($parcelas);
+        }
+        return $condicaoPagamento;
     }
 
     public function store($obj)
     {
+        DB::beginTransaction();
+        try {
+            $condicao_pagamento = $obj->getCondicaoPagamento();
+            $juros = $obj->getJuros();
+            $multa = $obj->getMulta();
+            $desconto = $obj->getDesconto();
+            $qtd_parcela = $obj->getTotalParcelas();
+            DB::INSERT("INSERT INTO condicao_pg (condicao_pagamento, juros, multa, desconto, qtd_parcela) VALUES('$condicao_pagamento', '$juros', '$multa',' $desconto','$qtd_parcela')");
+            $idCondicaoPagamento = DB::select('select id from condicao_pg order by id desc limit 1');
+            $idCondicaoPagamento = $idCondicaoPagamento ? $idCondicaoPagamento[0]->id : null;
+            $storeParcela = $this->salvarParcelas($obj->getParcelas(), $idCondicaoPagamento);
+            if (empty($storeParcela)) {
+                DB::commit();
+                return ['success' => true, 'Message' => 'Condição de Pagamento cadastrada com Sucesso!' ];
+            }
+            return $storeParcela;
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
     }
 
     public function update(Request $request, $id)
@@ -63,7 +106,7 @@ class DaoCondicaoPagamento implements Dao
             $condicaoPagamnentos = [];
             foreach ($dados as $item) {
                 $condicaoPagamnento = $this->listarCondição(get_object_vars($item));
-                 $condicaoPagamnento_json = $this->getData($condicaoPagamnento);
+                $condicaoPagamnento_json = $this->getData($condicaoPagamnento);
                 array_push($condicaoPagamnentos, $condicaoPagamnento_json);
             }
             return $condicaoPagamnentos;
@@ -102,7 +145,6 @@ class DaoCondicaoPagamento implements Dao
 
     public function getData(CondicaoPagamento $condicaoPagamento)
     {
-      
         $data = [
             'id' => $condicaoPagamento->getId(),
             'condicao_pagamento' => $condicaoPagamento->getCondicaoPagamento(),
@@ -115,5 +157,41 @@ class DaoCondicaoPagamento implements Dao
             'data_alt' => $condicaoPagamento->getDataAlteracao(),
         ];
         return $data;
+    }
+
+    public function gerarParcelas($dadosParcelas, $condicaoPagamento)
+    {
+        $parcelaCondicao = [];
+        $qtd = $condicaoPagamento->getTotalParcelas();
+        for ($i = 0; $i < $qtd; $i++) {
+            $dadosParcela = [
+                "parcela"            => $dadosParcelas[$i]["parcela"],
+                "prazo"              => $dadosParcelas[$i]["prazo"],
+                "porcentagem"        => $dadosParcelas[$i]["porcentagem"],
+                "idformapg"          => $dadosParcelas[$i]["formaPagamento"][0]["id"],
+            ];
+            array_push($parcelaCondicao, $dadosParcela);
+        }
+        return $parcelaCondicao;
+    }
+
+    public function salvarParcelas(array $parcelas, $idCondicaoPagamento)
+    {
+        $qtd = count($parcelas);
+        try {
+            for ($i = 0; $i < $qtd; $i++) {
+                $dadosParcela = [
+                    'parcela'                => $parcelas[$i]["parcela"],
+                    'prazo'                  => $parcelas[$i]["prazo"],
+                    'porcentagem'            => $parcelas[$i]["porcentagem"],
+                    'idformapg'             => $parcelas[$i]["idformapg"],
+                    'idcondpg'              => $idCondicaoPagamento,
+                ];
+              $resp =  $this->daoParcela->store($dadosParcela);
+            }
+            return  $resp; 
+        } catch (\Throwable $th) {
+            return $th;
+        }
     }
 }

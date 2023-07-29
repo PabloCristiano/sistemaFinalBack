@@ -33,9 +33,21 @@ class ControllerCondicaoPagamento extends Controller
         $regras = $this->rules();
         $feedbacks = $this->feedbacks();
         $request->validate($regras, $feedbacks);
-        dd($request->all());
+        $dados = [
+            'id' => $request->id,
+            'condicao_pagamento' => $request->condicao_pagamento,
+            'juros' => $request->juros,
+            'multa' => $request->multa,
+            'desconto' => $request->desconto,
+            'data_create' => $request->data_create,
+            'data_alt' => $request->data_alt,
+            'qtd_parcela' => intval($request->qtd_parcela),
+            'parcelas' => json_decode($request->parcelas, true),
+        ];
+        $condicaopagamento = $this->daoCondicaoPagamento->create($dados);
+        $store = $this->daoCondicaoPagamento->store($condicaopagamento);
+        return response::json($store);
     }
-
 
     public function show($id)
     {
@@ -77,6 +89,8 @@ class ControllerCondicaoPagamento extends Controller
             'juros' => 'required|numeric|between:0,100',
             'multa' => 'required|numeric|between:0,100',
             'desconto' => 'required|numeric|between:0,100',
+            'parcelas' => 'required',
+            'qtd_parcela' => 'required|integer',
         ];
         return $regras;
     }
@@ -93,10 +107,13 @@ class ControllerCondicaoPagamento extends Controller
             'juros.between' => 'O campo Juros deve ter máximo 100%.',
             'multa.required' => 'O campo Multa deve ser preenchido.',
             'multa.numeric' => 'O campo Multa deve um numero Válido.',
-            'multa.between' => 'O campo Multa deve ter máximo 100%.',            
+            'multa.between' => 'O campo Multa deve ter máximo 100%.',
             'desconto.required' => 'O campo Desconto deve ser preenchido.',
             'desconto.numeric' => 'O campo Desconto deve um numero Válido.',
             'desconto.between' => 'O campo Desconto deve ter máximo 100%.',
+            'qtd_parcela.integer' => 'O campo qtd_parcela deve ser um numero inteiro.',
+            'qtd_parcela.required' => 'O campo qtd_parcela deve ser preenchido.',
+            'parcelas.required' => 'Deve conter Parcela(s).',
         ];
         return $feedbacks;
     }

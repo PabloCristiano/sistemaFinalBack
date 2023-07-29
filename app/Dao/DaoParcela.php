@@ -7,6 +7,7 @@ use App\Dao\DaoFormasPagamento;
 use Illuminate\Support\Facades\DB;
 use App\Models\Parcela;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class DaoParcela implements Dao
 {
@@ -39,19 +40,27 @@ class DaoParcela implements Dao
         return $parcela;
     }
 
-    public function store($parcela)
+    public function store($parcelas)
     {
-        // DB::beginTransaction();
-        // try {
-        //     $dados = $this->getData($parcela);
-        //     DB::table('parcelas')->insert($dados);
-        //     DB::commit();
-
-        //     return true;
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     return $th;
-        // }
+        $parcela = $parcelas["parcela"];
+        $prazo  =  $parcelas["prazo"];
+        $porcentagem  =  $parcelas["porcentagem"];
+        $idformapg  =  $parcelas["idformapg"];
+        $idcondpg  =  $parcelas["idcondpg"];
+        DB::beginTransaction();
+        try {
+            //$sql = DB::table('parcelas')->insert($parcelas);
+            $sql = DB::SELECT("INSERT INTO parcelas (parcela,prazo,porcentagem, idformapg, idcondpg) VALUES ($parcela,$prazo, $porcentagem,$idformapg,$idcondpg)");
+            DB::commit();
+            return $sql;
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem,$codigo,$consulta,$bindings];
+        }
     }
 
     public function update(Request $request, $id)
@@ -114,15 +123,15 @@ class DaoParcela implements Dao
     {
     }
 
-     //VERIFICAR NA HORA DE SALVAR NO BANCO DE DADOS !!!!!
+    //VERIFICAR NA HORA DE SALVAR NO BANCO DE DADOS !!!!!
     public function getData(Parcela $parcela)
     {
-
+        // dd($parcela, "getData(Parcela parcela)");
         $dados = [
             'parcela'            =>  $parcela->getParcela(),
             'prazo'              =>  $parcela->getPrazo(),
             'porcentagem'        =>  $parcela->getPorcentagem(),
-            'formaPagamento'     =>  $this->daoFormasPagamento->findById($parcela->getFormasPagamento()->getId(),true),
+            'formaPagamento'     =>  $this->daoFormasPagamento->findById($parcela->getFormasPagamento()->getId(), true),
             'data_create'        =>  $parcela->getDataCadastro(),
             'data_alt'           =>  $parcela->getDataAlteracao(),
         ];
@@ -151,8 +160,10 @@ class DaoParcela implements Dao
 
     public function getDataGerarParcelas(array $obj)
     {
+
         $parcelas = [];
         $qtd = count($obj);
+        // dd($qtd,"getDataGerarParcelas");
         for ($i = 0; $i < $qtd; $i++) {
             array_push($parcelas, $this->getData($obj[$i]));
         }
