@@ -42,7 +42,8 @@ class ControllerCondicaoPagamento extends Controller
             'data_create' => $request->data_create,
             'data_alt' => $request->data_alt,
             'qtd_parcela' => intval($request->qtd_parcela),
-            'parcelas' => json_decode($request->parcelas, true),
+            //'parcelas' => json_decode($request->parcelas, true),
+            'parcelas' => $request->parcelas,
         ];
         $condicaopagamento = $this->daoCondicaoPagamento->create($dados);
         $store = $this->daoCondicaoPagamento->store($condicaopagamento);
