@@ -63,12 +63,12 @@ class ControllerCondicaoPagamento extends Controller
 
     public function update(Request $request, $id)
     {
-        //
     }
 
     public function destroy($id)
     {
-        //
+       $delete = $this->daoCondicaoPagamento->delete($id);
+       return response::json($delete);
     }
 
     public function getByid($id)

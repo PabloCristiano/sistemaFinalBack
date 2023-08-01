@@ -72,7 +72,7 @@ class DaoCondicaoPagamento implements Dao
             $storeParcela = $this->salvarParcelas($obj->getParcelas(), $idCondicaoPagamento);
             if (empty($storeParcela)) {
                 DB::commit();
-                return ['success' => true, 'Message' => 'Condição de Pagamento cadastrada com Sucesso!' ];
+                return ['success' => true, 'Message' => 'Condição de Pagamento cadastrada com Sucesso!'];
             }
             return $storeParcela;
         } catch (QueryException $e) {
@@ -91,6 +91,25 @@ class DaoCondicaoPagamento implements Dao
 
     public function delete($id)
     {
+        DB::beginTransaction();
+        try {
+            $deleteParcela = $this->daoParcela->delete($id);
+            if (empty($deleteParcela)) {
+                $sql = DB::Select("DELETE FROM condicao_pg WHERE id= '$id'");
+                if (empty($sql)) {
+                    DB::commit();
+                    return ['success' => true, 'Message' => 'Condição de Pagamento Excluida com Sucesso!'];
+                }
+            }
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            $error = "Não foi possível excluir Condição de Pagamento, registro já vinculado ";
+            DB::rollBack();
+            return [$error,$mensagem, $codigo, $consulta, $bindings];
+        }
     }
 
     public function findById(int $id, bool $model = false)
@@ -187,9 +206,9 @@ class DaoCondicaoPagamento implements Dao
                     'idformapg'             => $parcelas[$i]["idformapg"],
                     'idcondpg'              => $idCondicaoPagamento,
                 ];
-              $resp =  $this->daoParcela->store($dadosParcela);
+                $resp =  $this->daoParcela->store($dadosParcela);
             }
-            return  $resp; 
+            return  $resp;
         } catch (\Throwable $th) {
             return $th;
         }

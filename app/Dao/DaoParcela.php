@@ -59,7 +59,7 @@ class DaoParcela implements Dao
             $consulta = $e->getSql(); // Consulta SQL que causou o erro
             $bindings = $e->getBindings(); // Valores passados como bind para a consulta
             DB::rollBack();
-            return [$mensagem,$codigo,$consulta,$bindings];
+            return [$mensagem, $codigo, $consulta, $bindings];
         }
     }
 
@@ -92,33 +92,20 @@ class DaoParcela implements Dao
 
     public function delete($id)
     {
-    }
-
-    public function deleteParcela(array $par, $qtd, $id)
-    {
         DB::beginTransaction();
         try {
-            for ($i = 0; $i < $qtd; $i++) {
-                $dadosParcela = [
-                    'parcela'                => $par[$i]["parcela"],
-                    'prazo'                  => $par[$i]["prazo"],
-                    'porcentagem'            => $par[$i]["porcentagem"],
-                    'idformapg'             => $par[$i]["idformapg"],
-                    'idcondpg'              => $id,
-                ];
-                DB::table('parcelas')->where('parcelas.idcondpg', $id)
-                    ->where('parcelas.parcela', [$dadosParcela["parcela"]])->delete();
-            }
+            $sql = DB::Select("DELETE FROM  parcelas WHERE parcelas.idcondpg = '$id'");
             DB::commit();
-            return true;
-        } catch (\Throwable $th) {
+            return $sql;
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
             DB::rollBack();
-            return $th;
+            return [$mensagem, $codigo, $consulta, $bindings];
         }
     }
-
-
-
     public function findById(int $id, bool $model = false)
     {
     }
