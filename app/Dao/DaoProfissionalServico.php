@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Models\Servico;
+use App\Models\ProfissionalServico;
 
 class DaoProfissionalServico implements Dao
 {
