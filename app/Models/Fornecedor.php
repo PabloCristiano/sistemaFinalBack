@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Models;
+use App\Models\CondicaoPagamento;
 
 class Fornecedor extends Pessoa
 {
@@ -19,7 +21,7 @@ class Fornecedor extends Pessoa
         $this->nomeFantasia = '';
         $this->pagSite = '';
         $this->contato = '';
-       // $this->condicaoPagamento = new CondicaoPagamento();
+        $this->condicaoPagamento = new CondicaoPagamento();
         $this->limiteCredito = 0;
     }
 
@@ -78,10 +80,10 @@ class Fornecedor extends Pessoa
         return $this->condicaoPagamento;
     }
 
-    // public function setCondicaoPagamento()
-    // {
-    //     $this->condicaoPagamento = $condicaoPagamento;
-    // }
+    public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
+    {
+        $this->condicaoPagamento = $condicaoPagamento;
+    }
 
     public function getLimiteCredito()
     {

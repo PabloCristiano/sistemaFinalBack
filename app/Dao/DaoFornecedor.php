@@ -5,6 +5,7 @@ namespace App\Dao;
 use App\Dao\Dao;
 use App\Models\Fornecedor;
 use App\Dao\DaoCidade;
+use App\Dao\DaoCondicaoPagamento;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +15,12 @@ use Exception;
 class DaoFornecedor implements Dao
 {
     protected $daoCidade;
+    protected $daoCondicaoPagemento;
 
     public function __construct()
     {
         $this->daoCidade = new DaoCidade();
+        $this->daoCondicaoPagemento = new DaoCondicaoPagamento();
     }
     public function all(bool $json = true)
     {
@@ -79,6 +82,9 @@ class DaoFornecedor implements Dao
         $cidade = $this->daoCidade->findById($dados['id_cidade'], false);
         $cidade = $this->daoCidade->create(get_object_vars($cidade));
         $fornecedor->setCidade($cidade);
+        $condicaoPagamento = $this->daoCondicaoPagemento->findById($dados['id_condicaopg'], false);     
+        $condicaoPagamento = $this->daoCondicaoPagemento->listarCondição(get_object_vars($condicaoPagamento));
+        $fornecedor->setCondicaoPagamento($condicaoPagamento);
         return $fornecedor;
     }
 
@@ -104,8 +110,7 @@ class DaoFornecedor implements Dao
         $ie = $obj->getInscricaoEstadual();
         $cpf = $obj->getCpf();
         $rg = $obj->getRg();
-        // $id_condicaopg = $obj->getEstado()->getId();
-        $id_condicaopg = 473;
+        $id_condicaopg = $obj->getCondicaoPagamento()->getId();
         $limiteCredito = $obj->getLimiteCredito();
         $obs = $obj->getObservacoes();
         DB::beginTransaction();
@@ -151,19 +156,20 @@ class DaoFornecedor implements Dao
         $ie = $fornecedor->getInscricaoEstadual();
         $cpf = $fornecedor->getCpf();
         $rg = $fornecedor->getRg();
-        //$id_condicaopg = $fornecedor->getEstado()->getId();
-        $id_condicaopg = 473;
+        $id_condicaopg = $fornecedor->getCondicaoPagamento()->getId();
         $limiteCredito = $fornecedor->getLimiteCredito();
         $obs = $fornecedor->getObservacoes();
         $data_alt = $fornecedor->getDataAlteracao();
         // DB::beginTransaction();
         try {
             // DB::UPDATE("UPDATE fornecedores SET tipo_pessoa = '$tipo_pessoa',razaoSocial = '$razaoSocial',nomefantasia = '$nomeFantasia',apelido = '$apelido',logradouro = '$logradouro',numero = '$numero',complemento = '$complemento',bairro = '$bairro', cep = '$cep',id_cidade = $id_cidade,whatsapp = '$whatsapp',telefone = '$telefone',email = '$email',pagSite = '$pagSite',contato = '$contato',cnpj = '$cnpj',ie = '$ie',cpf = '$cpf',rg = '$rg',id_condicaopg = $id_condicaopg , limiteCredito = $limiteCredito,obs = '$obs',data_alt = '$data_alt' where id = $id ");
-             DB::UPDATE('UPDATE 
+            DB::UPDATE('UPDATE 
                          fornecedores SET tipo_pessoa = ?,razaoSocial = ?,nomefantasia = ?, apelido = ?,logradouro = ?,  numero = ?, complemento = ?,bairro = ?, 
                          cep = ?,id_cidade = ?,whatsapp = ?,telefone = ?,email = ?,pagSite = ?,contato = ?,cnpj = ?,ie = ?,cpf = ?,rg = ?,id_condicaopg = ?,limiteCredito = ?, 
-                         obs = ?,data_alt = ? where id = ?',[$tipo_pessoa,$razaoSocial,$nomeFantasia,$apelido,$logradouro,$numero,$complemento,$bairro,$cep,$id_cidade, $whatsapp,
-                         $telefone,$email,$pagSite,$contato,$cnpj,$ie,$cpf, $rg, $id_condicaopg,$limiteCredito,$obs,$data_alt,$id]);
+                         obs = ?,data_alt = ? where id = ?', [
+                $tipo_pessoa, $razaoSocial, $nomeFantasia, $apelido, $logradouro, $numero, $complemento, $bairro, $cep, $id_cidade, $whatsapp,
+                $telefone, $email, $pagSite, $contato, $cnpj, $ie, $cpf, $rg, $id_condicaopg, $limiteCredito, $obs, $data_alt, $id
+            ]);
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -240,7 +246,7 @@ class DaoFornecedor implements Dao
             'ie' => $fornecedor->getInscricaoEstadual(),
             'cpf' => $fornecedor->getCpf(),
             'rg' => $fornecedor->getRg(),
-            //'Condicao_pg' => $fornecedor->getRg(),
+            'condicao_pagemento' => $this->daoCondicaoPagemento->getData($fornecedor->getCondicaoPagamento()),
             'limiteCredito' => $fornecedor->getLimiteCredito(),
             'obs' => $fornecedor->getObservacoes(),
             'data_create' => $fornecedor->getDataCadastro(),
@@ -272,7 +278,7 @@ class DaoFornecedor implements Dao
             'cpf' => $fornecedor->getCpf(),
             'rg' => $fornecedor->getRg(),
             //'id_condicaopg'=> $fornecedor->getEstado()->getId(),
-            'id_condicaopg' => 487,
+            'id_condicaopg' => $fornecedor->getCondicaoPagamento()->getId(),
             'limiteCredito' => $fornecedor->getLimiteCredito(),
             'obs' => $fornecedor->getObservacoes(),
         ];
