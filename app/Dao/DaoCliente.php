@@ -10,15 +10,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use App\Dao\DaoCidade;
+use App\Dao\DaoCondicaoPagamento;
 use Exception;
 
 class DaoCliente implements Dao
 {
     protected $daoCidade;
+    protected $daoCondicaoPagemento;
 
     public function __construct()
     {
         $this->daoCidade = new DaoCidade();
+        $this->daoCondicaoPagemento = new DaoCondicaoPagamento();
     }
     public function all(bool $json = true)
     {
@@ -66,8 +69,9 @@ class DaoCliente implements Dao
         $cidade = $this->daoCidade->findById($dados['id_cidade'], false);
         $cidade = $this->daoCidade->create(get_object_vars($cidade));
         $cliente->setCidade($cidade);
-        // $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados['id_condicao'], true);
-        // $cliente->setCondicaoPagamento($condicaoPagamento);
+        $condicaoPagamento = $this->daoCondicaoPagemento->findById($dados['id_condicao'], false);
+        $condicaoPagamento = $this->daoCondicaoPagemento->listarCondição(get_object_vars($condicaoPagamento));
+        $cliente->setCondicaoPagamento($condicaoPagamento);
         return $cliente;
     }
 
@@ -210,7 +214,7 @@ class DaoCliente implements Dao
             'senha' => $cliente->getSenha(),
             'confSenha' => $cliente->getSenha(),
             'observacao' => $cliente->getObservacoes(),
-            //'id_condicao' => $cliente->getCondicaoPagamento()->getId(),
+            'condicao_pagemento' => $this->daoCondicaoPagemento->getData($cliente->getCondicaoPagamento()),
             'data_create' => $cliente->getDataCadastro(),
             'data_alt' => $cliente->getDataAlteracao(),
         ];
