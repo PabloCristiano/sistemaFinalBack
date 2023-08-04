@@ -127,7 +127,7 @@ class DaoCliente implements Dao
         $bairro = $obj->getBairro();
         $cep = $obj->getCep();
         $id_cidade = $obj->getCidade()->getId();
-        $id_condicao = 487;
+        $id_condicao = $obj->getCondicaoPagamento()->getId();
         $whatsapp = $obj->getWhatsapp();
         $telefone = $obj->getTelefone();
         $email = $obj->getEmail();
