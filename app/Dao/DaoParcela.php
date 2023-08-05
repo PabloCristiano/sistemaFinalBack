@@ -150,7 +150,6 @@ class DaoParcela implements Dao
 
         $parcelas = [];
         $qtd = count($obj);
-        // dd($qtd,"getDataGerarParcelas");
         for ($i = 0; $i < $qtd; $i++) {
             array_push($parcelas, $this->getData($obj[$i]));
         }

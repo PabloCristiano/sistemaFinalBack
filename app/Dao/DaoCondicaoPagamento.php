@@ -114,6 +114,7 @@ class DaoCondicaoPagamento implements Dao
 
     public function findById(int $id, bool $model = false)
     {
+        
         if (!$model) {
             // return DB::table('condicao_pg')->get()->where('id', $id)->first();
             $dados = DB::select('select * from condicao_pg where id = ?', [$id]);
@@ -130,6 +131,7 @@ class DaoCondicaoPagamento implements Dao
             }
             return $condicaoPagamnentos;
         }
+        
     }
 
     function listarCondição(array $dados)

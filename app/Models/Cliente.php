@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Support\Facades\Hash;
 
 class Cliente extends Pessoa
@@ -9,13 +11,14 @@ class Cliente extends Pessoa
     protected $senha_criptografada;
     protected $confSenha_criptografada;
     protected $condicaoPagamento;
+    protected $confSenha;
 
     public function __construct()
     {
         $this->apelido = '';
         $this->senha_criptografada = '';
         $this->confSenha = '';
-        //$this->condicaoPagamento = new CondicaoPagamento();
+        $this->condicaoPagamento = new CondicaoPagamento();
     }
 
     public function getApelido()
@@ -48,25 +51,25 @@ class Cliente extends Pessoa
         $this->confSenha_criptografada = Hash::make($confSenha);
     }
 
-    // public function getCondicaoPagamento()
-    // {
-    //     return $this->condicaoPagamento;
-    // }
+    public function getCondicaoPagamento()
+    {
+        return $this->condicaoPagamento;
+    }
 
-    // public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
-    // {
-    //     $this->condicaoPagamento = $condicaoPagamento;
-    // }
+    public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
+    {
+        $this->condicaoPagamento = $condicaoPagamento;
+    }
 
     public function verificaSenha($senha)
     {
-          $password = $senha;
-          $hashedPassword = Hash::make($password);
-         if (Hash::check($password, $hashedPassword)) {
-             dd('A senha está correta!');
-         } else {
-             dd('A senha está incorreta!');
-         }
+        $password = $senha;
+        $hashedPassword = Hash::make($password);
+        if (Hash::check($password, $hashedPassword)) {
+            dd('A senha está correta!');
+        } else {
+            dd('A senha está incorreta!');
+        }
         //return Hash::check($senha, '$2y$10$wN7xQqitkl6JqiYa8BtpVuo4EKGWazQDkBPIYOznx3q');
     }
 
