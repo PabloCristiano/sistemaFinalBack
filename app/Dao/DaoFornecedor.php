@@ -277,7 +277,6 @@ class DaoFornecedor implements Dao
             'ie' => $fornecedor->getInscricaoEstadual(),
             'cpf' => $fornecedor->getCpf(),
             'rg' => $fornecedor->getRg(),
-            //'id_condicaopg'=> $fornecedor->getEstado()->getId(),
             'id_condicaopg' => $fornecedor->getCondicaoPagamento()->getId(),
             'limiteCredito' => $fornecedor->getLimiteCredito(),
             'obs' => $fornecedor->getObservacoes(),
