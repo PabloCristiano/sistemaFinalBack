@@ -82,7 +82,7 @@ class DaoProduto implements Dao
         try {
             //DB::beginTransaction();
             //DB::table('produtos')->insert($dados);
-            DB::INSERT("INSERT INTO produtos (produto,qtdEstoque,precoCusto,precoVenda,custoUltCompra,dataUltCompra,dataUltVenda,id_categoria,id_fornecedor) VALUES ('$produto',$qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,'$dataUltCompra','$dataUltVenda',$id_categoria,$id_fornecedor)");
+            DB::INSERT("INSERT INTO produtos (produto,unidade,qtdEstoque,precoCusto,precoVenda,custoUltCompra,dataUltCompra,dataUltVenda,id_categoria,id_fornecedor) VALUES ('$produto','$unidade', $qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,'$dataUltCompra','$dataUltVenda',$id_categoria,$id_fornecedor)");
             DB::commit();
             return true;
         } catch (\Throwable $th) {
@@ -111,8 +111,8 @@ class DaoProduto implements Dao
             $id_fornecedor = $obj->getFornecedor()->getid();
             $data_alt = $obj->getDataAlteracao();
             //DB::beginTransaction();
-            DB::update('UPDATE produtos SET produto = ?,  qtdEstoque = ?, precoCusto = ?, precoVenda= ?, custoUltCompra = ?, dataUltCompra= ?, dataUltVenda = ?,
-              id_categoria = ?, id_fornecedor = ?, data_alt = ? WHERE id = ?', [$produto,$qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,$dataUltCompra,$dataUltVenda,$id_categoria,$id_fornecedor,$data_alt,$id]);
+            DB::update('UPDATE produtos SET produto = ?, unidade = ?,  qtdEstoque = ?, precoCusto = ?, precoVenda= ?, custoUltCompra = ?, dataUltCompra= ?, dataUltVenda = ?,
+              id_categoria = ?, id_fornecedor = ?, data_alt = ? WHERE id = ?', [$produto, $unidade, $qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,$dataUltCompra,$dataUltVenda,$id_categoria,$id_fornecedor,$data_alt,$id]);
             DB::commit();
             return true;
         } catch (\Exception $e) {
