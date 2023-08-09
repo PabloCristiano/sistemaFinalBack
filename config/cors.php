@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://vmi1033367.contaboserver.net:8086'],
+    'allowed_origins' => ['http://vmi1033367.contaboserver.net:8086','http://localhost:8080'],
 
     'allowed_origins_patterns' => [],
 
