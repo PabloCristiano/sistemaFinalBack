@@ -26,6 +26,7 @@ class Compra extends TObject
     //  * @var ContasPagar[]
     //  */
     // protected $contasPagar;
+    protected float $frete;
     protected int  $totalProduto;
     protected float $totalCompra;
     protected CondicaoPagamento $condicaoPagamento;
@@ -42,6 +43,7 @@ class Compra extends TObject
         $this->dataEmissao = '';
         $this->dataChegada = '';
         $this->fornecedor = new Fornecedor();
+        $this->frete =0;
         $this->totalProduto = 0;
         $this->condicaoPagamento = new CondicaoPagamento();
         $this->profissional = new Profissional();
@@ -77,6 +79,11 @@ class Compra extends TObject
     public function setDataChegada($dataChegada)
     {
         $this->dataChegada = $dataChegada;
+    }
+    
+    public function setFrete(int $frete)
+    {
+        $this->frete = $frete;
     }
 
     public function setTotalProduto(int  $totalProduto)
@@ -138,6 +145,11 @@ class Compra extends TObject
     public function getDataChegada()
     {
       return $this->dataChegada;
+    }
+    
+    public function getFrete()
+    {
+      return $this->frete;
     }
 
     public function getTotalProduto()
