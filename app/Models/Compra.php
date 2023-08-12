@@ -14,12 +14,12 @@ use stdClass;
 class Compra extends TObject
 {
 
-    protected int  $numeroNota;
-    protected int $serie;
-    protected int $modelo;
-    protected $status;
-    protected $dataEmissao;
-    protected $dataChegada;
+    protected  $numeroNota;
+    protected  $serie;
+    protected  $modelo;
+    protected  $status;
+    protected  $dataEmissao;
+    protected  $dataChegada;
     protected Fornecedor $fornecedor;
     // // protected $produtos;
     // /**
@@ -27,8 +27,8 @@ class Compra extends TObject
     //  */
     // protected $contasPagar;
     protected float $frete;
-    protected int  $totalProduto;
-    protected float $totalCompra;
+    protected int  $qtd_produto;
+    protected float $valor_compra;
     protected CondicaoPagamento $condicaoPagamento;
     protected Profissional $profissional;
     protected $dataCancelamento;
@@ -44,24 +44,24 @@ class Compra extends TObject
         $this->dataChegada = '';
         $this->fornecedor = new Fornecedor();
         $this->frete =0;
-        $this->totalProduto = 0;
+        $this->qtd_produto = 0;
         $this->condicaoPagamento = new CondicaoPagamento();
         $this->profissional = new Profissional();
         $this->dataCancelamento = '';
         $this->observacao = '';
     }
 
-    public function setNumeroNota(int $numeroNota)
+    public function setNumeroNota($numeroNota)
     {
         $this->numeroNota = $numeroNota;
     }
 
-    public function setSerie(int  $serie)
+    public function setSerie($serie)
     {
         $this->serie = $serie;
     }
 
-    public function setModelo(int $modelo)
+    public function setModelo($modelo)
     {
         $this->modelo = $modelo;
     }
@@ -86,14 +86,14 @@ class Compra extends TObject
         $this->frete = $frete;
     }
 
-    public function setTotalProduto(int  $totalProduto)
+    public function setQtdProduto(int $qtd_produto)
     {
-        $this->totalProduto = $totalProduto;
+        $this->qtd_produto = $qtd_produto;
     }
 
-    public function setTotalCompra( float $totalCompra)
+    public function setValorCompra( float $valor_compra)
     {
-        $this->totalCompra = $totalCompra;
+        $this->valor_compra = $valor_compra;
     }
 
     public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
@@ -152,14 +152,14 @@ class Compra extends TObject
       return $this->frete;
     }
 
-    public function getTotalProduto()
+    public function getQtdProduto()
     {
-       return $this->totalProduto;
+       return $this->qtd_produto;
     }
 
-    public function getTotalCompra()
+    public function getValorCompra()
     {
-        return $this->totalCompra;
+        return $this->valor_compra;
     }
 
     public function getCondicaoPagamento()
