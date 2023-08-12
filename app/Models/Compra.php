@@ -43,7 +43,7 @@ class Compra extends TObject
         $this->dataEmissao = '';
         $this->dataChegada = '';
         $this->fornecedor = new Fornecedor();
-        $this->frete =0;
+        $this->frete = 0;
         $this->qtd_produto = 0;
         $this->condicaoPagamento = new CondicaoPagamento();
         $this->profissional = new Profissional();
@@ -80,7 +80,12 @@ class Compra extends TObject
     {
         $this->dataChegada = $dataChegada;
     }
-    
+
+    public function setFornecedor(Fornecedor $fornecedor)
+    {
+        $this->fornecedor = $fornecedor;
+    }
+
     public function setFrete(int $frete)
     {
         $this->frete = $frete;
@@ -91,7 +96,7 @@ class Compra extends TObject
         $this->qtd_produto = $qtd_produto;
     }
 
-    public function setValorCompra( float $valor_compra)
+    public function setValorCompra(float $valor_compra)
     {
         $this->valor_compra = $valor_compra;
     }
@@ -119,7 +124,7 @@ class Compra extends TObject
 
     public function getNumeroNota()
     {
-       return  $this->numeroNota;
+        return  $this->numeroNota;
     }
 
     public function getSerie()
@@ -139,22 +144,27 @@ class Compra extends TObject
 
     public function getDataEmissao()
     {
-       return $this->dataEmissao;
+        return $this->dataEmissao;
     }
 
     public function getDataChegada()
     {
-      return $this->dataChegada;
+        return $this->dataChegada;
     }
-    
+
+    public function getFornecedor()
+    {
+        return $this->fornecedor;
+    }
+
     public function getFrete()
     {
-      return $this->frete;
+        return $this->frete;
     }
 
     public function getQtdProduto()
     {
-       return $this->qtd_produto;
+        return $this->qtd_produto;
     }
 
     public function getValorCompra()
@@ -174,13 +184,11 @@ class Compra extends TObject
 
     public function getDataCancelamento()
     {
-       return $this->dataCancelamento;
+        return $this->dataCancelamento;
     }
 
     public function getObservacao()
     {
-       return $this->observacao;
+        return $this->observacao;
     }
-
-
 }

@@ -8,15 +8,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Carbon\Carbon;
 use App\Models\Compra;
+use App\Dao\DaoFornecedor;
 
 class DaoCompra implements Dao
 {
     protected Compra $compra;
+    protected DaoFornecedor $daoFornecedor;
 
 
     public function __construct()
     {
         $this->compra = new Compra();
+        $this->daoFornecedor = new DaoFornecedor();
     }
 
     public function all(bool $json = false)
@@ -54,6 +57,10 @@ class DaoCompra implements Dao
         $compra->setDataChegada($dados["data_chegada"]);
         $compra->setQtdProduto($dados["qtd_produto"]);
         $compra->setValorCompra($dados["valor_compra"]);
+
+        $fornecedor = $this->daoFornecedor->findById($dados['id_fornecedor'], false);
+        $fornecedores = $this->daoFornecedor->create(get_object_vars($fornecedor));
+        $compra->setFornecedor($fornecedores);
         // dd($dados);
 
         return $compra;
@@ -85,6 +92,7 @@ class DaoCompra implements Dao
             'valor_compra' => $compra->getValorCompra(),
             'data_emissao' => $compra->getDataEmissao(),
             'data_chegada' => $compra->getDataChegada(),
+            'fornecedor'  =>  $this->daoFornecedor->getData($compra->getFornecedor()),
             'status' =>  $compra->getStatus(),
             'data_cancelamento' => $compra->getDataCancelamento(),
             'data_create' => $compra->getDataCadastro(),
