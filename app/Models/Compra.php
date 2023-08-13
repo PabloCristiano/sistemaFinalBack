@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Fornecedor;
 use App\Models\Profissional;
 use App\Models\CondicaoPagamento;
-// use App\Models\ProdutoCompra;
+use App\Models\CompraProduto;
 // use App\Models\ContasPagar;
 
 use Illuminate\Support\Carbon;
