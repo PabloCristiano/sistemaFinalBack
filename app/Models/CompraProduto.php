@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Produto;
 use App\Models\Fornecedor;
 
+
 class CompraProduto
 {
     protected $table = 'compra_produto';
