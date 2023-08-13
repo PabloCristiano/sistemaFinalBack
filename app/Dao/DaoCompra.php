@@ -70,14 +70,14 @@ class DaoCompra implements Dao
         $compra->setFornecedor($fornecedores);
 
         //Dados Condição de Pagamento
+        $condiçãoPagamento = $this->daoCondicaoPagamento->findById($dados['id_condicaopg'], false);
+        $condiçãoPagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condiçãoPagamento));
+        $compra->setCondicaoPagamento($condiçãoPagamento);
 
- 
         // Dados Produto
          $produtos = $this->daoCompraProduto->findById($compra->getModelo(),$compra->getNumeroNota(), $compra->getSerie(),true);
          $compra->setCompraProduto($produtos);
-
-        // dd($dados);
-
+        
         return $compra;
     }
 
@@ -108,6 +108,7 @@ class DaoCompra implements Dao
             'data_emissao' => $compra->getDataEmissao(),
             'data_chegada' => $compra->getDataChegada(),
             'fornecedor'  =>  $this->daoFornecedor->getData($compra->getFornecedor()),
+            'condicao_pagamento'=> $this->daoCondicaoPagamento->getData($compra->getCondicaoPagamento()),
             'produtos' =>  $compra->getCompraProduto(),
             'status' =>  $compra->getStatus(),
             'data_cancelamento' => $compra->getDataCancelamento(),
