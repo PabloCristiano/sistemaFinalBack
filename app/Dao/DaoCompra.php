@@ -22,7 +22,6 @@ class DaoCompra implements Dao
 
     public function __construct()
     {
-        $this->compra = new Compra();
         $this->daoFornecedor = new DaoFornecedor();
         $this->daoCompraProduto = new DaoCompraProduto();
         $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
@@ -47,6 +46,8 @@ class DaoCompra implements Dao
     public function create(array $dados)
     {
         $compra = new Compra();
+
+        dd(auth()->user());
 
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
             $compra->setStatus($dados["status"]);
