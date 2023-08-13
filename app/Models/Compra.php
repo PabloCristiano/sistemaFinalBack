@@ -21,11 +21,7 @@ class Compra extends TObject
     protected  $dataEmissao;
     protected  $dataChegada;
     protected Fornecedor $fornecedor;
-    // // protected $produtos;
-    // /**
-    //  * @var ContasPagar[]
-    //  */
-    // protected $contasPagar;
+    protected array $compraProduto;
     protected float $frete;
     protected int  $qtd_produto;
     protected float $valor_compra;
@@ -43,6 +39,7 @@ class Compra extends TObject
         $this->dataEmissao = '';
         $this->dataChegada = '';
         $this->fornecedor = new Fornecedor();
+        $this->compraProduto = [];
         $this->frete = 0;
         $this->qtd_produto = 0;
         $this->condicaoPagamento = new CondicaoPagamento();
@@ -84,6 +81,11 @@ class Compra extends TObject
     public function setFornecedor(Fornecedor $fornecedor)
     {
         $this->fornecedor = $fornecedor;
+    }
+
+    public function setCompraProduto( array $compraProduto)
+    {
+        $this->compraProduto = $compraProduto;
     }
 
     public function setFrete(int $frete)
@@ -155,6 +157,11 @@ class Compra extends TObject
     public function getFornecedor()
     {
         return $this->fornecedor;
+    }
+
+    public function getCompraProduto()
+    {
+        return $this->compraProduto;
     }
 
     public function getFrete()
