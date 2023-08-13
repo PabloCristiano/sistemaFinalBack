@@ -11,6 +11,9 @@ class CompraProduto
     protected $table = 'compra_produto';
     protected Produto $produto;
     protected Fornecedor $fornecedor;
+    protected string $compra_modelo;
+    protected string $compra_numero_nota;
+    protected string $compra_serie;
     protected int $qtd_produto;
     protected float $valor_unitario;
     protected float $valor_custo;
@@ -22,6 +25,9 @@ class CompraProduto
     {
         $this->produto = new Produto();
         $this->fornecedor = new Fornecedor();
+        $this->compra_modelo = '';
+        $this->compra_numero_nota = '';
+        $this->compra_serie = '';
         $this->qtd_produto = 0;
         $this->valor_unitario = 0;
         $this->valor_custo = 0;
@@ -29,6 +35,36 @@ class CompraProduto
         $this->desconto = 0;
         $this->data_create = '';
         $this->data_alt = '';
+    }
+
+    public function setCompraModelo(string $compra_modelo)
+    {
+        $this->compra_modelo = $compra_modelo;
+    }
+
+    public function getCompraModelo()
+    {
+        return $this->compra_modelo;
+    }
+
+    public function setCompraNumeroNota(string $compra_numero_nota)
+    {
+        $this->compra_numero_nota = $compra_numero_nota;
+    }
+
+    public function getCompraNumeroNota()
+    {
+        return $this->compra_numero_nota;
+    }
+
+    public function setCompraSerie(string $compra_serie)
+    {
+        $this->compra_serie = $compra_serie;
+    }
+
+    public function getCompraSerie()
+    {
+        return $this->compra_serie;
     }
 
     public function setProduto(Produto $produto)
@@ -125,6 +161,4 @@ class CompraProduto
     {
         return $this->data_alt;
     }
-
-
 }

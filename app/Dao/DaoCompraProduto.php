@@ -22,6 +22,9 @@ class DaoCompraProduto
     public function create(array $dados)
     {
         $compraProduto = new CompraProduto();
+        $compraProduto->setCompraModelo((string) $dados['compra_modelo']);
+        $compraProduto->setCompraNumeroNota((string) $dados['compra_numero_nota']);
+        $compraProduto->setCompraSerie((string) $dados['compra_serie']);
         $compraProduto->setQtdProduto((int) $dados['qtd_produto']);
         $compraProduto->setValorUnitario((float) $dados['valor_unitario']);
         $compraProduto->setValorCusto((float) $dados['valor_custo']);
@@ -63,6 +66,9 @@ class DaoCompraProduto
     public function getData(CompraProduto $compraProduto)
     {
         return $dados = [
+            'compra_modelo' => $compraProduto->getCompraModelo(),
+            'compra_numero_nota' => $compraProduto->getCompraNumeroNota(),
+            'compra_serie' => $compraProduto->getCompraSerie(),
             'qtd_produto' => $compraProduto->getQtdProduto(),
             'valor_unitario' => $compraProduto->getValorUnitario(),
             'valor_custo' => $compraProduto->getValorCusto(),
