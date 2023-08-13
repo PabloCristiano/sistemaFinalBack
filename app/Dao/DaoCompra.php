@@ -10,12 +10,14 @@ use Carbon\Carbon;
 use App\Models\Compra;
 use App\Dao\DaoFornecedor;
 use App\Dao\DaoCompraProduto;
+use App\Dao\DaoCondicaoPagamento;
 
 class DaoCompra implements Dao
 {
     protected Compra $compra;
     protected DaoFornecedor $daoFornecedor;
     protected DaoCompraProduto $daoCompraProduto;
+    protected DaoCondicaoPagamento $daoCondicaoPagamento;
 
 
     public function __construct()
@@ -23,6 +25,7 @@ class DaoCompra implements Dao
         $this->compra = new Compra();
         $this->daoFornecedor = new DaoFornecedor();
         $this->daoCompraProduto = new DaoCompraProduto();
+        $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
     }
 
     public function all(bool $json = false)
@@ -60,14 +63,19 @@ class DaoCompra implements Dao
         $compra->setDataChegada($dados["data_chegada"]);
         $compra->setQtdProduto($dados["qtd_produto"]);
         $compra->setValorCompra($dados["valor_compra"]);
-
+        
+        //Dados Fornecedor
         $fornecedor = $this->daoFornecedor->findById($dados['id_fornecedor'], false);
         $fornecedores = $this->daoFornecedor->create(get_object_vars($fornecedor));
         $compra->setFornecedor($fornecedores);
-        
+
+        //Dados Condição de Pagamento
+
+ 
         // Dados Produto
-         $produtos = $this->daoCompraProduto->findById($compra->getModelo(),$compra->getNumeroNota(), $compra->getSerie(),false);
-         dd($produtos);
+         $produtos = $this->daoCompraProduto->findById($compra->getModelo(),$compra->getNumeroNota(), $compra->getSerie(),true);
+         $compra->setCompraProduto($produtos);
+
         // dd($dados);
 
         return $compra;
@@ -100,6 +108,7 @@ class DaoCompra implements Dao
             'data_emissao' => $compra->getDataEmissao(),
             'data_chegada' => $compra->getDataChegada(),
             'fornecedor'  =>  $this->daoFornecedor->getData($compra->getFornecedor()),
+            'produtos' =>  $compra->getCompraProduto(),
             'status' =>  $compra->getStatus(),
             'data_cancelamento' => $compra->getDataCancelamento(),
             'data_create' => $compra->getDataCadastro(),
