@@ -61,9 +61,9 @@ class DaoCompra implements Dao
         $compra->setNumeroNota($dados["numero_nota"]);
         $compra->setDataEmissao($dados["data_emissao"]);
         $compra->setDataChegada($dados["data_chegada"]);
-        $compra->setQtdProduto($dados["qtd_produto"]);
-        $compra->setValorCompra($dados["valor_compra"]);
-        
+        $compra->setQtdProduto((int) $dados["qtd_produto"]);
+        $compra->setObservacao((string) $dados["obs"] ?? Null);
+
         //Dados Fornecedor
         $fornecedor = $this->daoFornecedor->findById($dados['id_fornecedor'], false);
         $fornecedores = $this->daoFornecedor->create(get_object_vars($fornecedor));
@@ -75,8 +75,11 @@ class DaoCompra implements Dao
         $compra->setCondicaoPagamento($condiçãoPagamento);
 
         // Dados Produto
-         $produtos = $this->daoCompraProduto->findById($compra->getModelo(),$compra->getNumeroNota(), $compra->getSerie(),true);
-         $compra->setCompraProdutoArray($produtos);
+        $produtos = $this->daoCompraProduto->findById($compra->getModelo(), $compra->getNumeroNota(), $compra->getSerie(), true);
+        $compra->setCompraProdutoArray($produtos);
+
+
+        $compra->setValorCompra(number_format( $this->TotalCompra($produtos), 6, '.',''));
         return $compra;
     }
 
@@ -107,15 +110,23 @@ class DaoCompra implements Dao
             'data_emissao' => $compra->getDataEmissao(),
             'data_chegada' => $compra->getDataChegada(),
             'fornecedor'  =>  $this->daoFornecedor->getData($compra->getFornecedor()),
-            'condicao_pagamento'=> $this->daoCondicaoPagamento->getData($compra->getCondicaoPagamento()),
+            'condicao_pagamento' => $this->daoCondicaoPagamento->getData($compra->getCondicaoPagamento()),
             'produtos' => $compra->getCompraProdutoArray(),
             'status' =>  $compra->getStatus(),
             'data_cancelamento' => $compra->getDataCancelamento(),
+            'observacao' => $compra->getObservacao(),
             'data_create' => $compra->getDataCadastro(),
             'data_alt' => $compra->getDataAlteracao()
         ];
         return $dados;
     }
 
-   
+    public function TotalCompra(array $compraProduto)
+    {
+        $total = 0;
+        foreach ($compraProduto as $produto) {
+            $total += $produto['total_produto'];
+        }
+        return number_format($total, 6,'.','');
+    }
 }

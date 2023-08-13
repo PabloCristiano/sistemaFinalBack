@@ -99,7 +99,7 @@ class CompraProduto
 
     public function setValorUnitario(float $valor_unitario)
     {
-        $this->valor_unitario = $valor_unitario;
+        $this->valor_unitario = number_format($valor_unitario, 6,'.','');
     }
 
     public function getValorUnitario()
@@ -109,7 +109,7 @@ class CompraProduto
 
     public function setValorCusto(float $valor_custo)
     {
-        $this->valor_custo = $valor_custo;
+        $this->valor_custo = number_format($valor_custo, 6,'.','');
     }
 
 
@@ -120,7 +120,7 @@ class CompraProduto
 
     public function setTotalProduto(float $total_produto)
     {
-        $this->total_produto = $total_produto;
+        $this->total_produto = number_format($total_produto, 6,'.','');
     }
 
 
@@ -131,7 +131,7 @@ class CompraProduto
 
     public function setDesconto(float $desconto)
     {
-        $this->desconto = $desconto;
+        $this->desconto = number_format($desconto, 6,'.','');
     }
 
 

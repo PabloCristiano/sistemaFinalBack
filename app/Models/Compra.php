@@ -44,6 +44,7 @@ class Compra extends TObject
         $this->compraProduto_array = [];
         $this->frete = 0;
         $this->qtd_produto = 0;
+        $this->valor_compra = 0;
         $this->condicaoPagamento = new CondicaoPagamento();
         $this->profissional = new Profissional();
         $this->dataCancelamento = '';
@@ -107,7 +108,7 @@ class Compra extends TObject
 
     public function setValorCompra(float $valor_compra)
     {
-        $this->valor_compra = $valor_compra;
+        $this->valor_compra = number_format($valor_compra, 6,'.','');
     }
 
     public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
