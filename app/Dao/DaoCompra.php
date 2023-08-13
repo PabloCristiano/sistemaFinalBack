@@ -76,8 +76,7 @@ class DaoCompra implements Dao
 
         // Dados Produto
          $produtos = $this->daoCompraProduto->findById($compra->getModelo(),$compra->getNumeroNota(), $compra->getSerie(),true);
-         $compra->setCompraProduto($produtos);
-        
+         $compra->setCompraProdutoArray($produtos);
         return $compra;
     }
 
@@ -109,7 +108,7 @@ class DaoCompra implements Dao
             'data_chegada' => $compra->getDataChegada(),
             'fornecedor'  =>  $this->daoFornecedor->getData($compra->getFornecedor()),
             'condicao_pagamento'=> $this->daoCondicaoPagamento->getData($compra->getCondicaoPagamento()),
-            'produtos' =>  $compra->getCompraProduto(),
+            'produtos' => $compra->getCompraProdutoArray(),
             'status' =>  $compra->getStatus(),
             'data_cancelamento' => $compra->getDataCancelamento(),
             'data_create' => $compra->getDataCadastro(),
@@ -118,11 +117,5 @@ class DaoCompra implements Dao
         return $dados;
     }
 
-    public function getProductsData(Compra $compra)
-    {
-    }
-
-    public function getDuplicatesData(Compra $compra)
-    {
-    }
+   
 }
