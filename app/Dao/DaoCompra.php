@@ -47,7 +47,7 @@ class DaoCompra implements Dao
     {
         $compra = new Compra();
 
-        dd(auth()->user());
+        dd(auth('api')->user());
 
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
             $compra->setStatus($dados["status"]);
