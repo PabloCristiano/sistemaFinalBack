@@ -11,6 +11,7 @@ use App\Models\Compra;
 use App\Dao\DaoFornecedor;
 use App\Dao\DaoCompraProduto;
 use App\Dao\DaoCondicaoPagamento;
+use App\Dao\DaoProfissional;
 
 class DaoCompra implements Dao
 {
@@ -18,6 +19,7 @@ class DaoCompra implements Dao
     protected DaoFornecedor $daoFornecedor;
     protected DaoCompraProduto $daoCompraProduto;
     protected DaoCondicaoPagamento $daoCondicaoPagamento;
+    protected DaoProfissional $daoProfissional;
 
 
     public function __construct()
@@ -25,6 +27,7 @@ class DaoCompra implements Dao
         $this->daoFornecedor = new DaoFornecedor();
         $this->daoCompraProduto = new DaoCompraProduto();
         $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
+        $this->daoProfissional = new DaoProfissional();
     }
 
     public function all(bool $json = false)
@@ -48,7 +51,7 @@ class DaoCompra implements Dao
         // auth('api')->user();
 
         $compra = new Compra();
-        $profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
+        //$profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
        // dd($profissional, $profissional->id);
 
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
@@ -80,6 +83,11 @@ class DaoCompra implements Dao
         // Dados Produto
         $produtos = $this->daoCompraProduto->findById($compra->getModelo(), $compra->getNumeroNota(), $compra->getSerie(), true);
         $compra->setCompraProdutoArray($produtos);
+
+        //Dados Profissional 
+        $profissional = $this->daoProfissional->findById($dados['id_profissional'], false);
+        $profissional = $this->daoProfissional->create(get_object_vars($profissional));
+        $compra->setProfissional($profissional);
 
 
         $compra->setValorCompra(number_format($this->TotalCompra($produtos), 6, '.', ''));
@@ -115,6 +123,7 @@ class DaoCompra implements Dao
             'fornecedor'  =>  $this->daoFornecedor->getData($compra->getFornecedor()),
             'condicao_pagamento' => $this->daoCondicaoPagamento->getData($compra->getCondicaoPagamento()),
             'produtos' => $compra->getCompraProdutoArray(),
+            'profissional' => $this->daoProfissional->getData($compra->getProfissional()),
             'status' =>  $compra->getStatus(),
             'data_cancelamento' => $compra->getDataCancelamento(),
             'observacao' => $compra->getObservacao(),
