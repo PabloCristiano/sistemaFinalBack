@@ -9,7 +9,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Profissional extends Pessoa implements JWTSubject
 {
     protected $table = 'profissionais';
-    protected $fillable = ['profissional','email', 'password'];
     protected $apelido;
     protected $senha;
     protected $tipoProf;
