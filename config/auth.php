@@ -75,6 +75,12 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'profissionais' => [
+            'driver' => 'eloquent',
+            // 'table' => 'profissionais',
+            'model' => App\Models\Profissional::class,
+        ],
     ],
 
     /*
