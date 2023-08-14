@@ -45,9 +45,11 @@ class DaoCompra implements Dao
 
     public function create(array $dados)
     {
-        $compra = new Compra();
+        // auth('api')->user();
 
-        dd(auth('api')->user());
+        $compra = new Compra();
+        $profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
+        dd($profissional, $profissional->id);
 
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
             $compra->setStatus($dados["status"]);
@@ -80,7 +82,7 @@ class DaoCompra implements Dao
         $compra->setCompraProdutoArray($produtos);
 
 
-        $compra->setValorCompra(number_format( $this->TotalCompra($produtos), 6, '.',''));
+        $compra->setValorCompra(number_format($this->TotalCompra($produtos), 6, '.', ''));
         return $compra;
     }
 
@@ -128,6 +130,6 @@ class DaoCompra implements Dao
         foreach ($compraProduto as $produto) {
             $total += $produto['total_produto'];
         }
-        return number_format($total, 6,'.','');
+        return number_format($total, 6, '.', '');
     }
 }
