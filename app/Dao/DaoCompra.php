@@ -49,7 +49,7 @@ class DaoCompra implements Dao
 
         $compra = new Compra();
         $profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
-        dd($profissional, $profissional->id);
+       // dd($profissional, $profissional->id);
 
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
             $compra->setStatus($dados["status"]);
