@@ -99,15 +99,16 @@ class DaoProfissional implements Dao
         $whatsapp = $obj->getWhatsapp();
         $telefone = $obj->getTelefone();
         $email = $obj->getEmail();
-        $senha = $obj->getSenha();
-        $confSenha = $obj->getSenha();
+        $senha = bcrypt($obj->getSenha());
+        $confSenha = bcrypt($obj->getSenha());
         $tipoProf = $obj->getTipoProf();
         $comissao = $obj->getComissao();
         $qtd_servico = $obj->getQtdServico();
+        $password = $senha;
         try {
             DB::beginTransaction();
             DB::SELECT("INSERT INTO profissionais (profissional,apelido,cpf,rg,dataNasc,logradouro,numero,complemento,bairro,cep,id_cidade,whatsapp,
-             telefone,email,senha,confSenha,tipoProf,comissao,qtd_servico) VALUES ('$profissional', '$apelido', '$cpf', '$rg', '$dataNasc', '$logradouro',$numero, '$complemento', '$bairro', '$cep', $id_cidade,'$whatsapp','$telefone', '$email', '$senha', '$confSenha','$tipoProf',$comissao,$qtd_servico)");
+             telefone,email,senha,confSenha,tipoProf,comissao,qtd_servico,password) VALUES ('$profissional', '$apelido', '$cpf', '$rg', '$dataNasc', '$logradouro',$numero, '$complemento', '$bairro', '$cep', $id_cidade,'$whatsapp','$telefone', '$email', '$senha', '$confSenha','$tipoProf',$comissao,$qtd_servico,'$password')");
             $idProfissional = DB::getPdo()->lastInsertId();
             $addProfissionalServico = $this->daoProfissionalServico->storeProfissionalServico($array, $idProfissional);
             if (!$addProfissionalServico) {
@@ -144,12 +145,13 @@ class DaoProfissional implements Dao
         $whatsapp = $obj->getWhatsapp();
         $telefone = $obj->getTelefone();
         $email = $obj->getEmail();
-        $senha = $obj->getSenha();
-        $confSenha = $obj->getSenha();
+        $senha = bcrypt($obj->getSenha());
+        $confSenha = bcrypt($obj->getSenha());
         $tipoProf = $obj->getTipoProf();
         $comissao = $obj->getComissao();
         $qtd_servico = $obj->getQtdServico();
         $data_alt = $obj->getDataAlteracao();
+        $password = $senha;
         try {
             DB::beginTransaction();
             DB::UPDATE(
@@ -157,9 +159,9 @@ class DaoProfissional implements Dao
                 profissionais
                         SET profissional = ?,apelido = ?,cpf = ?,rg = ?,dataNasc = ?,logradouro = ?,numero = ?,complemento = ?,bairro =?,
                         cep = ?,id_cidade = ?,whatsapp = ?,
-                        telefone = ?,email = ?,senha = ?,confSenha = ?,tipoProf = ?,comissao = ?, qtd_servico = ?, data_alt = ?
+                        telefone = ?,email = ?,senha = ?,confSenha = ?,tipoProf = ?,comissao = ?, qtd_servico = ?, password = ? ,data_alt = ?
                         WHERE  id = ?',
-                [$profissional, $apelido, $cpf, $rg, $dataNasc, $logradouro, $numero, $complemento, $bairro, $cep, $id_cidade, $whatsapp, $telefone, $email, $senha, $confSenha, $tipoProf, $comissao, $qtd_servico, $data_alt, $id],
+                [$profissional, $apelido, $cpf, $rg, $dataNasc, $logradouro, $numero, $complemento, $bairro, $cep, $id_cidade, $whatsapp, $telefone, $email, $senha, $confSenha, $tipoProf, $comissao, $qtd_servico, $password, $data_alt, $id],
             );
             $deleteProfissionalServico = $this->daoProfissionalServico->delete($id);
             if ($deleteProfissionalServico) {

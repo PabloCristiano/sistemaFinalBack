@@ -35,7 +35,7 @@ class Profissional extends Pessoa implements JWTSubject
 
     public function setSenha(string $senha)
     {
-        $this->senha = Hash::make($senha);
+        $this->senha = $senha;
     }
 
     public function setTipoProf(string $tipoProf = null)
