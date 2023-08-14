@@ -61,6 +61,9 @@ Route::prefix('v1')
         Route::apiResource('/condicaopagemento', 'App\Http\Controllers\ControllerCondicaoPagamento');
         Route::post('/condicaopagemento/{id}', 'App\Http\Controllers\ControllerCondicaoPagamento@getById');
 
+        Route::apiResource('/compra', 'App\Http\Controllers\ControllerCompra');
+        // Route::post('/condicaopagemento/{id}', 'App\Http\Controllers\ControllerCondicaoPagamento@getById');
+
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');

@@ -143,6 +143,7 @@ class ControllerProduto extends Controller
     {
         $regras = [
             'produto' => 'required|min:3|max:50|unique:produtos',
+            'unidade' => 'required|min:3|max:20',
             'qtdEstoque' => 'required|integer|gt:0',
             'precoCusto' => 'required|numeric|gt:0',
             'precoVenda' => 'required|numeric|gt:0',
@@ -163,6 +164,9 @@ class ControllerProduto extends Controller
             'produto.min' => 'O campo nome deve ter no mínimo 3 caracteres.',
             'produto.max' => 'O campo nome deve ter no máximo 50 caracteres.',
             'produto.unique' => 'Produto já Cadastrado!',
+            'unidade.required' => 'O campo Unidade deve ser preenchido.',
+            'unidade.min' => 'O campo nome deve ter no mínimo 3 caracteres.',
+            'unidade.max' => 'O campo nome deve ter no máximo 20 caracteres.',
             'qtdEstoque.required' => 'O campo Qtd Estoque deve ser preenchido.',
             'qtdEstoque.integer' => 'O campo Qtd Estoque deve ser um numero Inteiro.',
             'qtdEstoque.gt' => 'O campo Qtd Estoque deve ser Positivo e maior que zero.',
