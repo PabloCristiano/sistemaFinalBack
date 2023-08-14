@@ -43,7 +43,7 @@ return [
 
         'api' => [
             'driver' => 'jwt',
-            'provider' => 'profissionais',
+            'provider' => 'users',
             'hash' => false,
         ],
     ],
@@ -70,7 +70,7 @@ return [
         //     'driver' => 'eloquent',
         //     'model' => App\Models\User::class,
         // ],
-        
+
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\Profissional::class,
@@ -80,12 +80,6 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
-
-        'profissionais' => [
-            'driver' => 'eloquent',
-            // 'table' => 'profissionais',
-            'model' => App\Models\Profissional::class,
-        ],
     ],
 
     /*
