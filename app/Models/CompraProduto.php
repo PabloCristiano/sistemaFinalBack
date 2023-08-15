@@ -18,6 +18,7 @@ class CompraProduto
     protected float $valor_unitario;
     protected float $valor_custo;
     protected float $total_produto;
+    protected string $unidade;
     protected float $desconto;
     protected string $data_create;
     protected string $data_alt;
@@ -32,6 +33,7 @@ class CompraProduto
         $this->valor_unitario = 0;
         $this->valor_custo = 0;
         $this->total_produto = 0;
+        $this->unidade = '';
         $this->desconto = 0;
         $this->data_create = '';
         $this->data_alt = '';
@@ -129,6 +131,17 @@ class CompraProduto
         return $this->total_produto;
     }
 
+    public function setUnidade(string $unidade)
+    {
+        $this->unidade = $unidade;
+    }
+
+
+    public function getUnidade()
+    {
+        return $this->unidade;
+    }
+    
     public function setDesconto(float $desconto)
     {
         $this->desconto = number_format($desconto, 6,'.','');

@@ -29,6 +29,7 @@ class DaoCompraProduto
         $compraProduto->setValorUnitario((float) $dados['valor_unitario']);
         $compraProduto->setValorCusto((float) $dados['valor_custo']);
         $compraProduto->setTotalProduto((float) $dados['total_produto']);
+        $compraProduto->setUnidade((string) $dados['unidade']);
         $compraProduto->setDesconto((float) $dados['desconto']);
         $fornecedor = $this->daoFornecedor->findById($dados['compra_id_fornecedor'], false);
         $fornecedor = $this->daoFornecedor->create(get_object_vars($fornecedor));
@@ -73,6 +74,7 @@ class DaoCompraProduto
             'valor_unitario' => $compraProduto->getValorUnitario(),
             'valor_custo' => $compraProduto->getValorCusto(),
             'total_produto' => $compraProduto->getTotalProduto(),
+            'unidade' => $compraProduto->getUnidade(),
             'desconto' => $compraProduto->getDesconto(),
             'id_fornecedor' => $compraProduto->getFornecedor()->getid(),
         ];
