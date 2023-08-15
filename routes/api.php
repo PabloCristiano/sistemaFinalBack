@@ -67,4 +67,6 @@ Route::prefix('v1')
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
-
+// Route::post('me', 'App\Http\Controllers\AuthController@me');
+// Route::post('logout', 'App\Http\Controllers\AuthController@logout');
+// Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');

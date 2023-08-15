@@ -251,6 +251,7 @@ CREATE TABLE compra_produto (
     valor_unitario DECIMAL(10, 6) NOT NULL,
     valor_custo DECIMAL(10, 6) NOT NULL,
     total_produto DECIMAL(10, 6) NOT NULL,
+    unidade VARCHAR(20) NOT NULL,
     desconto DECIMAL(10, 6),
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
