@@ -14,6 +14,7 @@ class CompraProduto
     protected string $compra_modelo;
     protected string $compra_numero_nota;
     protected string $compra_serie;
+    protected int $id_produto;
     protected int $qtd_produto;
     protected float $valor_unitario;
     protected float $valor_custo;
@@ -29,6 +30,7 @@ class CompraProduto
         $this->compra_modelo = '';
         $this->compra_numero_nota = '';
         $this->compra_serie = '';
+        $this->id_produto = 0;
         $this->qtd_produto = 0;
         $this->valor_unitario = 0;
         $this->valor_custo = 0;
@@ -87,6 +89,16 @@ class CompraProduto
     public function getFornecedor()
     {
         return $this->fornecedor;
+    }
+
+    public function setIdProduto(int $id_produto)
+    {
+        $this->id_produto = $id_produto;
+    }
+
+    public function getIdProduto()
+    {
+        return $this->id_produto;
     }
 
     public function setQtdProduto(int $qtd_produto)
