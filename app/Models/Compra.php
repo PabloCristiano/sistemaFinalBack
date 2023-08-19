@@ -6,7 +6,7 @@ use App\Models\Fornecedor;
 use App\Models\Profissional;
 use App\Models\CondicaoPagamento;
 use App\Models\CompraProduto;
-// use App\Models\ContasPagar;
+use App\Models\ContasPagar;
 
 use Illuminate\Support\Carbon;
 use stdClass;

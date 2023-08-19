@@ -33,7 +33,7 @@ Route::prefix('v1')
 
         Route::apiResource('/estado', 'App\Http\Controllers\ControllerEstado');
         Route::post('/estado/{id}', 'App\Http\Controllers\ControllerEstado@getById');
-        
+
         Route::apiResource('/cidade', 'App\Http\Controllers\ControllerCidade');
         Route::post('/cidade/{id}', 'App\Http\Controllers\ControllerCidade@getById');
 
@@ -45,24 +45,27 @@ Route::prefix('v1')
 
         Route::apiResource('/formapagamento', 'App\Http\Controllers\ControllerFormasPagamento');
         Route::post('/formapagamento/{id}', 'App\Http\Controllers\ControllerFormasPagamento@getById');
-        
+
         Route::apiResource('/cliente', 'App\Http\Controllers\ControllerCliente');
         Route::post('/cliente/{id}', 'App\Http\Controllers\ControllerCliente@getById');
-        
+
         Route::apiResource('/servico', 'App\Http\Controllers\ControllerServico');
         Route::post('/servico/{id}', 'App\Http\Controllers\ControllerServico@getById');
-        
+
         Route::apiResource('/profissional', 'App\Http\Controllers\ControllerProfissional');
         Route::post('/profissional/{id}', 'App\Http\Controllers\ControllerProfissional@getById');
-        
+
         Route::apiResource('/produto', 'App\Http\Controllers\ControllerProduto');
         Route::post('/produto/{id}', 'App\Http\Controllers\ControllerProduto@getById');
-        
+
         Route::apiResource('/condicaopagemento', 'App\Http\Controllers\ControllerCondicaoPagamento');
         Route::post('/condicaopagemento/{id}', 'App\Http\Controllers\ControllerCondicaoPagamento@getById');
 
         Route::apiResource('/compra', 'App\Http\Controllers\ControllerCompra');
-        // Route::post('/condicaopagemento/{id}', 'App\Http\Controllers\ControllerCondicaoPagamento@getById');
+        // Route::post('/compra/{id}', 'App\Http\Controllers\ControllerCompra@getById');
+
+        Route::apiResource('/contaspagar', 'App\Http\Controllers\ControllerContasPagar');
+        // Route::post('/contaspagar/{id}', 'App\Http\Controllers\ControllerContasPagar@getById');
 
     });
 
