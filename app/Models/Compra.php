@@ -6,7 +6,7 @@ use App\Models\Fornecedor;
 use App\Models\Profissional;
 use App\Models\CondicaoPagamento;
 use App\Models\CompraProduto;
-// use App\Models\ContasPagar;
+use App\Models\ContasPagar;
 
 use Illuminate\Support\Carbon;
 use stdClass;
@@ -24,6 +24,9 @@ class Compra extends TObject
     protected CompraProduto $compraProduto;
     protected array $compraProduto_array;
     protected float $frete;
+    protected float $valor_produto;
+    protected float $seguro;
+    protected float $outras_despesas;
     protected int  $qtd_produto;
     protected float $valor_compra;
     protected CondicaoPagamento $condicaoPagamento;
@@ -43,6 +46,9 @@ class Compra extends TObject
         $this->compraProduto = new CompraProduto;
         $this->compraProduto_array = [];
         $this->frete = 0;
+        $this->valor_produto = 0;
+        $this->seguro = 0;
+        $this->outras_despesas = 0;
         $this->qtd_produto = 0;
         $this->valor_compra = 0;
         $this->condicaoPagamento = new CondicaoPagamento();
@@ -96,11 +102,23 @@ class Compra extends TObject
         $this->compraProduto_array = $compraProduto_array;
     }
 
-    public function setFrete(int $frete)
+    public function setFrete(float $frete)
     {
         $this->frete = $frete;
     }
-
+    public function setValorProduto(float $valor_produto)
+    {
+        $this->valor_produto = $valor_produto;
+    }
+    public function setSeguro(float $seguro)
+    {
+        $this->seguro = $seguro;
+    }
+    public function setOutrasDespesas(float $outras_despesas)
+    {
+        $this->outras_despesas = $outras_despesas;
+    }
+    
     public function setQtdProduto(int $qtd_produto)
     {
         $this->qtd_produto = $qtd_produto;
@@ -180,6 +198,18 @@ class Compra extends TObject
     public function getFrete()
     {
         return $this->frete;
+    }
+    public function getValorProduto()
+    {
+        return $this->valor_produto;
+    }
+    public function getSeguro()
+    {
+        return $this->seguro;
+    }
+    public function getOutrasDespesas()
+    {
+        return $this->outras_despesas;
     }
 
     public function getQtdProduto()

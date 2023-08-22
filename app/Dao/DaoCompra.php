@@ -68,6 +68,10 @@ class DaoCompra implements Dao
         $compra->setDataEmissao($dados["data_emissao"]);
         $compra->setDataChegada($dados["data_chegada"]);
         $compra->setQtdProduto((int) $dados["qtd_produto"]);
+        $compra->setFrete((float) $dados["frete"]);
+        $compra->setValorProduto((float) $dados["valor_produto"]);
+        $compra->setSeguro((float) $dados["seguro"]);
+        $compra->setOutrasDespesas((float) $dados["outras_despesas"]);
         $compra->setObservacao((string) $dados["obs"] ?? Null);
 
         //Dados Fornecedor
@@ -89,8 +93,8 @@ class DaoCompra implements Dao
         $profissional = $this->daoProfissional->create(get_object_vars($profissional));
         $compra->setProfissional($profissional);
 
-
-        $compra->setValorCompra(number_format($this->TotalCompra($produtos), 6, '.', ''));
+        $compra->setFrete((float) $dados["frete"]);
+        $compra->setValorCompra((float) $dados["valor_compra"]);
         return $compra;
     }
 
@@ -118,6 +122,10 @@ class DaoCompra implements Dao
             'serie'  => $compra->getSerie(),
             'qtd_produto' => $compra->getQtdProduto(),
             'valor_compra' => $compra->getValorCompra(),
+            'valor_produto' => $compra->getValorProduto(),
+            'frete' => $compra->getFrete(),
+            'seguro' => $compra->getSeguro(),
+            'outras_despesas' => $compra->getOutrasDespesas(),
             'data_emissao' => $compra->getDataEmissao(),
             'data_chegada' => $compra->getDataChegada(),
             'fornecedor'  =>  $this->daoFornecedor->getData($compra->getFornecedor()),
