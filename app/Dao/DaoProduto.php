@@ -97,7 +97,6 @@ class DaoProduto implements Dao
 
         try {
             $obj = $this->create($request->all());
-            $obj->setDataUltCompra(Carbon::now());
             $obj->setDataAlteracao(Carbon::now());
             $produto = $obj->getProduto();
             $unidade = $obj->getUnidade();
