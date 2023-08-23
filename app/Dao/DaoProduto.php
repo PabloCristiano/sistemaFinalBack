@@ -47,8 +47,8 @@ class DaoProduto implements Dao
         }
         $produto->setProduto($dados['produto']);
         $produto->setUnidade($dados['unidade']);
-        $produto->setQtdEstoque($dados['qtdEstoque']);
-        $produto->setPrecoCusto($dados['precoCusto']);
+        $produto->setQtdEstoque($dados['qtdEstoque'] ?? null);
+        $produto->setPrecoCusto($dados['precoCusto'] ?? null);
         $produto->setPrecoVenda($dados['precoVenda']);
         $produto->setCustoUltCompra($dados['custoUltCompra']);
         $produto->setDataUltCompra($dados['dataUltCompra'] ?? null);
