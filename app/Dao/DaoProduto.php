@@ -67,8 +67,8 @@ class DaoProduto implements Dao
     public function store($obj)
     {
 
-        $obj->setDataUltCompra(null);
-        $obj->setDataUltVenda(null);
+        // $obj->setDataUltCompra();
+        // $obj->setDataUltVenda();
         $produto = $obj->getProduto();
         $unidade = $obj->getUnidade();
         $qtdEstoque = $obj->getQtdEstoque();
