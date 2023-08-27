@@ -31,52 +31,44 @@ class ControllerCompra extends Controller
 
     public function store(Request $request)
     {
-       // dd($request->all());
+        // dd($request->all());
         $regras = $this->rules();
         $feedbacks = $this->feedbacks();
         $request->validate($regras, $feedbacks);
-        // $payLoad = $this->convertArray($request->all());
+
         $produtos = [];
+        $parcelas = [];
         $produtos = json_decode($request->produtos, true);
         $parcelas = json_decode($request->condicaopagamento, true);
+
+        // $payLoad = $this->convertArray($request->all());
         // $quantidadeProdutos = count($produtos);
         // $quantidadeParcelas = count($parcelas);
         // $parcelas_convertida = $this->convertValorParcelaToFloat($parcelas);
         //$produtos_convertido = $this->convertProdutoArray($produtos);
-       // dd($produtos);
-        $regras = [
-            '*.id_produto' => 'required|integer',
-            '*.unidade' => 'required|string',
-            '*.qtd_produto' => 'required|numeric',
-            '*.valor_unitario' => 'required|numeric',
-            // Adicione mais regras de validação conforme necessário
-        ];
-        $feedbacks = [
-            '*.id_produto.required' => 'O campo id_produto deve ser preenchido.',
-            '*.unidade.required' => 'O campo unidade deve ser preenchido.',
-            '*.qtd_produto.required' => 'O campo qtd_produto deve ser preenchido.',
-            '*.valor_unitario.required' => 'O campo Condição de Pagamento deve ser preenchido.',
+        // dd($produtos);
 
-            '*.id_produto.integer' => 'O campo id_produto ',
-            '*.unidade.string' => 'O campo unidade ',
-            '*.qtd_produto.numeric' => 'O campo qtd_produto ',
-            '*.valor_unitario.numeric' => 'O campo valor_unitario',
 
-        ];
 
-        $validator = Validator::make($produtos, $regras, $feedbacks);
+        $regrasProdutos = $this->rulesProduto();
+        $feedbacksProdutos = $this->feedbacksProduto();
+        $validator = Validator::make($produtos, $regrasProdutos, $feedbacksProdutos);
 
         if ($validator->fails()) {
             $erros = $validator->errors();
             $posicao = 1;
             foreach ($erros->all() as $mensagemErro) {
-                echo "Erro na posição " . ($posicao) . ": $mensagemErro <br>";
+                return response()->json($mensagemErro);
+                //echo "Erro na posição " . ($posicao) . ": $mensagemErro <br>";
                 $posicao++;
             }
         } else {
-            echo 'tchau';
+            $tchau = "tchau";
+            return response()->json($tchau);
+            // echo 'tchau';
         }
-         dd($produtos);
+
+        dd($produtos);
         dd($request->all());
         //dd($payLoad);
     }
@@ -111,16 +103,18 @@ class ControllerCompra extends Controller
         $regras = [
             'modelo' => 'required|numeric|gt:0',
             'serie' => 'required|numeric|gt:0',
-            'numero_nota' => 'required|unique:compra',
-            'id_fornecedor' => 'required|integer',
+            'numero_nota' => 'required|integer|min:1|unique:compra',
+            'id_fornecedor' => 'required|integer|min:1',
             'fornecedor' => 'required|min:3|max:50',
-            'total_compra' => 'required|numeric|gt:0',
-            'total_produtos' => 'required|numeric|gt:0',
-            'frete' => 'nullable|numeric|gt:0',
-            'seguro' => 'nullable|numeric|gt:0',
-            'outras_despesas' => 'nullable|numeric|gt:0',
+            'data_emissao' => 'required|date|before_or_equal:today',
+            'data_chegada' => 'required|date|after_or_equal:data_emissao',
+            'total_compra' => 'required|numeric|min:0',
+            'total_produtos' => 'required|numeric|min:0',
+            'frete' => 'nullable|numeric||min:0',
+            'seguro' => 'nullable|numeric||min:0',
+            'outras_despesas' => 'nullable|numeric||min:0',
             'produtos' => 'required',
-            'id_condicaopg' => 'required|integer',
+            'id_condicaopg' => 'required|integer|min:1',
             'condicaopg' => 'required|min:3|max:50',
             'condicaopagamento' => 'required',
             'observacao' => 'nullable|min:5|max:255',
@@ -132,14 +126,98 @@ class ControllerCompra extends Controller
     {
         $feedbacks = [
             'modelo.required' => 'O campo Modelo deve ser preenchido.',
+            'modelo.gt' => 'O campo modelo deve ser maior que zero.',
             'serie.required' => 'O campo Série deve ser preenchido.',
-            'numero_nota.required' => 'O campo Condição de Pagamento deve ser preenchido.',
-            'numero_nota.unique' => 'Numero de Nota já Cadastrada!',
-            'total_compra.required' => 'O campo Modelo deve ser preenchido.',
+            'serie.gt' => 'O campo série deve ser maior que zero.',
+            'numero_nota.required' => 'O campo número da nota é obrigatório.',
+            'numero_nota.integer' => 'O campo número da nota deve ser um número inteiro.',
+            'numero_nota.min' => 'O campo número da nota deve ser maior que zero.',
+            'numero_nota.unique' => 'Este número de nota já está em uso.',
+            'id_fornecedor.required' => 'O campo id do fornecedor é obrigatório.',
+            'id_fornecedor.integer' => 'O campo id do fornecedor deve ser um número inteiro.',
+            'id_fornecedor.min' => 'O campo id do fornecedor deve ser maior que zero.',
+            'fornecedor.required' => 'O campo fornecedor é obrigatório.',
+            'fornecedor.min' => 'O campo fornecedor deve ter no mínimo :min caracteres.',
+            'fornecedor.max' => 'O campo fornecedor deve ter no máximo :max caracteres.',
+            'total_compra.required' => 'O campo total da compra é obrigatório.',
+            'total_compra.numeric' => 'O campo total da compra deve ser um número.',
+            'total_compra.min' => 'O campo total da compra deve ser no mínimo :min.',
+            'total_produtos.required' => 'O campo total de produtos é obrigatório.',
+            'total_produtos.numeric' => 'O campo total de produtos deve ser um número.',
+            'total_produtos.min' => 'O campo total de produtos deve ser no mínimo :min.',
+            'frete.numeric' => 'O campo frete deve ser um número.',
+            'frete.min' => 'O campo frete deve ser no mínimo :min.',
+            'seguro.numeric' => 'O campo seguro deve ser um número.',
+            'seguro.min' => 'O campo seguro deve ser no mínimo :min.',
+            'outras_despesas.numeric' => 'O campo outras despesas deve ser um número.',
+            'outras_despesas.min' => 'O campo outras despesas deve ser no mínimo :min.',
+            'produtos.required' => 'É necessário pelo menos um produto.',
+            'produtos.array' => 'O campo produtos deve ser um array.',
+            'id_condicaopg.required' => 'O campo id da condição de pagamento é obrigatório.',
+            'id_condicaopg.integer' => 'O campo id da condição de pagamento deve ser um número inteiro.',
+            'id_condicaopg.min' => 'O campo id da condição de pagamento deve ser maior que zero.',
+            'condicaopg.required' => 'O campo condição de pagamento é obrigatório.',
+            'condicaopg.min' => 'O campo condição de pagamento deve ter no mínimo :min caracteres.',
+            'condicaopg.max' => 'O campo condição de pagamento deve ter no máximo :max caracteres.',
+            'condicaopagamento.required' => 'É necessário pelo menos uma condição de pagamento.',
+            'observacao.min' => 'O campo observação deve ter no mínimo :min caracteres.',
+            'observacao.max' => 'O campo observação deve ter no máximo :max caracteres.',
+            'data_emissao.required' => 'O campo data de emissão é obrigatório.',
+            'data_emissao.date' => 'O campo data de emissão deve ser uma data válida.',
+            'data_emissao.before_or_equal' => 'A data de emissão não pode ser maior que a data atual.',
+            'data_chegada.required' => 'O campo data de chegada é obrigatório.',
+            'data_chegada.date' => 'O campo data de chegada deve ser uma data válida.',
+            'data_chegada.after_or_equal' => 'A data de chegada não pode ser menor que a data de emissão.',
 
         ];
         return $feedbacks;
     }
+
+
+    public function rulesProduto()
+    {
+        $regrasProduto = [
+            '*.id_produto' => 'required|integer|min:1',
+            '*.produto' => 'required|min:3|max:40',
+            '*.unidade' => 'required|string',
+            '*.qtd_produto' => 'required|integer|min:1',
+            '*.valor_unitario' => 'required|numeric|min:1',
+            '*.desconto' => 'required|numeric|between:0,100',
+            '*.total_produto' => 'required|numeric|min:0',
+
+        ];
+        return $regrasProduto;
+    }
+
+    public function feedbacksProduto()
+    {
+        $feedbacksProdutos = [
+            '*.id_produto.required' => 'O campo id do produto é obrigatório.',
+            '*.id_produto.integer' => 'O campo id do produto deve ser um número inteiro.',
+            '*.id_produto.min' => 'O campo id do produto deve ser maior que zero.',
+            '*.produto.required' => 'O campo produto é obrigatório.',
+            '*.produto.min' => 'O campo produto deve ter no mínimo :min caracteres.',
+            '*.produto.max' => 'O campo produto deve ter no máximo :max caracteres.',
+            '*.unidade.required' => 'O campo unidade é obrigatório.',
+            '*.qtd_produto.required' => 'O campo quantidade do produto é obrigatório.',
+            '*.qtd_produto.integer' => 'O campo quantidade do produto deve ser um número inteiro.',
+            '*.qtd_produto.min' => 'O campo quantidade do produto deve ser maior que zero.',
+            '*.valor_unitario.required' => 'O campo valor unitário é obrigatório.',
+            '*.valor_unitario.numeric' => 'O campo valor unitário deve ser um número.',
+            '*.valor_unitario.min' => 'O campo valor unitário deve ser maior que zero.',
+            '*.desconto.required' => 'O campo desconto é obrigatório.',
+            '*.desconto.numeric' => 'O campo desconto deve ser um número.',
+            '*.desconto.between' => 'O campo desconto deve estar entre :min e :max.',
+            '*.total_produto.required' => 'O campo total do produto é obrigatório.',
+            '*.total_produto.numeric' => 'O campo total do produto deve ser um número.',
+            '*.total_produto.min' => 'O campo total do produto deve ser maior ou igual a zero.',
+
+        ];
+        return $feedbacksProdutos;
+    }
+
+
+
 
     public function convertArray($array)
     {
