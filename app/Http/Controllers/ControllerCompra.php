@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use App\Dao\DaoCompra;
+use Illuminate\Support\Facades\Validator;
+
 
 class ControllerCompra extends Controller
 {
@@ -29,19 +31,54 @@ class ControllerCompra extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
-        $payLoad = $this->convertArray($request->all());
-        $id_condicaopg = intval($request->id_condicaopg);
+       // dd($request->all());
+        $regras = $this->rules();
+        $feedbacks = $this->feedbacks();
+        $request->validate($regras, $feedbacks);
+        // $payLoad = $this->convertArray($request->all());
         $produtos = [];
         $produtos = json_decode($request->produtos, true);
         $parcelas = json_decode($request->condicaopagamento, true);
-        $quantidadeProdutos = count($produtos);
-        $quantidadeParcelas = count($parcelas);
-        $parcelas_convertida = $this->convertValorParcelaToFloat($parcelas);
-        $produtos_convertido = $this->convertProdutoArray($produtos);
-        //dd($id_condicaopg, $produtos, $parcelas, $quantidadeProdutos, $quantidadeParcelas, $parcelas_convertida, $produtos_convertido);
-        // dd($parcelas_convertida);
-        dd($payLoad);
+        // $quantidadeProdutos = count($produtos);
+        // $quantidadeParcelas = count($parcelas);
+        // $parcelas_convertida = $this->convertValorParcelaToFloat($parcelas);
+        //$produtos_convertido = $this->convertProdutoArray($produtos);
+       // dd($produtos);
+        $regras = [
+            '*.id_produto' => 'required|integer',
+            '*.unidade' => 'required|string',
+            '*.qtd_produto' => 'required|numeric',
+            '*.valor_unitario' => 'required|numeric',
+            // Adicione mais regras de validação conforme necessário
+        ];
+        $feedbacks = [
+            '*.id_produto.required' => 'O campo id_produto deve ser preenchido.',
+            '*.unidade.required' => 'O campo unidade deve ser preenchido.',
+            '*.qtd_produto.required' => 'O campo qtd_produto deve ser preenchido.',
+            '*.valor_unitario.required' => 'O campo Condição de Pagamento deve ser preenchido.',
+
+            '*.id_produto.integer' => 'O campo id_produto ',
+            '*.unidade.string' => 'O campo unidade ',
+            '*.qtd_produto.numeric' => 'O campo qtd_produto ',
+            '*.valor_unitario.numeric' => 'O campo valor_unitario',
+
+        ];
+
+        $validator = Validator::make($produtos, $regras, $feedbacks);
+
+        if ($validator->fails()) {
+            $erros = $validator->errors();
+            $posicao = 1;
+            foreach ($erros->all() as $mensagemErro) {
+                echo "Erro na posição " . ($posicao) . ": $mensagemErro <br>";
+                $posicao++;
+            }
+        } else {
+            echo 'tchau';
+        }
+         dd($produtos);
+        dd($request->all());
+        //dd($payLoad);
     }
 
 
@@ -68,8 +105,45 @@ class ControllerCompra extends Controller
         //
     }
 
+    //regras de validação
+    public function rules()
+    {
+        $regras = [
+            'modelo' => 'required|numeric|gt:0',
+            'serie' => 'required|numeric|gt:0',
+            'numero_nota' => 'required|unique:compra',
+            'id_fornecedor' => 'required|integer',
+            'fornecedor' => 'required|min:3|max:50',
+            'total_compra' => 'required|numeric|gt:0',
+            'total_produtos' => 'required|numeric|gt:0',
+            'frete' => 'nullable|numeric|gt:0',
+            'seguro' => 'nullable|numeric|gt:0',
+            'outras_despesas' => 'nullable|numeric|gt:0',
+            'produtos' => 'required',
+            'id_condicaopg' => 'required|integer',
+            'condicaopg' => 'required|min:3|max:50',
+            'condicaopagamento' => 'required',
+            'observacao' => 'nullable|min:5|max:255',
+        ];
+        return $regras;
+    }
+    //mensagens das regras de validação
+    public function feedbacks()
+    {
+        $feedbacks = [
+            'modelo.required' => 'O campo Modelo deve ser preenchido.',
+            'serie.required' => 'O campo Série deve ser preenchido.',
+            'numero_nota.required' => 'O campo Condição de Pagamento deve ser preenchido.',
+            'numero_nota.unique' => 'Numero de Nota já Cadastrada!',
+            'total_compra.required' => 'O campo Modelo deve ser preenchido.',
+
+        ];
+        return $feedbacks;
+    }
+
     public function convertArray($array)
     {
+
         $array['id_fornecedor'] = intval($array['id_fornecedor']);
         $array['id_condicaopg'] = intval($array['id_condicaopg']);
         $array['total_compra'] = floatval($array['total_compra']);
@@ -77,10 +151,9 @@ class ControllerCompra extends Controller
         $array['frete'] = floatval($array['frete']);
         $array['seguro'] = floatval($array['seguro']);
         $array['outras_despesas'] = floatval($array['outras_despesas']);
-
         // Convertendo a string JSON em um array associativo para 'produtos' e 'condicaopagamento'
         $array['produtos'] = $this->convertProdutoArray(json_decode($array['produtos'], true));
-        $array['condicaopagamento'] = $this->convertValorParcelaToFloat( json_decode($array['condicaopagamento'], true));
+        $array['condicaopagamento'] = $this->convertValorParcelaToFloat(json_decode($array['condicaopagamento'], true));
 
         return $array;
     }
