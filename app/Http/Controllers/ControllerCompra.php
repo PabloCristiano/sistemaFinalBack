@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Response;
 use App\Dao\DaoCompra;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
-
+use Exception;
+use InvalidArgumentException;
 
 class ControllerCompra extends Controller
 {
@@ -51,41 +52,53 @@ class ControllerCompra extends Controller
 
         //$produtos = $request->input('produtos'); // Supondo que 'produtos' seja um campo no seu request
         //dd($produtos);
-        $regrasProdutos = $this->rulesProduto();
-        $feedbacksProdutos = $this->feedbacksProduto();
-         
-        //Validação array Produtos
-        $validator = Validator::make($produtos, $regrasProdutos, $feedbacksProdutos);
+        try {
+            $regrasProdutos = $this->rulesProduto();
+            $feedbacksProdutos = $this->feedbacksProduto();
 
-        if ($validator->fails()) {
-            $erros = $validator->errors();
-            $mensagensOrganizadas = [];
-            // Iterar pelas mensagens de erro e agrupar
-            foreach ($erros->messages() as $chave => $mensagens) {
-                list($posicao, $campo) = explode('.', $chave, 2);
-                $posicaoProduto = $posicao + 1; // Adiciona 1 para a referência do tipo "produto"
-                $mensagensOrganizadas[$posicaoProduto][$campo][] = $mensagens;
+            // Certifique-se de que $produtos é um array válido antes de usar na validação
+            if (!is_array($produtos)) {
+                throw new InvalidArgumentException('$produtos deve ser um array válido.');
             }
 
-            // Reorganizar para o formato desejado
-            $errosProduto = [];
-            foreach ($mensagensOrganizadas as $posicaoProduto => $mensagensPorCampo) {
-                foreach ($mensagensPorCampo as $campo => $mensagens) {
-                    $errosProduto[$posicaoProduto][$campo] = $mensagens;
+            // Validação do array de Produtos
+            $validator = Validator::make($produtos, $regrasProdutos, $feedbacksProdutos);
+
+            if ($validator->fails()) {
+                $erros = $validator->errors();
+                $mensagensOrganizadas = [];
+                // Iterar pelas mensagens de erro e agrupar
+                foreach ($erros->messages() as $chave => $mensagens) {
+                    list($posicao, $campo) = explode('.', $chave, 2);
+                    $posicaoProduto = $posicao + 1; // Adiciona 1 para a referência do tipo "produto"
+                    $mensagensOrganizadas[$posicaoProduto][$campo][] = $mensagens;
+                }
+
+                // Reorganizar para o formato desejado
+                $errosProduto = [];
+                foreach ($mensagensOrganizadas as $posicaoProduto => $mensagensPorCampo) {
+                    foreach ($mensagensPorCampo as $campo => $mensagens) {
+                        $errosProduto[$posicaoProduto][$campo] = $mensagens;
+                    }
+                }
+
+                //Se tiver erros Retorna a request
+                if (!empty($errosProduto)) {
+                    return response()->json([
+                        'message' => 'The given data was invalid.',
+                        'errors' => [
+                            'produtos' => $errosProduto
+                        ]
+                    ], 422);
                 }
             }
-            
-            //Se tiver erros Retorna a request
-            if (!empty($errosProduto)) {
-                return response()->json([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'produtos' => $errosProduto
-                    ]
-                ], 422);
-            }
+        } catch (InvalidArgumentException $e) {
+            // Lidar com o erro de tipo inválido
+            return response()->json(['error' => $e->getMessage()], 400);
+        } catch (Exception $e) {
+            // Lidar com outras exceções se necessário
+            return response()->json(['error' => 'Something went wrong'], 500);
         }
-
         dd($request->all());
     }
 
@@ -189,7 +202,7 @@ class ControllerCompra extends Controller
         return $feedbacks;
     }
 
-
+    //regras de validação array de Produtos
     public function rulesProduto()
     {
         $regrasProduto = [
@@ -204,7 +217,7 @@ class ControllerCompra extends Controller
         ];
         return $regrasProduto;
     }
-
+    //mensagens das regras de validação array Produtos
     public function feedbacksProduto()
     {
         $feedbacksProdutos = [
@@ -251,7 +264,6 @@ class ControllerCompra extends Controller
 
         return $array;
     }
-
     public function convertValorParcelaToFloat($array)
     {
         foreach ($array as &$item) {
