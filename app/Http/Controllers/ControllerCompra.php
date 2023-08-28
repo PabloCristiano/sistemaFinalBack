@@ -298,8 +298,8 @@ class ControllerCompra extends Controller
     public function rulesCondicaoPagamento()
     {
         $regrasCondicaoPagamento = [
-            '*.parcela' => 'required|integer|min:1',
-            '*.id_formaPagamento' => 'required|integer|min:1',
+            '*.numero_parcela' => 'required|integer|min:1',
+            '*.id_formapagamento' => 'required|integer|min:1',
             '*.formaPagamento' => 'required|min:1|max:40',
             '*.data_vecimento' => 'required|date',
             '*.valor_parcela' => 'required|numeric|min:1',
@@ -310,13 +310,13 @@ class ControllerCompra extends Controller
     public function feedbacksCondicaoPagamento()
     {
         $feedbacksCondicaoPagamento = [
-            '*.parcela.required' => 'O campo parcela é obrigatório para todas as condições de pagamento.',
-            '*.parcela.integer' => 'O valor da parcela deve ser um número inteiro.',
-            '*.parcela.min' => 'A parcela deve ter pelo menos :min.',
+            '*.numero_parcela.required' => 'O campo parcela é obrigatório para todas as condições de pagamento.',
+            '*.numero_parcela.integer' => 'O valor da parcela deve ser um número inteiro.',
+            '*.numero_parcela.min' => 'A parcela deve ter pelo menos :min.',
 
-            '*.id_formaPagamento.required' => 'O campo ID da forma de pagamento é obrigatório para todas as condições de pagamento.',
-            '*.id_formaPagamento.integer' => 'O ID da forma de pagamento deve ser um número inteiro.',
-            '*.id_formaPagamento.min' => 'O ID da forma de pagamento deve ser no mínimo :min.',
+            '*.id_formapagamento.required' => 'O campo ID da forma de pagamento é obrigatório para todas as condições de pagamento.',
+            '*.id_formapagamento.integer' => 'O ID da forma de pagamento deve ser um número inteiro.',
+            '*.id_formapagamento.min' => 'O ID da forma de pagamento deve ser no mínimo :min.',
 
             '*.formaPagamento.required' => 'O campo forma de pagamento é obrigatório para todas as condições de pagamento.',
             '*.formaPagamento.min' => 'A forma de pagamento deve ter pelo menos :min caracteres.',
