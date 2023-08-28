@@ -99,6 +99,55 @@ class ControllerCompra extends Controller
             // Lidar com outras exceções se necessário
             return response()->json(['error' => 'Something went wrong'], 500);
         }
+        
+        try {
+            $regrasCondicaoPagamento = $this->rulesCondicaoPagamento();
+            $feedbacksCondicaoPagamento = $this->feedbacksCondicaoPagamento();
+
+            // Certifique-se de que é um array válido antes de usar na validação
+            if (!is_array($parcelas)) {
+                throw new InvalidArgumentException('$Parcelas deve ser um array válido.');
+            }
+
+            // Validação do array de Parcelas
+            $validator = Validator::make($parcelas, $regrasCondicaoPagamento, $feedbacksCondicaoPagamento);
+
+            if ($validator->fails()) {
+                $erros = $validator->errors();
+                $mensagensOrganizadas = [];
+                // Iterar pelas mensagens de erro e agrupar
+                foreach ($erros->messages() as $chave => $mensagens) {
+                    list($posicao, $campo) = explode('.', $chave, 2);
+                    $posicaoCondicaoPagamento = $posicao + 1; // Adiciona 1 para a referência do tipo "produto"
+                    $mensagensOrganizadas[$posicaoCondicaoPagamento][$campo][] = $mensagens;
+                }
+
+                // Reorganizar para o formato desejado
+                $errosCondicaoPagamento = [];
+                foreach ($mensagensOrganizadas as $posicaoCondicaoPagamento => $mensagensPorCampo) {
+                    foreach ($mensagensPorCampo as $campo => $mensagens) {
+                        $errosCondicaoPagamento[$posicaoCondicaoPagamento][$campo] = $mensagens;
+                    }
+                }
+
+                //Se tiver erros Retorna a request
+                if (!empty($errosCondicaoPagamento)) {
+                    return response()->json([
+                        'message' => 'The given data was invalid.',
+                        'errors' => [
+                            'Parcelas' => $errosCondicaoPagamento
+                        ]
+                    ], 422);
+                }
+            }
+        } catch (InvalidArgumentException $e) {
+            // Lidar com o erro de tipo inválido
+            return response()->json(['error' => $e->getMessage()], 400);
+        } catch (Exception $e) {
+            // Lidar com outras exceções se necessário
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+
         dd($request->all());
     }
 
@@ -245,7 +294,44 @@ class ControllerCompra extends Controller
         return $feedbacksProdutos;
     }
 
+    //regras de validação array de Produtos
+    public function rulesCondicaoPagamento()
+    {
+        $regrasCondicaoPagamento = [
+            '*.parcela' => 'required|integer|min:1',
+            '*.id_formaPagamento' => 'required|integer|min:1',
+            '*.formaPagamento' => 'required|min:1|max:40',
+            '*.data_vecimento' => 'required|date',
+            '*.valor_parcela' => 'required|numeric|min:1',
+        ];
+        return $regrasCondicaoPagamento;
+    }
+    //mensagens das regras de validação array Produtos
+    public function feedbacksCondicaoPagamento()
+    {
+        $feedbacksCondicaoPagamento = [
+            '*.parcela.required' => 'O campo parcela é obrigatório para todas as condições de pagamento.',
+            '*.parcela.integer' => 'O valor da parcela deve ser um número inteiro.',
+            '*.parcela.min' => 'A parcela deve ter pelo menos :min.',
 
+            '*.id_formaPagamento.required' => 'O campo ID da forma de pagamento é obrigatório para todas as condições de pagamento.',
+            '*.id_formaPagamento.integer' => 'O ID da forma de pagamento deve ser um número inteiro.',
+            '*.id_formaPagamento.min' => 'O ID da forma de pagamento deve ser no mínimo :min.',
+
+            '*.formaPagamento.required' => 'O campo forma de pagamento é obrigatório para todas as condições de pagamento.',
+            '*.formaPagamento.min' => 'A forma de pagamento deve ter pelo menos :min caracteres.',
+            '*.formaPagamento.max' => 'A forma de pagamento não pode ter mais de :max caracteres.',
+
+            '*.data_vecimento.required' => 'O campo data de vencimento é obrigatório para todas as condições de pagamento.',
+            '*.data_vecimento.date' => 'A data de vencimento deve estar em um formato válido.',
+
+            '*.valor_parcela.required' => 'O campo valor da parcela é obrigatório para todas as condições de pagamento.',
+            '*.valor_parcela.numeric' => 'O valor da parcela deve ser um número.',
+            '*.valor_parcela.min' => 'O valor da parcela deve ser no mínimo :min.',
+
+        ];
+        return $feedbacksCondicaoPagamento;
+    }
 
 
     public function convertArray($array)
