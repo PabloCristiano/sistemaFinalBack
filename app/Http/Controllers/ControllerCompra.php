@@ -43,7 +43,7 @@ class ControllerCompra extends Controller
         $produtos = json_decode($request->produtos, true);
         $parcelas = json_decode($request->condicaopagamento, true);
 
-        // $payLoad = $this->convertArray($request->all());
+         $payLoad = $this->convertArray($request->all());
         // $quantidadeProdutos = count($produtos);
         // $quantidadeParcelas = count($parcelas);
         // $parcelas_convertida = $this->convertValorParcelaToFloat($parcelas);
@@ -147,8 +147,8 @@ class ControllerCompra extends Controller
             // Lidar com outras exceções se necessário
             return response()->json(['error' => 'Something went wrong'], 500);
         }
-
-        dd($request->all());
+        //dd($payLoad);
+        dd($payLoad);
     }
 
 
@@ -353,8 +353,8 @@ class ControllerCompra extends Controller
     public function convertValorParcelaToFloat($array)
     {
         foreach ($array as &$item) {
-            $valorParcela = str_replace(['R$', ' '], '', $item['valorParcela']);
-            $item['valorParcela'] = floatval(str_replace(',', '.', $valorParcela));
+            $valorParcela = str_replace(['R$', ' '], '', $item['valor_parcela']);
+            $item['valor_parcela'] = floatval(str_replace(',', '.', $valorParcela));
         }
         return $array;
     }
@@ -373,7 +373,7 @@ class ControllerCompra extends Controller
             $item['total_produto'] = floatval($totalProduto);
 
             // Mantém a string diretamente em "produto"
-            $item['produto'] = $item['produto']['produto'];
+            $item['produto'] = $item['produto'];
 
             // Remove os itens indesejados do array
             unset($item['desativar']);
