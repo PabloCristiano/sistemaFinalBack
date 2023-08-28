@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use App\Dao\DaoCompra;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
 
 
 class ControllerCompra extends Controller
@@ -48,29 +49,42 @@ class ControllerCompra extends Controller
         //$produtos_convertido = $this->convertProdutoArray($produtos);
         // dd($produtos);
 
-
-
+        //$produtos = $request->input('produtos'); // Supondo que 'produtos' seja um campo no seu request
+        //dd($produtos);
         $regrasProdutos = $this->rulesProduto();
         $feedbacksProdutos = $this->feedbacksProduto();
+
+
         $validator = Validator::make($produtos, $regrasProdutos, $feedbacksProdutos);
 
         if ($validator->fails()) {
             $erros = $validator->errors();
-            $posicao = 1;
-            foreach ($erros->all() as $mensagemErro) {
-                return response()->json($mensagemErro);
-                //echo "Erro na posição " . ($posicao) . ": $mensagemErro <br>";
-                $posicao++;
+            $mensagensOrganizadas = [];
+            // Iterar pelas mensagens de erro e agrupar
+            foreach ($erros->messages() as $chave => $mensagens) {
+                list($posicao, $campo) = explode('.', $chave, 2);
+                $posicaoProduto = $posicao + 1; // Adiciona 1 para a referência do tipo "produto"
+                $mensagensOrganizadas[$posicaoProduto][$campo][] = $mensagens;
             }
-        } else {
-            $tchau = "tchau";
-            return response()->json($tchau);
-            // echo 'tchau';
-        }
 
-        dd($produtos);
+            // Reorganizar para o formato desejado
+            $errosProduto = [];
+            foreach ($mensagensOrganizadas as $posicaoProduto => $mensagensPorCampo) {
+                foreach ($mensagensPorCampo as $campo => $mensagens) {
+                    $errosProduto[$posicaoProduto][$campo] = $mensagens;
+                }
+            }
+
+            if (!empty($errosProduto)) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'produtos' => $errosProduto
+                    ]
+                ], 422);
+            }
+        }
         dd($request->all());
-        //dd($payLoad);
     }
 
 
