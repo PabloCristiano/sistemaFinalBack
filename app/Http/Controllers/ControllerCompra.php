@@ -42,8 +42,6 @@ class ControllerCompra extends Controller
         $parcelas = [];
         $produtos = json_decode($request->produtos, true);
         $parcelas = json_decode($request->condicaopagamento, true);
-
-         $payLoad = $this->convertArray($request->all());
         // $quantidadeProdutos = count($produtos);
         // $quantidadeParcelas = count($parcelas);
         // $parcelas_convertida = $this->convertValorParcelaToFloat($parcelas);
@@ -99,7 +97,7 @@ class ControllerCompra extends Controller
             // Lidar com outras exceções se necessário
             return response()->json(['error' => 'Something went wrong'], 500);
         }
-        
+
         try {
             $regrasCondicaoPagamento = $this->rulesCondicaoPagamento();
             $feedbacksCondicaoPagamento = $this->feedbacksCondicaoPagamento();
@@ -147,6 +145,7 @@ class ControllerCompra extends Controller
             // Lidar com outras exceções se necessário
             return response()->json(['error' => 'Something went wrong'], 500);
         }
+        $payLoad = $this->convertArray($request->all());
         //dd($payLoad);
         dd($payLoad);
     }
