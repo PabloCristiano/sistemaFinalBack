@@ -53,8 +53,8 @@ class ControllerCompra extends Controller
         //dd($produtos);
         $regrasProdutos = $this->rulesProduto();
         $feedbacksProdutos = $this->feedbacksProduto();
-
-
+         
+        //Validação array Produtos
         $validator = Validator::make($produtos, $regrasProdutos, $feedbacksProdutos);
 
         if ($validator->fails()) {
@@ -74,7 +74,8 @@ class ControllerCompra extends Controller
                     $errosProduto[$posicaoProduto][$campo] = $mensagens;
                 }
             }
-
+            
+            //Se tiver erros Retorna a request
             if (!empty($errosProduto)) {
                 return response()->json([
                     'message' => 'The given data was invalid.',
@@ -84,7 +85,7 @@ class ControllerCompra extends Controller
                 ], 422);
             }
         }
-        
+
         dd($request->all());
     }
 
