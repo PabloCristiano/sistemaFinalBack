@@ -84,6 +84,7 @@ class ControllerCompra extends Controller
                 ], 422);
             }
         }
+        
         dd($request->all());
     }
 
