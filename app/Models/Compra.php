@@ -125,8 +125,8 @@ class Compra extends TObject
     }
 
     public function setValorCompra(float $valor_compra)
-    {
-        $this->valor_compra = number_format($valor_compra, 6,'.','');
+    {   
+        $this->valor_compra = $valor_compra;
     }
 
     public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)

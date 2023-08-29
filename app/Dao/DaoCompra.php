@@ -48,11 +48,11 @@ class DaoCompra implements Dao
 
     public function create(array $dados)
     {
-        // auth('api')->user();
-
         $compra = new Compra();
+
+        // auth('api')->user();
         $profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
-        //dd($profissional, $profissional->id);
+
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
             $compra->setStatus($dados["status"]);
             $compra->setDataCadastro($dados["data_create"]);
@@ -87,25 +87,27 @@ class DaoCompra implements Dao
         $produtos = $this->daoCompraProduto->findById($compra->getModelo(), $compra->getNumeroNota(), $compra->getSerie(), true);
         if (!$produtos) {
             $compra->setCompraProdutoArray($dados['produtos']);
-            //dd($dados['produtos']);
+            $valor_compra = $this->calcTotalCompra($dados['produtos']);
+            $compra->setValorCompra(floatval($valor_compra));
         } else {
             $compra->setCompraProdutoArray($produtos);
+            $valor_compra = $this->calcTotalCompra($compra->getCompraProdutoArray());
+            $compra->setValorCompra(floatval($valor_compra));
         }
 
         //Dados Profissional 
         $profissional = $this->daoProfissional->findById($dados['id_profissional'], false);
-        //dd($profissional);
         $profissional = $this->daoProfissional->create(get_object_vars($profissional));
         $compra->setProfissional($profissional);
 
         $compra->setFrete((float) $dados["frete"]);
-        $compra->setValorCompra((float) $dados["valor_compra"]);
+
         return $compra;
     }
 
     public function store($compra)
     {
-        dd($compra);
+        dd('store', $compra);
     }
 
     public function update(Request $request, $id)
@@ -147,12 +149,12 @@ class DaoCompra implements Dao
         return $dados;
     }
 
-    public function TotalCompra(array $compraProduto)
+    public function calcTotalCompra(array $compraProduto)
     {
         $total = 0;
         foreach ($compraProduto as $produto) {
-            $total += $produto['total_produto'];
+            $total += $produto['valor_unitario'] * $produto['qtd_produto'];
         }
-        return number_format($total, 6, '.', '');
+        return floatval($total);
     }
 }
