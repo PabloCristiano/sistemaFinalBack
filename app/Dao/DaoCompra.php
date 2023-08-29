@@ -107,7 +107,8 @@ class DaoCompra implements Dao
 
     public function store($compra)
     {
-        dd('store', $compra);
+        $rr = json_decode($compra, true);
+        dd('store', $rr);
     }
 
     public function update(Request $request, $id)
