@@ -51,9 +51,8 @@ class DaoCompra implements Dao
         // auth('api')->user();
 
         $compra = new Compra();
-        //$profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
-       // dd($profissional, $profissional->id);
-
+        $profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
+        //dd($profissional, $profissional->id);
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
             $compra->setStatus($dados["status"]);
             $compra->setDataCadastro($dados["data_create"]);
@@ -72,7 +71,7 @@ class DaoCompra implements Dao
         $compra->setValorProduto((float) $dados["valor_produto"]);
         $compra->setSeguro((float) $dados["seguro"]);
         $compra->setOutrasDespesas((float) $dados["outras_despesas"]);
-        $compra->setObservacao((string) $dados["obs"] ?? Null);
+        $compra->setObservacao((string) $dados["observacao"] ?? Null);
 
         //Dados Fornecedor
         $fornecedor = $this->daoFornecedor->findById($dados['id_fornecedor'], false);
@@ -86,10 +85,16 @@ class DaoCompra implements Dao
 
         // Dados Produto
         $produtos = $this->daoCompraProduto->findById($compra->getModelo(), $compra->getNumeroNota(), $compra->getSerie(), true);
-        $compra->setCompraProdutoArray($produtos);
+        if (!$produtos) {
+            $compra->setCompraProdutoArray($dados['produtos']);
+            //dd($dados['produtos']);
+        } else {
+            $compra->setCompraProdutoArray($produtos);
+        }
 
         //Dados Profissional 
         $profissional = $this->daoProfissional->findById($dados['id_profissional'], false);
+        //dd($profissional);
         $profissional = $this->daoProfissional->create(get_object_vars($profissional));
         $compra->setProfissional($profissional);
 

@@ -145,9 +145,15 @@ class ControllerCompra extends Controller
             // Lidar com outras exceções se necessário
             return response()->json(['error' => 'Something went wrong'], 500);
         }
+
         $payLoad = $this->convertArray($request->all());
         //dd($payLoad);
-        dd($payLoad);
+        $compras = $this->daoCompra->create($payLoad);
+
+        dd($compras);
+        $store = $this->daoCompra->store($compras);
+        //dd($payLoad);
+        // dd($payLoad);
     }
 
 
@@ -181,7 +187,8 @@ class ControllerCompra extends Controller
             'modelo' => 'required|numeric|gt:0',
             'serie' => 'required|numeric|gt:0',
             'numero_nota' => 'required|integer|min:1|unique:compra',
-            'id_fornecedor' => 'required|integer|min:1',
+            'id_fornecedor' => 'required|integer|min:1|exists:fornecedores,id',
+            'id_profissional' => 'required|integer|min:1|exists:profissionais,id',
             'fornecedor' => 'required|min:3|max:50',
             'data_emissao' => 'required|date|before_or_equal:today',
             'data_chegada' => 'required|date|after_or_equal:data_emissao',
@@ -191,7 +198,7 @@ class ControllerCompra extends Controller
             'seguro' => 'nullable|numeric||min:0',
             'outras_despesas' => 'nullable|numeric||min:0',
             'produtos' => 'required',
-            'id_condicaopg' => 'required|integer|min:1',
+            'id_condicaopg' => 'required|integer|min:1|exists:condicao_pg,id',
             'condicaopg' => 'required|min:3|max:50',
             'condicaopagamento' => 'required',
             'observacao' => 'nullable|min:5|max:255',
@@ -210,9 +217,10 @@ class ControllerCompra extends Controller
             'numero_nota.integer' => 'O campo número da nota deve ser um número inteiro.',
             'numero_nota.min' => 'O campo número da nota deve ser maior que zero.',
             'numero_nota.unique' => 'Este número de nota já está em uso.',
-            'id_fornecedor.required' => 'O campo id do fornecedor é obrigatório.',
-            'id_fornecedor.integer' => 'O campo id do fornecedor deve ser um número inteiro.',
-            'id_fornecedor.min' => 'O campo id do fornecedor deve ser maior que zero.',
+            'id_fornecedor.required' => 'O campo ID do fornecedor é obrigatório.',
+            'id_fornecedor.integer' => 'O ID do fornecedor deve ser um número inteiro.',
+            'id_fornecedor.min' => 'O ID do fornecedor deve ser no mínimo 1.',
+            'id_fornecedor.exists' => 'O fornecedor selecionado não foi encontrado.',
             'fornecedor.required' => 'O campo fornecedor é obrigatório.',
             'fornecedor.min' => 'O campo fornecedor deve ter no mínimo :min caracteres.',
             'fornecedor.max' => 'O campo fornecedor deve ter no máximo :max caracteres.',
@@ -230,9 +238,10 @@ class ControllerCompra extends Controller
             'outras_despesas.min' => 'O campo outras despesas deve ser no mínimo :min.',
             'produtos.required' => 'É necessário pelo menos um produto.',
             'produtos.array' => 'O campo produtos deve ser um array.',
-            'id_condicaopg.required' => 'O campo id da condição de pagamento é obrigatório.',
-            'id_condicaopg.integer' => 'O campo id da condição de pagamento deve ser um número inteiro.',
-            'id_condicaopg.min' => 'O campo id da condição de pagamento deve ser maior que zero.',
+            'id_condicaopg.required' => 'O campo ID da condição de pagamento é obrigatório.',
+            'id_condicaopg.integer' => 'O ID da condição de pagamento deve ser um número inteiro.',
+            'id_condicaopg.min' => 'O ID da condição de pagamento deve ser no mínimo 1.',
+            'id_condicaopg.exists' => 'A condição de pagamento selecionada não foi encontrada.',
             'condicaopg.required' => 'O campo condição de pagamento é obrigatório.',
             'condicaopg.min' => 'O campo condição de pagamento deve ter no mínimo :min caracteres.',
             'condicaopg.max' => 'O campo condição de pagamento deve ter no máximo :max caracteres.',
@@ -245,6 +254,10 @@ class ControllerCompra extends Controller
             'data_chegada.required' => 'O campo data de chegada é obrigatório.',
             'data_chegada.date' => 'O campo data de chegada deve ser uma data válida.',
             'data_chegada.after_or_equal' => 'A data de chegada não pode ser menor que a data de emissão.',
+            'id_profissional.required' => 'O campo ID do profissional é obrigatório.',
+            'id_profissional.integer' => 'O ID do profissional deve ser um número inteiro.',
+            'id_profissional.min' => 'O ID do profissional deve ser no mínimo 1.',
+            'id_profissional.exists' => 'O ID do profissional não foi encontrado.',
 
         ];
         return $feedbacks;
@@ -339,9 +352,12 @@ class ControllerCompra extends Controller
         $array['id_fornecedor'] = intval($array['id_fornecedor']);
         $array['id_condicaopg'] = intval($array['id_condicaopg']);
         $array['total_compra'] = floatval($array['total_compra']);
+        $array['valor_compra'] = floatval($array['total_compra']);
         $array['total_produtos'] = floatval($array['total_produtos']);
+        $array['valor_produto'] = floatval($array['total_produtos']);
         $array['frete'] = floatval($array['frete']);
         $array['seguro'] = floatval($array['seguro']);
+        $array['qtd_produto'] = intval($array['qtd_produto']);
         $array['outras_despesas'] = floatval($array['outras_despesas']);
         // Convertendo a string JSON em um array associativo para 'produtos' e 'condicaopagamento'
         $array['produtos'] = $this->convertProdutoArray(json_decode($array['produtos'], true));

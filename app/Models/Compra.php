@@ -108,7 +108,7 @@ class Compra extends TObject
     }
     public function setValorProduto(float $valor_produto)
     {
-        $this->valor_produto = $valor_produto;
+        $this->valor_produto = number_format($valor_produto, 6,'.','');
     }
     public function setSeguro(float $seguro)
     {
