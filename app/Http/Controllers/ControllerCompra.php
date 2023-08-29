@@ -346,8 +346,6 @@ class ControllerCompra extends Controller
         ];
         return $feedbacksCondicaoPagamento;
     }
-
-
     public function convertArray($array)
     {
 
