@@ -107,8 +107,25 @@ class DaoCompra implements Dao
 
     public function store($compra)
     {
-        $rr = json_decode($compra, true);
-        dd('store', $rr);
+        $modelo = $compra->getModelo();
+        $nunero_nota = $compra->getNumeroNota();
+        $serie = $compra->getSerie();
+        $id_fornecedor = $compra->getFornecedor()->getId();
+        $status = $compra->getStatus();
+        $dataEmissao = $compra->getDataEmissao();
+        $dataChegada = $compra->getDataChegada();
+        $compraProduto_array = $compra->getCompraProdutoArray();
+        $frete = $compra->getFrete();
+        $valor_produto = $compra->getValorProduto();
+        $seguro = $compra->getSeguro();
+        $outras_despesas = $compra->getOutrasDespesas();
+        $qtd_produto = $compra->getQtdProduto();
+        $valor_compra = $compra->getValorCompra();
+        $id_condicaopg = $compra->getCondicaoPagamento()->getId();
+        $id_profissional = $compra->getProfissional()->getId();
+        $dataCancelamento = $compra->getDataCancelamento();
+        $observacao = $compra->getObservacao();
+        dd('store', $compra);
     }
 
     public function update(Request $request, $id)
