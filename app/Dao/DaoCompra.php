@@ -125,6 +125,12 @@ class DaoCompra implements Dao
         $id_profissional = $compra->getProfissional()->getId();
         $dataCancelamento = $compra->getDataCancelamento();
         $observacao = $compra->getObservacao();
+        $custos = ($frete + $seguro + $outras_despesas);
+        //dd($compraProduto_array);
+        $this->calcularRateioCusto($compraProduto_array, $custos);
+
+        dd($compraProduto_array);
+
         dd('store', $compra);
     }
 
@@ -174,5 +180,23 @@ class DaoCompra implements Dao
             $total += $produto['valor_unitario'] * $produto['qtd_produto'];
         }
         return floatval($total);
+    }
+
+    public function calcularRateioCusto(&$produtos, $custos)
+    {
+        $totalCusto = 0;
+        foreach ($produtos as $key => &$produto) {
+            $quantidade = $produto['qtd_produto'];
+            $valorUnitario = $produto['valor_unitario'];
+            $totalCusto += $quantidade * $valorUnitario;
+        }
+
+        foreach ($produtos as &$produto) {
+            $quantidade = $produto['qtd_produto'];
+            $valorUnitario = $produto['valor_unitario'];
+            $rateio = (($valorUnitario * $quantidade) / $totalCusto) * $custos;
+            $valor_rateio = $rateio / $quantidade;
+            $produto['valor_custo'] = $valorUnitario + $valor_rateio;
+        }
     }
 }
