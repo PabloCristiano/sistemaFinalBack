@@ -12,6 +12,7 @@ use App\Dao\DaoFornecedor;
 use App\Dao\DaoCompraProduto;
 use App\Dao\DaoCondicaoPagamento;
 use App\Dao\DaoProfissional;
+use App\Dao\DaoProduto;
 
 class DaoCompra implements Dao
 {
@@ -20,6 +21,7 @@ class DaoCompra implements Dao
     protected DaoCompraProduto $daoCompraProduto;
     protected DaoCondicaoPagamento $daoCondicaoPagamento;
     protected DaoProfissional $daoProfissional;
+    protected DaoProduto $daoProduto;
 
 
     public function __construct()
@@ -28,6 +30,7 @@ class DaoCompra implements Dao
         $this->daoCompraProduto = new DaoCompraProduto();
         $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
         $this->daoProfissional = new DaoProfissional();
+        $this->daoProduto = new DaoProduto();
     }
 
     public function all(bool $json = false)
@@ -128,9 +131,12 @@ class DaoCompra implements Dao
         $custos = ($frete + $seguro + $outras_despesas);
         //dd($compraProduto_array);
         $this->calcularRateioCusto($compraProduto_array, $custos);
-
-        dd($compraProduto_array);
-
+        
+        $clonedArray = array_map(function ($item) {
+            return array_merge([], $item);
+        }, $compraProduto_array);
+        
+        dd($compraProduto_array, $clonedArray);
         dd('store', $compra);
     }
 
@@ -199,4 +205,37 @@ class DaoCompra implements Dao
             $produto['valor_custo'] = $valorUnitario + $valor_rateio;
         }
     }
+
+    // function calcularMediaPonderada($notas, $pesos) {
+    //     if (count($notas) !== count($pesos)) {
+    //         return false; // Verificar se os arrays têm o mesmo tamanho
+    //     }
+
+    //     $somaProdutos = 0;
+    //     $somaPesos = 0;
+
+    //     for ($i = 0; $i < count($notas); $i++) {
+    //         $somaProdutos += $notas[$i] * $pesos[$i];
+    //         $somaPesos += $pesos[$i];
+    //     }
+
+    //     if ($somaPesos === 0) {
+    //         return false; // Verificar se a soma dos pesos é diferente de zero
+    //     }
+
+    //     return $somaProdutos / $somaPesos;
+    // }
+
+    // // Exemplo de uso
+    // $notas = array(8, 9, 7);
+    // $pesos = array(2, 3, 1);
+
+    // $mediaPonderada = calcularMediaPonderada($notas, $pesos);
+
+    // if ($mediaPonderada !== false) {
+    //     echo "A média ponderada é: " . $mediaPonderada;
+    // } else {
+    //     echo "Erro ao calcular a média ponderada. Verifique os dados.";
+    // }
+
 }
