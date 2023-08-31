@@ -132,7 +132,7 @@ class DaoCompra implements Dao
         // $clonedArray = array_map(function ($item) {
         //     return array_merge([], $item);
         // }, $compraProduto_array);
-       
+
         try {
             DB::beginTransaction();
             $result = DB::INSERT(
@@ -157,11 +157,41 @@ class DaoCompra implements Dao
                     $outras_despesas
                 ]
             );
-            DB::commit();
             try {
+                foreach ($compraProduto_array  as  $produto) {
+                    $result = DB::INSERT(
+                        "INSERT INTO compra_produto (compra_modelo,compra_numero_nota,compra_serie,id_produto,compra_id_fornecedor,qtd_produto,valor_unitario,valor_custo,total_produto,desconto,unidade) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [
+                            $modelo,
+                            $numero_nota,
+                            $serie,
+                            $produto['id_produto'],
+                            $id_fornecedor,
+                            $produto['qtd_produto'],
+                            $produto['valor_unitario'],
+                            $produto['valor_custo'],
+                            $produto['total_produto'],
+                            $produto['desconto'],
+                            $produto['unidade'],
+
+                        ]
+                    );
+                }
             } catch (QueryException $e) {
+                $mensagem = $e->getMessage(); // Mensagem de erro
+                $codigo = $e->getCode(); // Código do erro
+                $consulta = $e->getSql(); // Consulta SQL que causou o erro
+                $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+                DB::rollBack();
+                return [$mensagem, $codigo, $consulta, $bindings];
             }
-            return $result;
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
         } catch (QueryException $e) {
             $mensagem = $e->getMessage(); // Mensagem de erro
             $codigo = $e->getCode(); // Código do erro
