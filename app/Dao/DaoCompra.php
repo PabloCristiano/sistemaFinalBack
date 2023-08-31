@@ -189,17 +189,14 @@ class DaoCompra implements Dao
                 return [$mensagem, $codigo, $consulta, $bindings];
             }
             try {
-                $condicao = $this->daoCondicaoPagamento->findById($compra->getCondicaoPagamento()->getId(), false);
-                $obj_condicaopagamento = $this->daoCondicaoPagamento->listarCondicao(get_object_vars($condicao));
-
-                foreach ($obj_condicaopagamento  as $key=> $item) {
-                    dd($item);
-                    $numero_parcela =  $item['parcelas'][$key]['parcela'];
-                    $id_formapagamento = $item['parcelas'][$key]['formaPagamento'][0]['id'];
-                    $data_vencimento = $this->somarDias($data_emissao, $item['parcelas'][$key]['prazo']);
-                    $desconto = $item['desconto'];
-                    $juros = $item['juros'];
-                    $valor_parcela =  ($valor_compra * ($item['parcelas'][$key]['porcentagem']) / 100);
+                $obj_condicaopagamento = $this->daoCondicaoPagamento->getData($compra->getCondicaoPagamento());
+                foreach ($obj_condicaopagamento['parcelas'] as  $item) {
+                    $numero_parcela = $item['parcela'];
+                    $id_formapagamento = $item['formaPagamento'][0]['id'];
+                    $data_vencimento = $this->somarDias($data_emissao, $item['prazo']);
+                    $desconto = $obj_condicaopagamento['desconto'];
+                    $juros = $obj_condicaopagamento['juros'];
+                    $valor_parcela =  ($valor_compra * ($item['porcentagem']) / 100);
                     $status = "PENDENTE";
                     $result = DB::INSERT(
                         "INSERT INTO contas_pagar (compra_modelo,compra_numero_nota,compra_serie,numero_parcela,compra_id_fornecedor,id_formapagamento,data_emissao,data_vencimento,desconto,juros,valor_parcela,status) 
