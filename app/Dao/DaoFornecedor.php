@@ -82,7 +82,7 @@ class DaoFornecedor implements Dao
         $cidade = $this->daoCidade->findById($dados['id_cidade'], false);
         $cidade = $this->daoCidade->create(get_object_vars($cidade));
         $fornecedor->setCidade($cidade);
-        $condicaoPagamento = $this->daoCondicaoPagemento->findById($dados['id_condicaopg'], false);     
+        $condicaoPagamento = $this->daoCondicaoPagemento->findById($dados['id_condicaopg'], false);
         $condicaoPagamento = $this->daoCondicaoPagemento->listarCondição(get_object_vars($condicaoPagamento));
         $fornecedor->setCondicaoPagamento($condicaoPagamento);
         return $fornecedor;
@@ -160,7 +160,7 @@ class DaoFornecedor implements Dao
         $limiteCredito = $fornecedor->getLimiteCredito();
         $obs = $fornecedor->getObservacoes();
         $data_alt = $fornecedor->getDataAlteracao();
-        // DB::beginTransaction();
+         DB::beginTransaction();
         try {
             // DB::UPDATE("UPDATE fornecedores SET tipo_pessoa = '$tipo_pessoa',razaoSocial = '$razaoSocial',nomefantasia = '$nomeFantasia',apelido = '$apelido',logradouro = '$logradouro',numero = '$numero',complemento = '$complemento',bairro = '$bairro', cep = '$cep',id_cidade = $id_cidade,whatsapp = '$whatsapp',telefone = '$telefone',email = '$email',pagSite = '$pagSite',contato = '$contato',cnpj = '$cnpj',ie = '$ie',cpf = '$cpf',rg = '$rg',id_condicaopg = $id_condicaopg , limiteCredito = $limiteCredito,obs = '$obs',data_alt = '$data_alt' where id = $id ");
             DB::UPDATE('UPDATE 
@@ -198,7 +198,6 @@ class DaoFornecedor implements Dao
 
     public function findById(int $id, bool $model = false)
     {
-        DB::beginTransaction();
         try {
             if (!$model) {
                 $dados = DB::select('select * from fornecedores where id = ?', [$id]);

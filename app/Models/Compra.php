@@ -92,12 +92,12 @@ class Compra extends TObject
         $this->fornecedor = $fornecedor;
     }
 
-    public function setCompraProduto( CompraProduto $compraProduto)
+    public function setCompraProduto(CompraProduto $compraProduto)
     {
         $this->compraProduto = $compraProduto;
     }
 
-    public function setCompraProdutoArray( array $compraProduto_array)
+    public function setCompraProdutoArray(array $compraProduto_array)
     {
         $this->compraProduto_array = $compraProduto_array;
     }
@@ -108,7 +108,7 @@ class Compra extends TObject
     }
     public function setValorProduto(float $valor_produto)
     {
-        $this->valor_produto = number_format($valor_produto, 6,'.','');
+        $this->valor_produto = number_format($valor_produto, 6, '.', '');
     }
     public function setSeguro(float $seguro)
     {
@@ -118,14 +118,14 @@ class Compra extends TObject
     {
         $this->outras_despesas = $outras_despesas;
     }
-    
+
     public function setQtdProduto(int $qtd_produto)
     {
         $this->qtd_produto = $qtd_produto;
     }
 
     public function setValorCompra(float $valor_compra)
-    {   
+    {
         $this->valor_compra = $valor_compra;
     }
 

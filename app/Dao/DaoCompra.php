@@ -111,12 +111,12 @@ class DaoCompra implements Dao
     public function store($compra)
     {
         $modelo = $compra->getModelo();
-        $nunero_nota = $compra->getNumeroNota();
+        $numero_nota = $compra->getNumeroNota();
         $serie = $compra->getSerie();
         $id_fornecedor = $compra->getFornecedor()->getId();
-        $status = $compra->getStatus();
-        $dataEmissao = $compra->getDataEmissao();
-        $dataChegada = $compra->getDataChegada();
+        $status = "ATIVA";
+        $data_emissao = $compra->getDataEmissao();
+        $data_chegada = $compra->getDataChegada();
         $compraProduto_array = $compra->getCompraProdutoArray();
         $frete = $compra->getFrete();
         $valor_produto = $compra->getValorProduto();
@@ -126,18 +126,53 @@ class DaoCompra implements Dao
         $valor_compra = $compra->getValorCompra();
         $id_condicaopg = $compra->getCondicaoPagamento()->getId();
         $id_profissional = $compra->getProfissional()->getId();
-        $dataCancelamento = $compra->getDataCancelamento();
         $observacao = $compra->getObservacao();
         $custos = ($frete + $seguro + $outras_despesas);
-        //dd($compraProduto_array);
         $this->calcularRateioCusto($compraProduto_array, $custos);
-        
-        $clonedArray = array_map(function ($item) {
-            return array_merge([], $item);
-        }, $compraProduto_array);
-        
-        dd($compraProduto_array, $clonedArray);
-        dd('store', $compra);
+        // $clonedArray = array_map(function ($item) {
+        //     return array_merge([], $item);
+        // }, $compraProduto_array);
+       
+        try {
+            DB::beginTransaction();
+            $result = DB::INSERT(
+                "INSERT INTO compra (modelo,numero_nota,serie,id_fornecedor,id_condicaopg,id_profissional,data_emissao,data_chegada,qtd_produto,valor_compra,status,observacao,valor_produto,frete,seguro,outras_despesas) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [
+                    $modelo,
+                    $numero_nota,
+                    $serie,
+                    $id_fornecedor,
+                    $id_condicaopg,
+                    $id_profissional,
+                    $data_emissao,
+                    $data_chegada,
+                    $qtd_produto,
+                    $valor_compra,
+                    $status,
+                    $observacao,
+                    $valor_produto,
+                    $frete,
+                    $seguro,
+                    $outras_despesas
+                ]
+            );
+            DB::commit();
+            try {
+            } catch (QueryException $e) {
+            }
+            return $result;
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
+
+        // dd($compraProduto_array, $clonedArray);
+        // dd('store', $compra);
     }
 
     public function update(Request $request, $id)
