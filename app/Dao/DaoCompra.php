@@ -84,7 +84,7 @@ class DaoCompra implements Dao
 
         //Dados Condição de Pagamento
         $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados['id_condicaopg'], false);
-        $condicaoPagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condicaoPagamento));
+        $condicaoPagamento = $this->daoCondicaoPagamento->listarCondicao(get_object_vars($condicaoPagamento));
         $compra->setCondicaoPagamento($condicaoPagamento);
 
         // Dados Produto
@@ -190,7 +190,7 @@ class DaoCompra implements Dao
             }
             try {
                 $condicao = $this->daoCondicaoPagamento->findById($compra->getCondicaoPagamento()->getId(), false);
-                $obj_condicaopagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condicao));
+                $obj_condicaopagamento = $this->daoCondicaoPagamento->listarCondicao(get_object_vars($condicao));
 
                 foreach ($obj_condicaopagamento  as $key=> $item) {
                     dd($item);

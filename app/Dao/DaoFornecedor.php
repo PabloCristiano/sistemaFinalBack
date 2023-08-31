@@ -83,7 +83,7 @@ class DaoFornecedor implements Dao
         $cidade = $this->daoCidade->create(get_object_vars($cidade));
         $fornecedor->setCidade($cidade);
         $condicaoPagamento = $this->daoCondicaoPagemento->findById($dados['id_condicaopg'], false);
-        $condicaoPagamento = $this->daoCondicaoPagemento->listarCondição(get_object_vars($condicaoPagamento));
+        $condicaoPagamento = $this->daoCondicaoPagemento->listarCondicao(get_object_vars($condicaoPagamento));
         $fornecedor->setCondicaoPagamento($condicaoPagamento);
         return $fornecedor;
     }
