@@ -186,7 +186,7 @@ class DaoCompra implements Dao
                 DB::rollBack();
                 return [$mensagem, $codigo, $consulta, $bindings];
             }
-
+            
             DB::commit();
             return response()->json([
                 'success' => true,
