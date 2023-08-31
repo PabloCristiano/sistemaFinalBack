@@ -72,7 +72,8 @@ class DaoCompra implements Dao
         $compra->setDataChegada($dados["data_chegada"]);
         $compra->setQtdProduto((int) $dados["qtd_produto"]);
         $compra->setFrete((float) $dados["frete"]);
-        $compra->setValorProduto((float) $dados["valor_produto"]);
+        //$compra->setValorProduto((float) $dados["valor_produto"]);
+        $compra->setValorCompra(floatval($dados["valor_compra"]));
         $compra->setSeguro((float) $dados["seguro"]);
         $compra->setOutrasDespesas((float) $dados["outras_despesas"]);
         $compra->setObservacao((string) $dados["observacao"] ?? Null);
@@ -92,11 +93,11 @@ class DaoCompra implements Dao
         if (!$produtos) {
             $compra->setCompraProdutoArray($dados['produtos']);
             //$valor_compra = $this->calcTotalCompra($dados['produtos']);
-            $compra->setValorCompra(floatval($dados["valor_compra"]));
+            $compra->setValorProduto(floatval($dados["valor_produto"]));
         } else {
             $compra->setCompraProdutoArray($produtos);
-            $valor_compra = $this->calcTotalCompra($compra->getCompraProdutoArray());
-            $compra->setValorCompra(floatval($valor_compra));
+            $valor_produto = $this->calcTotalCompra($compra->getCompraProdutoArray());
+            $compra->setValorProduto(floatval($valor_produto));
         }
 
         //Dados Profissional 
@@ -105,7 +106,6 @@ class DaoCompra implements Dao
         $compra->setProfissional($profissional);
 
         $compra->setFrete((float) $dados["frete"]);
-
         return $compra;
     }
 
