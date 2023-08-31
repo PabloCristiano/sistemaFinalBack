@@ -83,9 +83,9 @@ class DaoCompra implements Dao
         $compra->setFornecedor($fornecedores);
 
         //Dados Condição de Pagamento
-        $condiçãoPagamento = $this->daoCondicaoPagamento->findById($dados['id_condicaopg'], false);
-        $condiçãoPagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condiçãoPagamento));
-        $compra->setCondicaoPagamento($condiçãoPagamento);
+        $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados['id_condicaopg'], false);
+        $condicaoPagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condicaoPagamento));
+        $compra->setCondicaoPagamento($condicaoPagamento);
 
         // Dados Produto
         $produtos = $this->daoCompraProduto->findById($compra->getModelo(), $compra->getNumeroNota(), $compra->getSerie(), true);
@@ -189,10 +189,11 @@ class DaoCompra implements Dao
                 return [$mensagem, $codigo, $consulta, $bindings];
             }
             try {
-                $condição = $this->daoCondicaoPagamento->findById($compra->getCondicaoPagamento()->getId(), false);
-                $obj_condiçaopagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condição));
-                foreach ($obj_condiçaopagamento  as $key=> $item) {
-                    dd($item->getId());
+                $condicao = $this->daoCondicaoPagamento->findById($compra->getCondicaoPagamento()->getId(), false);
+                $obj_condicaopagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condicao));
+
+                foreach ($obj_condicaopagamento  as $key=> $item) {
+                    dd($item);
                     $numero_parcela =  $item['parcelas'][$key]['parcela'];
                     $id_formapagamento = $item['parcelas'][$key]['formaPagamento'][0]['id'];
                     $data_vencimento = $this->somarDias($data_emissao, $item['parcelas'][$key]['prazo']);
