@@ -51,6 +51,7 @@ class DaoCompra implements Dao
 
     public function create(array $dados)
     {
+
         $compra = new Compra();
 
         // auth('api')->user();
@@ -90,8 +91,8 @@ class DaoCompra implements Dao
         $produtos = $this->daoCompraProduto->findById($compra->getModelo(), $compra->getNumeroNota(), $compra->getSerie(), true);
         if (!$produtos) {
             $compra->setCompraProdutoArray($dados['produtos']);
-            $valor_compra = $this->calcTotalCompra($dados['produtos']);
-            $compra->setValorCompra(floatval($valor_compra));
+            //$valor_compra = $this->calcTotalCompra($dados['produtos']);
+            $compra->setValorCompra(floatval($dados["valor_compra"]));
         } else {
             $compra->setCompraProdutoArray($produtos);
             $valor_compra = $this->calcTotalCompra($compra->getCompraProdutoArray());
@@ -110,6 +111,7 @@ class DaoCompra implements Dao
 
     public function store($compra)
     {
+
         $modelo = $compra->getModelo();
         $numero_nota = $compra->getNumeroNota();
         $serie = $compra->getSerie();
@@ -186,7 +188,45 @@ class DaoCompra implements Dao
                 DB::rollBack();
                 return [$mensagem, $codigo, $consulta, $bindings];
             }
-            
+            try {
+                $condição = $this->daoCondicaoPagamento->findById($compra->getCondicaoPagamento()->getId(), false);
+                $obj_condiçaopagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condição));
+                foreach ($obj_condiçaopagamento  as $key=> $item) {
+                    dd($item->getId());
+                    $numero_parcela =  $item['parcelas'][$key]['parcela'];
+                    $id_formapagamento = $item['parcelas'][$key]['formaPagamento'][0]['id'];
+                    $data_vencimento = $this->somarDias($data_emissao, $item['parcelas'][$key]['prazo']);
+                    $desconto = $item['desconto'];
+                    $juros = $item['juros'];
+                    $valor_parcela =  ($valor_compra * ($item['parcelas'][$key]['porcentagem']) / 100);
+                    $status = "PENDENTE";
+                    $result = DB::INSERT(
+                        "INSERT INTO contas_pagar (compra_modelo,compra_numero_nota,compra_serie,numero_parcela,compra_id_fornecedor,id_formapagamento,data_emissao,data_vencimento,desconto,juros,valor_parcela,status) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [
+                            $modelo,
+                            $numero_nota,
+                            $serie,
+                            $numero_parcela,
+                            $id_fornecedor,
+                            $id_formapagamento,
+                            $data_emissao,
+                            $data_vencimento,
+                            $desconto,
+                            $juros,
+                            $valor_parcela,
+                            $status
+                        ]
+                    );
+                }
+            } catch (QueryException $e) {
+                $mensagem = $e->getMessage(); // Mensagem de erro
+                $codigo = $e->getCode(); // Código do erro
+                $consulta = $e->getSql(); // Consulta SQL que causou o erro
+                $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+                DB::rollBack();
+                return [$mensagem, $codigo, $consulta, $bindings];
+            }
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -269,6 +309,13 @@ class DaoCompra implements Dao
             $valor_rateio = $rateio / $quantidade;
             $produto['valor_custo'] = $valorUnitario + $valor_rateio;
         }
+    }
+
+    public function somarDias($data, $dias)
+    {
+        $dataObj = Carbon::parse($data);
+        $dataNova = $dataObj->addDays($dias);
+        return $dataNova->format('Y-m-d');
     }
 
     // function calcularMediaPonderada($notas, $pesos) {

@@ -147,7 +147,7 @@ class ControllerCompra extends Controller
         }
 
         $payLoad = $this->convertArray($request->all());
-        //dd($payLoad);
+        // dd($payLoad);
         $compras = $this->daoCompra->create($payLoad);
         $store = $this->daoCompra->store($compras);
         return response::json($store);
