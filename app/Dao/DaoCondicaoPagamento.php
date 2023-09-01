@@ -24,7 +24,7 @@ class DaoCondicaoPagamento implements Dao
         $itens = DB::select('select * from condicao_pg order by id desc');
         $listCondicao = [];
         foreach ($itens as $item) {
-            $lista_condicao = $this->listarCondição(get_object_vars($item));
+            $lista_condicao = $this->listarCondicao(get_object_vars($item));
             if ($json) {
                 $listCondicao_json = $this->getData($lista_condicao);
                 array_push($listCondicao, $listCondicao_json);
@@ -125,7 +125,7 @@ class DaoCondicaoPagamento implements Dao
         if ($dados) {
             $condicaoPagamnentos = [];
             foreach ($dados as $item) {
-                $condicaoPagamnento = $this->listarCondição(get_object_vars($item));
+                $condicaoPagamnento = $this->listarCondicao(get_object_vars($item));
                 $condicaoPagamnento_json = $this->getData($condicaoPagamnento);
                 array_push($condicaoPagamnentos, $condicaoPagamnento_json);
             }
@@ -134,7 +134,7 @@ class DaoCondicaoPagamento implements Dao
         
     }
 
-    function listarCondição(array $dados)
+    function listarCondicao(array $dados)
     {
 
         $condicaoPagamento = new CondicaoPagamento();

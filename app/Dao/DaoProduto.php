@@ -47,12 +47,12 @@ class DaoProduto implements Dao
         }
         $produto->setProduto($dados['produto']);
         $produto->setUnidade($dados['unidade']);
-        $produto->setQtdEstoque($dados['qtdEstoque']);
-        $produto->setPrecoCusto($dados['precoCusto']);
+        $produto->setQtdEstoque($dados['qtdEstoque'] ?? 0);
+        $produto->setPrecoCusto($dados['precoCusto'] ?? 0);
         $produto->setPrecoVenda($dados['precoVenda']);
         $produto->setCustoUltCompra($dados['custoUltCompra']);
-        $produto->setDataUltCompra($dados['dataUltCompra'] ?? null);
-        $produto->setDataUltVenda($dados['dataUltVenda'] ?? null);
+        $produto->setDataUltCompra($dados['dataUltCompra'] ?? '');
+        $produto->setDataUltVenda($dados['dataUltVenda'] ?? '');
 
         $categoria = $this->daoCategoria->findById($dados['id_categoria'], false);
         $categorias = $this->daoCategoria->create(get_object_vars($categoria));
@@ -66,8 +66,9 @@ class DaoProduto implements Dao
 
     public function store($obj)
     {
-        $obj->setDataUltCompra(Carbon::now());
-        $obj->setDataUltVenda(Carbon::now());
+
+        // $obj->setDataUltCompra();
+        // $obj->setDataUltVenda();
         $produto = $obj->getProduto();
         $unidade = $obj->getUnidade();
         $qtdEstoque = $obj->getQtdEstoque();
@@ -78,9 +79,8 @@ class DaoProduto implements Dao
         $dataUltVenda = $obj->getDataUltVenda();
         $id_categoria = $obj->getCategoria()->getid();
         $id_fornecedor = $obj->getFornecedor()->getid();
-        
         try {
-            //DB::beginTransaction();
+            DB::beginTransaction();
             //DB::table('produtos')->insert($dados);
             DB::INSERT("INSERT INTO produtos (produto,unidade,qtdEstoque,precoCusto,precoVenda,custoUltCompra,dataUltCompra,dataUltVenda,id_categoria,id_fornecedor) VALUES ('$produto','$unidade', $qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,'$dataUltCompra','$dataUltVenda',$id_categoria,$id_fornecedor)");
             DB::commit();
@@ -94,10 +94,9 @@ class DaoProduto implements Dao
 
     public function update(Request $request, $id)
     {
-        
+
         try {
             $obj = $this->create($request->all());
-            $obj->setDataUltCompra(Carbon::now());
             $obj->setDataAlteracao(Carbon::now());
             $produto = $obj->getProduto();
             $unidade = $obj->getUnidade();
@@ -110,9 +109,9 @@ class DaoProduto implements Dao
             $id_categoria = $obj->getCategoria()->getid();
             $id_fornecedor = $obj->getFornecedor()->getid();
             $data_alt = $obj->getDataAlteracao();
-            //DB::beginTransaction();
+            DB::beginTransaction();
             DB::update('UPDATE produtos SET produto = ?, unidade = ?,  qtdEstoque = ?, precoCusto = ?, precoVenda= ?, custoUltCompra = ?, dataUltCompra= ?, dataUltVenda = ?,
-              id_categoria = ?, id_fornecedor = ?, data_alt = ? WHERE id = ?', [$produto, $unidade, $qtdEstoque,$precoCusto,$precoVenda,$custoUltCompra,$dataUltCompra,$dataUltVenda,$id_categoria,$id_fornecedor,$data_alt,$id]);
+              id_categoria = ?, id_fornecedor = ?, data_alt = ? WHERE id = ?', [$produto, $unidade, $qtdEstoque, $precoCusto, $precoVenda, $custoUltCompra, $dataUltCompra, $dataUltVenda, $id_categoria, $id_fornecedor, $data_alt, $id]);
             DB::commit();
             return true;
         } catch (\Exception $e) {

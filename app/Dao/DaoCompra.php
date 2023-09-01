@@ -2,6 +2,7 @@
 
 namespace App\Dao;
 
+use Illuminate\Support\Collection;
 use App\Dao\Dao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,7 @@ use App\Dao\DaoFornecedor;
 use App\Dao\DaoCompraProduto;
 use App\Dao\DaoCondicaoPagamento;
 use App\Dao\DaoProfissional;
+use App\Dao\DaoProduto;
 
 class DaoCompra implements Dao
 {
@@ -20,6 +22,7 @@ class DaoCompra implements Dao
     protected DaoCompraProduto $daoCompraProduto;
     protected DaoCondicaoPagamento $daoCondicaoPagamento;
     protected DaoProfissional $daoProfissional;
+    protected DaoProduto $daoProduto;
 
 
     public function __construct()
@@ -28,6 +31,7 @@ class DaoCompra implements Dao
         $this->daoCompraProduto = new DaoCompraProduto();
         $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
         $this->daoProfissional = new DaoProfissional();
+        $this->daoProduto = new DaoProduto();
     }
 
     public function all(bool $json = false)
@@ -48,11 +52,11 @@ class DaoCompra implements Dao
 
     public function create(array $dados)
     {
-        // auth('api')->user();
 
         $compra = new Compra();
-        //$profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
-       // dd($profissional, $profissional->id);
+
+        // auth('api')->user();
+        $profissional = auth('api')->user(); // resgata o usuário logado e autenticado 
 
         if (isset($dados["data_create"]) && isset($dados["data_alt"])) {
             $compra->setStatus($dados["status"]);
@@ -69,10 +73,11 @@ class DaoCompra implements Dao
         $compra->setDataChegada($dados["data_chegada"]);
         $compra->setQtdProduto((int) $dados["qtd_produto"]);
         $compra->setFrete((float) $dados["frete"]);
-        $compra->setValorProduto((float) $dados["valor_produto"]);
+        //$compra->setValorProduto((float) $dados["valor_produto"]);
+        $compra->setValorCompra(floatval($dados["valor_compra"]));
         $compra->setSeguro((float) $dados["seguro"]);
         $compra->setOutrasDespesas((float) $dados["outras_despesas"]);
-        $compra->setObservacao((string) $dados["obs"] ?? Null);
+        $compra->setObservacao((string) $dados["observacao"] ?? Null);
 
         //Dados Fornecedor
         $fornecedor = $this->daoFornecedor->findById($dados['id_fornecedor'], false);
@@ -80,13 +85,21 @@ class DaoCompra implements Dao
         $compra->setFornecedor($fornecedores);
 
         //Dados Condição de Pagamento
-        $condiçãoPagamento = $this->daoCondicaoPagamento->findById($dados['id_condicaopg'], false);
-        $condiçãoPagamento = $this->daoCondicaoPagamento->listarCondição(get_object_vars($condiçãoPagamento));
-        $compra->setCondicaoPagamento($condiçãoPagamento);
+        $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados['id_condicaopg'], false);
+        $condicaoPagamento = $this->daoCondicaoPagamento->listarCondicao(get_object_vars($condicaoPagamento));
+        $compra->setCondicaoPagamento($condicaoPagamento);
 
         // Dados Produto
         $produtos = $this->daoCompraProduto->findById($compra->getModelo(), $compra->getNumeroNota(), $compra->getSerie(), true);
-        $compra->setCompraProdutoArray($produtos);
+        if (!$produtos) {
+            $compra->setCompraProdutoArray($dados['produtos']);
+            //$valor_compra = $this->calcTotalCompra($dados['produtos']);
+            $compra->setValorProduto(floatval($dados["valor_produto"]));
+        } else {
+            $compra->setCompraProdutoArray($produtos);
+            $valor_produto = $this->calcTotalCompra($compra->getCompraProdutoArray());
+            $compra->setValorProduto(floatval($valor_produto));
+        }
 
         //Dados Profissional 
         $profissional = $this->daoProfissional->findById($dados['id_profissional'], false);
@@ -94,12 +107,172 @@ class DaoCompra implements Dao
         $compra->setProfissional($profissional);
 
         $compra->setFrete((float) $dados["frete"]);
-        $compra->setValorCompra((float) $dados["valor_compra"]);
         return $compra;
     }
 
     public function store($compra)
     {
+
+        $modelo = $compra->getModelo();
+        $numero_nota = $compra->getNumeroNota();
+        $serie = $compra->getSerie();
+        $id_fornecedor = $compra->getFornecedor()->getId();
+        $status = "ATIVA";
+        $data_emissao = $compra->getDataEmissao();
+        $data_chegada = $compra->getDataChegada();
+        $compraProduto_array = $compra->getCompraProdutoArray();
+        $frete = $compra->getFrete();
+        $valor_produto = $compra->getValorProduto();
+        $seguro = $compra->getSeguro();
+        $outras_despesas = $compra->getOutrasDespesas();
+        $qtd_produto = $compra->getQtdProduto();
+        $valor_compra = $compra->getValorCompra();
+        $id_condicaopg = $compra->getCondicaoPagamento()->getId();
+        $id_profissional = $compra->getProfissional()->getId();
+        $observacao = $compra->getObservacao();
+        $custos = ($frete + $seguro + $outras_despesas);
+        $this->calcularRateioCusto($compraProduto_array, $custos);
+        // $clonedArray = array_map(function ($item) {
+        //     return array_merge([], $item);
+        // }, $compraProduto_array);
+
+        try {
+            DB::beginTransaction();
+            $result = DB::INSERT(
+                "INSERT INTO compra (modelo,numero_nota,serie,id_fornecedor,id_condicaopg,id_profissional,data_emissao,data_chegada,qtd_produto,valor_compra,status,observacao,valor_produto,frete,seguro,outras_despesas) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [
+                    $modelo,
+                    $numero_nota,
+                    $serie,
+                    $id_fornecedor,
+                    $id_condicaopg,
+                    $id_profissional,
+                    $data_emissao,
+                    $data_chegada,
+                    $qtd_produto,
+                    $valor_compra,
+                    $status,
+                    $observacao,
+                    $valor_produto,
+                    $frete,
+                    $seguro,
+                    $outras_despesas
+                ]
+            );
+            try {
+                foreach ($compraProduto_array  as  $produto) {
+                    $result = DB::INSERT(
+                        "INSERT INTO compra_produto (compra_modelo,compra_numero_nota,compra_serie,id_produto,compra_id_fornecedor,qtd_produto,valor_unitario,valor_custo,total_produto,desconto,unidade) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [
+                            $modelo,
+                            $numero_nota,
+                            $serie,
+                            $produto['id_produto'],
+                            $id_fornecedor,
+                            $produto['qtd_produto'],
+                            $produto['valor_unitario'],
+                            $produto['valor_custo'],
+                            $produto['total_produto'],
+                            $produto['desconto'],
+                            $produto['unidade'],
+
+                        ]
+                    );
+                }
+            } catch (QueryException $e) {
+                $mensagem = $e->getMessage(); // Mensagem de erro
+                $codigo = $e->getCode(); // Código do erro
+                $consulta = $e->getSql(); // Consulta SQL que causou o erro
+                $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+                DB::rollBack();
+                return [$mensagem, $codigo, $consulta, $bindings];
+            }
+            try {
+                $obj_condicaopagamento = $this->daoCondicaoPagamento->getData($compra->getCondicaoPagamento());
+                foreach ($obj_condicaopagamento['parcelas'] as  $item) {
+                    $numero_parcela = $item['parcela'];
+                    $id_formapagamento = $item['formaPagamento'][0]['id'];
+                    $data_vencimento = $this->somarDias($data_emissao, $item['prazo']);
+                    $desconto = $obj_condicaopagamento['desconto'];
+                    $juros = $obj_condicaopagamento['juros'];
+                    $valor_parcela =  ($valor_compra * ($item['porcentagem']) / 100);
+                    $status = "PENDENTE";
+                    $result = DB::INSERT(
+                        "INSERT INTO contas_pagar (compra_modelo,compra_numero_nota,compra_serie,numero_parcela,compra_id_fornecedor,id_formapagamento,data_emissao,data_vencimento,desconto,juros,valor_parcela,status) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [
+                            $modelo,
+                            $numero_nota,
+                            $serie,
+                            $numero_parcela,
+                            $id_fornecedor,
+                            $id_formapagamento,
+                            $data_emissao,
+                            $data_vencimento,
+                            $desconto,
+                            $juros,
+                            $valor_parcela,
+                            $status
+                        ]
+                    );
+                }
+            } catch (QueryException $e) {
+                $mensagem = $e->getMessage(); // Mensagem de erro
+                $codigo = $e->getCode(); // Código do erro
+                $consulta = $e->getSql(); // Consulta SQL que causou o erro
+                $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+                DB::rollBack();
+                return [$mensagem, $codigo, $consulta, $bindings];
+            }
+
+            foreach ($compraProduto_array as $compraProduto) {
+
+                $id_produto = $compraProduto['id_produto'];
+                $collection = Collection::make($this->daoProduto->findById($id_produto, true));
+                $produto = $collection->first();
+                $currentDateTime = Carbon::now();
+                $dataUltCompra = $currentDateTime->format('Y-m-d H:i:s');
+                $produto_estoque = 0;
+                $produto_estoque = $produto['qtdEstoque'];
+                $produto_precoCusto = $produto['precoCusto'];
+                $qtdEstoque = ($produto_estoque + $compraProduto['qtd_produto']);
+                $compraProduto_precoCusto = $compraProduto['valor_custo'];
+                $compraProduto_qtd = $compraProduto['qtd_produto'];
+                $precoCusto = $this->calcularMediaPonderada($produto_estoque, $produto_precoCusto, $compraProduto_precoCusto, $compraProduto_qtd);
+                try {
+                    DB::update(
+                        'UPDATE produtos SET precoCusto = ?, custoUltCompra = ?, dataUltCompra = ?,  qtdEstoque = ? WHERE id = ?',
+                        [$precoCusto, $compraProduto['valor_custo'], $dataUltCompra, $qtdEstoque, $id_produto]
+                    );
+                } catch (QueryException $e) {
+                    $mensagem = $e->getMessage(); // Mensagem de erro
+                    $codigo = $e->getCode(); // Código do erro
+                    $consulta = $e->getSql(); // Consulta SQL que causou o erro
+                    $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+                    DB::rollBack();
+                    return [$mensagem, $codigo, $consulta, $bindings];
+                }
+            }
+
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Compra inserido com sucesso!'
+            ]);
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
+
+        // dd($compraProduto_array, $clonedArray);
+        // dd('store', $compra);
     }
 
     public function update(Request $request, $id)
@@ -141,12 +314,46 @@ class DaoCompra implements Dao
         return $dados;
     }
 
-    public function TotalCompra(array $compraProduto)
+    public function calcTotalCompra(array $compraProduto)
     {
         $total = 0;
         foreach ($compraProduto as $produto) {
-            $total += $produto['total_produto'];
+            $total += $produto['valor_unitario'] * $produto['qtd_produto'];
         }
-        return number_format($total, 6, '.', '');
+        return floatval($total);
+    }
+
+    public function calcularRateioCusto(&$produtos, $custos)
+    {
+        $totalCusto = 0;
+        foreach ($produtos as $key => &$produto) {
+            $quantidade = $produto['qtd_produto'];
+            $valorUnitario = $produto['valor_unitario'];
+            $totalCusto += $quantidade * $valorUnitario;
+        }
+
+        foreach ($produtos as &$produto) {
+            $quantidade = $produto['qtd_produto'];
+            $valorUnitario = $produto['valor_unitario'];
+            $rateio = (($valorUnitario * $quantidade) / $totalCusto) * $custos;
+            $valor_rateio = $rateio / $quantidade;
+            $produto['valor_custo'] = $valorUnitario + $valor_rateio;
+        }
+    }
+
+    public function somarDias($data, $dias)
+    {
+        $dataObj = Carbon::parse($data);
+        $dataNova = $dataObj->addDays($dias);
+        return $dataNova->format('Y-m-d');
+    }
+
+    function calcularMediaPonderada($produto_estoque, $produto_precoCusto, $compraProduto_precoCusto, $compraProduto_qtd)
+    {
+        $num1 = ($produto_estoque * $produto_precoCusto);
+        $num2 = ($compraProduto_qtd * $compraProduto_precoCusto);
+        $num3 =  $num1 + $num2;
+        $mediaPonderada = ($num3 / ($produto_estoque + $compraProduto_qtd));
+        return $mediaPonderada;
     }
 }

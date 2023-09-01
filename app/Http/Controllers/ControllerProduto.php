@@ -144,10 +144,10 @@ class ControllerProduto extends Controller
         $regras = [
             'produto' => 'required|min:3|max:50|unique:produtos',
             'unidade' => 'required|min:3|max:20',
-            'qtdEstoque' => 'required|integer|gt:0',
-            'precoCusto' => 'required|numeric|gt:0',
+            /* 'qtdEstoque' => 'required|integer|gt:0',*/
+            /*'precoCusto' => 'required|numeric|gt:0',*/
             'precoVenda' => 'required|numeric|gt:0',
-            'custoUltCompra' => 'required|numeric|gt:0',
+            /*'custoUltCompra' => 'required|numeric|gt:0',*/
             'id_categoria' => 'required|integer',
             'categoria' => 'required|min:3|max:50',
             'id_fornecedor' => 'required|integer',
