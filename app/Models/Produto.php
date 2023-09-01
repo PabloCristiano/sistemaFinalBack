@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use App\Models\Categorias;
 use App\Models\Fornecedor;
 
@@ -139,8 +140,11 @@ class Produto extends TObject
     }
 
 
-    public function setDataUltCompra(string $dataUltCompra = null)
-    {
+    public function setDataUltCompra(string $dataUltCompra )
+    {   
+        // dd($dataUltCompra);
+        //  $dataUltCompra = Carbon::parse($dataUltCompra);
+        // $dataUltCompra = $dataUltCompra->format('Y-m-d');
         $this->dataUltCompra = $dataUltCompra;
     }
 

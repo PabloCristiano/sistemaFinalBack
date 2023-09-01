@@ -2,6 +2,7 @@
 
 namespace App\Dao;
 
+use Illuminate\Support\Collection;
 use App\Dao\Dao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -225,6 +226,37 @@ class DaoCompra implements Dao
                 DB::rollBack();
                 return [$mensagem, $codigo, $consulta, $bindings];
             }
+
+            foreach ($compraProduto_array as $compraProduto) {
+
+                $id_produto = $compraProduto['id_produto'];
+                $collection = Collection::make($this->daoProduto->findById($id_produto, true));
+                $produto = $collection->first();
+                $currentDateTime = Carbon::now();
+                $dataUltCompra = $currentDateTime->format('Y-m-d H:i:s');
+                $produto_estoque = 0;
+                $produto_estoque = $produto['qtdEstoque'];
+                $produto_precoCusto = $produto['precoCusto'];
+                $qtdEstoque = ($produto_estoque + $compraProduto['qtd_produto']);
+                $compraProduto_precoCusto = $compraProduto['valor_custo'];
+                $compraProduto_qtd = $compraProduto['qtd_produto'];
+                $precoCusto = $this->calcularMediaPonderada($produto_estoque, $produto_precoCusto, $compraProduto_precoCusto, $compraProduto_qtd);
+                try {
+                    DB::update(
+                        'UPDATE produtos SET precoCusto = ?, custoUltCompra = ?, dataUltCompra = ?,  qtdEstoque = ? WHERE id = ?',
+                        [$precoCusto, $compraProduto['valor_custo'], $dataUltCompra, $qtdEstoque, $id_produto]
+                    );
+                } catch (QueryException $e) {
+                    $mensagem = $e->getMessage(); // Mensagem de erro
+                    $codigo = $e->getCode(); // Código do erro
+                    $consulta = $e->getSql(); // Consulta SQL que causou o erro
+                    $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+                    DB::rollBack();
+                    return [$mensagem, $codigo, $consulta, $bindings];
+                }
+            }
+
+
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -316,36 +348,9 @@ class DaoCompra implements Dao
         return $dataNova->format('Y-m-d');
     }
 
-    // function calcularMediaPonderada($notas, $pesos) {
-    //     if (count($notas) !== count($pesos)) {
-    //         return false; // Verificar se os arrays têm o mesmo tamanho
-    //     }
-
-    //     $somaProdutos = 0;
-    //     $somaPesos = 0;
-
-    //     for ($i = 0; $i < count($notas); $i++) {
-    //         $somaProdutos += $notas[$i] * $pesos[$i];
-    //         $somaPesos += $pesos[$i];
-    //     }
-
-    //     if ($somaPesos === 0) {
-    //         return false; // Verificar se a soma dos pesos é diferente de zero
-    //     }
-
-    //     return $somaProdutos / $somaPesos;
-    // }
-
-    // // Exemplo de uso
-    // $notas = array(8, 9, 7);
-    // $pesos = array(2, 3, 1);
-
-    // $mediaPonderada = calcularMediaPonderada($notas, $pesos);
-
-    // if ($mediaPonderada !== false) {
-    //     echo "A média ponderada é: " . $mediaPonderada;
-    // } else {
-    //     echo "Erro ao calcular a média ponderada. Verifique os dados.";
-    // }
-
+    function calcularMediaPonderada($produto_estoque, $produto_precoCusto, $compraProduto_precoCusto, $compraProduto_qtd)
+    {
+        $mediaPonderada = (($produto_estoque * $produto_precoCusto) + ($compraProduto_qtd * $compraProduto_precoCusto) / ($produto_estoque + $compraProduto_qtd));
+        return $mediaPonderada;
+    }
 }
