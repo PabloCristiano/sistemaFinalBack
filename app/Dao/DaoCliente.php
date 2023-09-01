@@ -70,7 +70,7 @@ class DaoCliente implements Dao
         $cidade = $this->daoCidade->create(get_object_vars($cidade));
         $cliente->setCidade($cidade);
         $condicaoPagamento = $this->daoCondicaoPagemento->findById($dados['id_condicao'], false);
-        $condicaoPagamento = $this->daoCondicaoPagemento->listarCondição(get_object_vars($condicaoPagamento));
+        $condicaoPagamento = $this->daoCondicaoPagemento->listarCondicao(get_object_vars($condicaoPagamento));
         $cliente->setCondicaoPagamento($condicaoPagamento);
         return $cliente;
     }
