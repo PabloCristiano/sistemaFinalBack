@@ -260,7 +260,7 @@ class DaoCompra implements Dao
             DB::commit();
             return response()->json([
                 'success' => true,
-                'message' => 'Registro inserido com sucesso!'
+                'message' => 'Compra inserido com sucesso!'
             ]);
         } catch (QueryException $e) {
             $mensagem = $e->getMessage(); // Mensagem de erro
@@ -350,7 +350,10 @@ class DaoCompra implements Dao
 
     function calcularMediaPonderada($produto_estoque, $produto_precoCusto, $compraProduto_precoCusto, $compraProduto_qtd)
     {
-        $mediaPonderada = (($produto_estoque * $produto_precoCusto) + ($compraProduto_qtd * $compraProduto_precoCusto) / ($produto_estoque + $compraProduto_qtd));
+        $num1 = ($produto_estoque * $produto_precoCusto);
+        $num2 = ($compraProduto_qtd * $compraProduto_precoCusto);
+        $num3 =  $num1 + $num2;
+        $mediaPonderada = ($num3 / ($produto_estoque + $compraProduto_qtd));
         return $mediaPonderada;
     }
 }

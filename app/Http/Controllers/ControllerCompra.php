@@ -37,19 +37,12 @@ class ControllerCompra extends Controller
         $regras = $this->rules();
         $feedbacks = $this->feedbacks();
         $request->validate($regras, $feedbacks);
-
         $produtos = [];
         $parcelas = [];
-        $produtos = json_decode($request->produtos, true);
-        $parcelas = json_decode($request->condicaopagamento, true);
-        // $quantidadeProdutos = count($produtos);
-        // $quantidadeParcelas = count($parcelas);
-        // $parcelas_convertida = $this->convertValorParcelaToFloat($parcelas);
-        //$produtos_convertido = $this->convertProdutoArray($produtos);
-        // dd($produtos);
-
-        //$produtos = $request->input('produtos'); // Supondo que 'produtos' seja um campo no seu request
-        //dd($produtos);
+        // $produtos = json_decode($request->produtos, true);
+        $produtos = $request->produtos;
+        //$parcelas = json_decode($request->condicaopagamento, true);
+        $parcelas = $request->condicaopagamento;
         try {
             $regrasProdutos = $this->rulesProduto();
             $feedbacksProdutos = $this->feedbacksProduto();
@@ -147,6 +140,7 @@ class ControllerCompra extends Controller
         }
 
         $payLoad = $this->convertArray($request->all());
+        //$payLoad = $request->all();
         // dd($payLoad);
         $compras = $this->daoCompra->create($payLoad);
         $store = $this->daoCompra->store($compras);
@@ -358,9 +352,8 @@ class ControllerCompra extends Controller
         $array['seguro'] = floatval($array['seguro']);
         $array['qtd_produto'] = intval($array['qtd_produto']);
         $array['outras_despesas'] = floatval($array['outras_despesas']);
-        // Convertendo a string JSON em um array associativo para 'produtos' e 'condicaopagamento'
-        $array['produtos'] = $this->convertProdutoArray(json_decode($array['produtos'], true));
-        $array['condicaopagamento'] = $this->convertValorParcelaToFloat(json_decode($array['condicaopagamento'], true));
+        $array['produtos'] = $this->convertProdutoArray($array['produtos']);
+        $array['condicaopagamento'] = $this->convertValorParcelaToFloat($array['condicaopagamento']);
 
         return $array;
     }
