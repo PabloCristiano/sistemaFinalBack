@@ -171,6 +171,20 @@ class ControllerCompra extends Controller
         //
     }
 
+    public function getByid(Request $request, $id)
+    {
+        $modelo = $request->modelo;
+        $numero_nota = $request->numero_nota;
+        $serie = $request->serie;        
+        if (ctype_digit(strval($id))) {
+            $compra = $this->daoCompra->findByIdCompra($modelo, $numero_nota, $serie, $id, true);
+            if ($compra) {
+                return response()->json($compra, 200);
+            }
+        }
+        return response()->json(['error' => 'Condição de Pagamento não Cadastrado...'], 400);
+    }
+
     //regras de validação
     public function rules()
     {

@@ -276,9 +276,29 @@ class DaoCompra implements Dao
     public function delete($id)
     {
     }
-
     public function findById(int $id, bool $model = false)
     {
+    }
+    public function findByIdCompra(string $modelo, string $numero_nota, string $serie, int $id_fornecedor, bool $model = false)
+    {
+
+        if (!$model) {
+            $dados = DB::select("SELECT * 
+            FROM compra where modelo = ? and numero_nota = ? and serie = ? and id_fornecedor = ?", [$modelo, $numero_nota, $serie, $id_fornecedor]);
+            return $dados[0];
+        }
+        // $dados = DB::table('condicao_pg')->where('id', $id)->first();
+        $dados = DB::select("SELECT * 
+         FROM compra where modelo = ? and numero_nota = ? and serie = ? and id_fornecedor = ?", [$modelo, $numero_nota, $serie, $id_fornecedor]);
+        if ($dados) {
+            $compraProdutos = [];
+            foreach ($dados as $item) {
+                $compra = $this->create(get_object_vars($item));
+                $compra_json = $this->getData($compra);
+                array_push($compraProdutos, $compra_json);
+            }
+            return $compraProdutos;
+        }
     }
 
     public function getData(Compra $compra)
