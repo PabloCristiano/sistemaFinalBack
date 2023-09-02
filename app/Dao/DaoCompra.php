@@ -228,7 +228,6 @@ class DaoCompra implements Dao
             }
 
             foreach ($compraProduto_array as $compraProduto) {
-
                 $id_produto = $compraProduto['id_produto'];
                 $collection = Collection::make($this->daoProduto->findById($id_produto, true));
                 $produto = $collection->first();
@@ -255,8 +254,6 @@ class DaoCompra implements Dao
                     return [$mensagem, $codigo, $consulta, $bindings];
                 }
             }
-
-
             DB::commit();
             return response()->json([
                 'success' => true,
@@ -270,9 +267,6 @@ class DaoCompra implements Dao
             DB::rollBack();
             return [$mensagem, $codigo, $consulta, $bindings];
         }
-
-        // dd($compraProduto_array, $clonedArray);
-        // dd('store', $compra);
     }
 
     public function update(Request $request, $id)
