@@ -63,6 +63,7 @@ Route::prefix('v1')
 
         Route::apiResource('/compra', 'App\Http\Controllers\ControllerCompra');
         Route::post('/compra/{id}', 'App\Http\Controllers\ControllerCompra@getByid');
+        Route::post('/compra/validaNumNota/{id}', 'App\Http\Controllers\ControllerCompra@validaNumNota');
 
         Route::apiResource('/contaspagar', 'App\Http\Controllers\ControllerContasPagar');
         // Route::post('/contaspagar/{id}', 'App\Http\Controllers\ControllerContasPagar@getById');

@@ -30,6 +30,20 @@ class ControllerCompra extends Controller
         //
     }
 
+    public function validaNumNota(Request $request)
+    {
+        $regras = [
+            'numero_nota' => 'required|numeric|gt:0|unique:compra',
+        ];
+        $feedbacks = [
+            'numero_nota.required' => 'O campo número da nota é obrigatório.',
+            'numero_nota.numeric' => 'O campo número da nota deve ser um número.',
+            'numero_nota.gt' => 'O campo número da Nota não pode ser zero.',
+            'numero_nota.unique' => 'Este número de nota já está em uso.',
+        ];
+        $request->validate($regras, $feedbacks);
+        return response::json(true);
+    }
 
     public function store(Request $request)
     {
@@ -175,7 +189,7 @@ class ControllerCompra extends Controller
     {
         $modelo = $request->modelo;
         $numero_nota = $request->numero_nota;
-        $serie = $request->serie;        
+        $serie = $request->serie;
         if (ctype_digit(strval($id))) {
             $compra = $this->daoCompra->findByIdCompra($modelo, $numero_nota, $serie, $id, true);
             if ($compra) {
