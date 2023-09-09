@@ -39,7 +39,7 @@ class ControllerCompra extends Controller
             'numero_nota.required' => 'O campo número da nota é obrigatório.',
             'numero_nota.numeric' => 'O campo número da nota deve ser um número.',
             'numero_nota.gt' => 'O campo número da Nota não pode ser zero.',
-            'numero_nota.unique' => 'Este número de nota já está em uso.',
+            'numero_nota.unique' => ' já está em uso.',
         ];
         $request->validate($regras, $feedbacks);
         return response::json(true);
