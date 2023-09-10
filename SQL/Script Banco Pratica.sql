@@ -210,15 +210,22 @@ create table agendamento(
     FOREIGN KEY (id_profissional) REFERENCES Profissionais (id)
 ) DEFAULT CHARSET = utf8;
 
-create table profissional_servico(
-    qtd_servico int NOT NULL,
-    id_servico int NOT NULL,
-    id_profissional int NOT NULL,
+CREATE TABLE Profissionais_Servicos (
+    id_profissionais_servicos INT NOT NULL auto_increment,
+    id_profissional INT,
+    id_servico INT,
+    id_cliente INT,
+    horario_inicio TIME,
+    horario_fim TIME,
+    preco DECIMAL(10, 6),
+    status VARCHAR(20),
+    avaliacao INT,
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id_profissionais_servicos),
     CONSTRAINT FK_idProfissional FOREIGN KEY (id_profissional) REFERENCES profissionais (id),
     CONSTRAINT FK_idServico FOREIGN KEY (id_servico) REFERENCES servicos (id),
-    PRIMARY KEY(qtd_servico, id_profissional)
+    CONSTRAINT FK_idCliente FOREIGN KEY (id_cliente) REFERENCES clientes (id)
 ) DEFAULT CHARSET = utf8;
 
 create table Compra(
