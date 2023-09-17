@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Profissional;
 use App\Models\Servico;
+use App\Models\Cliente;
 
 class ProfissionalServico extends TObject
 {
