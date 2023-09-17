@@ -2,7 +2,7 @@
 namespace App\Dao;
 use App\Dao\Dao;
 use App\Dao\DaoCidade;
-use App\Dao\DaoProfissionalServico;
+use App\Dao\DaoServico_Profissional;
 use App\Models\Profissional;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,11 +13,11 @@ use Exception;
 class DaoProfissional implements Dao
 {
     private $daoCidade;
-    private $daoProfissionalServico;
+    private $daoServicoProfissional;
     public function __construct()
     {
         $this->daoCidade = new DaoCidade();
-        //$this->daoProfissionalServico = new DaoProfissionalServico();
+        $this->daoServicoProfissional = new DaoServico_Profissional();
     }
 
     public function all(bool $json = true)
@@ -110,7 +110,7 @@ class DaoProfissional implements Dao
             DB::SELECT("INSERT INTO profissionais (profissional,apelido,cpf,rg,dataNasc,logradouro,numero,complemento,bairro,cep,id_cidade,whatsapp,
              telefone,email,senha,confSenha,tipoProf,comissao,qtd_servico,password) VALUES ('$profissional', '$apelido', '$cpf', '$rg', '$dataNasc', '$logradouro',$numero, '$complemento', '$bairro', '$cep', $id_cidade,'$whatsapp','$telefone', '$email', '$senha', '$confSenha','$tipoProf',$comissao,$qtd_servico,'$password')");
             $idProfissional = DB::getPdo()->lastInsertId();
-            $addProfissionalServico = $this->daoProfissionalServico->storeProfissionalServico($array, $idProfissional);
+            $addProfissionalServico = $this->daoServicoProfissional->storeProfissionalServico($array, $idProfissional);
             if (!$addProfissionalServico) {
                 return false;
             } else {
@@ -128,6 +128,7 @@ class DaoProfissional implements Dao
     public function update(Request $request, $id)
     {
         $array = $request->servico;
+        dd($array);
         //$array = json_decode($array, true);
         $obj = $this->create($request->all());
         $obj->setDataAlteracao(Carbon::now());
@@ -163,9 +164,9 @@ class DaoProfissional implements Dao
                         WHERE  id = ?',
                 [$profissional, $apelido, $cpf, $rg, $dataNasc, $logradouro, $numero, $complemento, $bairro, $cep, $id_cidade, $whatsapp, $telefone, $email, $senha, $confSenha, $tipoProf, $comissao, $qtd_servico, $password, $data_alt, $id],
             );
-            $deleteProfissionalServico = $this->daoProfissionalServico->delete($id);
+            $deleteProfissionalServico = $this->daoServicoProfissional->delete($id);
             if ($deleteProfissionalServico) {
-                $addProfissionalServico = $this->daoProfissionalServico->storeProfissionalServico($array, $id);
+                $addProfissionalServico = $this->daoServicoProfissional->storeProfissionalServico($array, $id);
             }
             if (!$addProfissionalServico) {
                 return false;
@@ -185,7 +186,7 @@ class DaoProfissional implements Dao
     {
         try {
             DB::beginTransaction();
-            $deleteProfissionalServico = $this->daoProfissionalServico->delete($id);
+            $deleteProfissionalServico = $this->daoServicoProfissional->delete($id);
             if ($deleteProfissionalServico) {
                 DB::DELETE("DELETE FROM  profissionais WHERE id = '$id'");
                 DB::commit();
