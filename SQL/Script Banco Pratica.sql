@@ -210,8 +210,8 @@ create table agendamento(
     FOREIGN KEY (id_profissional) REFERENCES Profissionais (id)
 ) DEFAULT CHARSET = utf8;
 
-CREATE TABLE Profissionais_Servicos (
-    id_profissionais_servicos INT NOT NULL auto_increment,
+CREATE TABLE profissionais_servicos_agenda (
+    id_profissionais_servicos_agenda INT NOT NULL auto_increment,
     id_profissional INT,
     id_servico INT,
     id_cliente INT,
@@ -220,10 +220,9 @@ CREATE TABLE Profissionais_Servicos (
     horario_fim TIME,
     preco DECIMAL(10, 6),
     status VARCHAR(20),
-    avaliacao INT,
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(id_profissionais_servicos),
+    PRIMARY KEY(id_profissionais_servicos_agenda),
     CONSTRAINT FK_idProfissional FOREIGN KEY (id_profissional) REFERENCES profissionais (id),
     CONSTRAINT FK_idServico FOREIGN KEY (id_servico) REFERENCES servicos (id),
     CONSTRAINT FK_idCliente FOREIGN KEY (id_cliente) REFERENCES clientes (id)
@@ -302,6 +301,22 @@ create table contas_pagar(
     ),
     FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie) REFERENCES compra (modelo, numero_nota, serie)
 ) DEFAULT CHARSET = utf8;
+
+CREATE TABLE servico_profissional(
+    id_profissional INT NOT NULL,
+    id_servico INT NOT NULL,
+    servico VARCHAR(100),
+    tempo INT,
+    preco DECIMAL(10,6),
+    data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (
+       id_profissional,
+       id_servico
+    ),
+    FOREIGN KEY (id_profissional) REFERENCES profissionais (id),
+    FOREIGN KEY (id_servico) REFERENCES servicos (id)
+)DEFAULT CHARSET = utf8;
 
 -- select s.servico from profissional_servico as ps join servicos as s on  id_servico = s.id where id_profissional = 22
 -- select s.id, s.servico, s.tempo, s.valor, s.comissao, s.observacoes, s.data_create, s.data_alt from profissional_servico 

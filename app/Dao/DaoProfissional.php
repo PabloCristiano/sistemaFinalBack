@@ -17,7 +17,7 @@ class DaoProfissional implements Dao
     public function __construct()
     {
         $this->daoCidade = new DaoCidade();
-        $this->daoProfissionalServico = new DaoProfissionalServico();
+        //$this->daoProfissionalServico = new DaoProfissionalServico();
     }
 
     public function all(bool $json = true)

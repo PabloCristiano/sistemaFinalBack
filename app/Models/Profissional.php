@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
-use App\Dao\DaoProfissionalServico;
+use App\Dao\DaoServico_Profissional;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 class Profissional extends Pessoa implements JWTSubject
 {
@@ -25,7 +25,7 @@ class Profissional extends Pessoa implements JWTSubject
         $this->comissao = '';
         $this->qtd_servico = 0;
         $this->servico = [];
-        $this->daoProfissionalServico = new DaoProfissionalServico;
+       // $this->daoProfissionalServico = new DaoServico_Profissional;
     }
 
     public function setApelido(string $apelido)
@@ -55,7 +55,7 @@ class Profissional extends Pessoa implements JWTSubject
 
     public function setServico(int $id)
     {
-        $this->servico = $this->daoProfissionalServico->findById($id);
+       // $this->servico = $this->daoProfissionalServico->findById($id);
     }
 
     public function getApelido()

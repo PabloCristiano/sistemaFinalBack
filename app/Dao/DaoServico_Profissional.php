@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Exception;
 use App\Models\Servico;
-use App\Models\ProfissionalServico;
+use App\Models\Servico_Profissional;
 
-class DaoProfissionalServico implements Dao
+class DaoServico_Profissional implements Dao
 {
     private $daoServico;
 
@@ -54,7 +54,7 @@ class DaoProfissionalServico implements Dao
        
     }
 
-    public function getData(ProfissionalServico $profissional_servico)
+    public function getData(Servico_Profissional $profissional_servico)
     {
        
     }
