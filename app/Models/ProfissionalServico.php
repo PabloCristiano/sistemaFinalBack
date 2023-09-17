@@ -1,19 +1,34 @@
 <?php
+
 namespace App\Models;
+
 use App\Models\Profissional;
 use App\Models\Servico;
 
 class ProfissionalServico extends TObject
 {
-    protected $qtd_servico;
-    protected $servico;
+    protected $table = 'profissionais_servicos';
     protected $profissional;
+    protected $servico;
+    protected $cliente;
+    protected string $data;
+    protected string $hora_inicio;
+    protected string $hora_fim;
+    protected float  $preco;
+    protected string  $status;
+    protected string $avaliacao;
 
     public function __construct()
     {
-        $this->qtd_servico = 0;
-        $this->servico = new Servico();
-        $this->profissional = new Profissional();
+        $this->profissional = new Profissional;
+        $this->servico = new Servico;
+        $this->cliente = new Cliente;
+        $this->data = '';
+        $this->hora_inicio = '';
+        $this->hora_fim = '';
+        $this->preco = 0;
+        $this->status = '';
+        $this->avaliacao = '';
     }
 
     public function setQtdServico($qtd_servico)

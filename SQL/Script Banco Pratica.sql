@@ -215,6 +215,7 @@ CREATE TABLE Profissionais_Servicos (
     id_profissional INT,
     id_servico INT,
     id_cliente INT,
+    data date,
     horario_inicio TIME,
     horario_fim TIME,
     preco DECIMAL(10, 6),
