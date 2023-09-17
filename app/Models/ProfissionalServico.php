@@ -11,9 +11,9 @@ class ProfissionalServico extends TObject
     protected $profissional;
     protected $servico;
     protected $cliente;
-    protected string $data;
-    protected string $hora_inicio;
-    protected string $hora_fim;
+    protected  $data;
+    protected  $hora_inicio;
+    protected  $hora_fim;
     protected float  $preco;
     protected string  $status;
     protected string $avaliacao;
@@ -31,9 +31,18 @@ class ProfissionalServico extends TObject
         $this->avaliacao = '';
     }
 
-    public function setQtdServico($qtd_servico)
+
+
+
+
+    public function setProfissional(Profissional $profissional)
     {
-        $this->qtd_servico = $qtd_servico;
+        $this->profissional = $profissional;
+    }
+
+    public function getProfissional()
+    {
+        return $this->profissional;
     }
 
     public function setServico(Servico $servico)
@@ -41,23 +50,78 @@ class ProfissionalServico extends TObject
         $this->servico = $servico;
     }
 
-    public function setProfissional(Profissional $profissional)
-    {
-        $this->profissional = $profissional;
-    }
-
-    public function getQtdServico()
-    {
-        return $this->qtd_servico;
-    }
-
     public function getServico()
     {
         return $this->servico;
     }
 
-    public function getProfissional()
+    public function setCliente(Cliente $cliente)
     {
-        return $this->profissional;
+        $this->cliente = $cliente;
+    }
+
+    public function getCliente()
+    {
+        return $this->cliente;
+    }
+
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    public function setHoraInicio($hora_inicio)
+    {
+        $this->hora_inicio = $hora_inicio;
+    }
+
+    public function getHoraInicio()
+    {
+        return $this->hora_inicio;
+    }
+
+    public function setHoraFim($hora_fim)
+    {
+        $this->hora_fim = $hora_fim;
+    }
+
+    public function getHoraFim()
+    {
+        return $this->hora_fim;
+    }
+
+    public function setPreco($preco)
+    {
+        $this->preco = $preco;
+    }
+
+    public function getPreco()
+    {
+        return $this->preco;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setAvaliacao($avaliacao)
+    {
+        $this->avaliacao = $avaliacao;
+    }
+
+    public function geAvaliacao()
+    {
+        return $this->avaliacao;
     }
 }
