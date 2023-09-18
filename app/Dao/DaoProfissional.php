@@ -82,7 +82,7 @@ class DaoProfissional implements Dao
     public function storeProfissional(Request $request)
     {
         $array = $request->servico;
-        //$array = json_decode($array, true);
+        $array = json_decode($array, true);
         //dd($array);
         $obj = $this->create($request->all());
         $profissional = $obj->getNome();
@@ -110,7 +110,7 @@ class DaoProfissional implements Dao
             DB::SELECT("INSERT INTO profissionais (profissional,apelido,cpf,rg,dataNasc,logradouro,numero,complemento,bairro,cep,id_cidade,whatsapp,
              telefone,email,senha,confSenha,tipoProf,comissao,qtd_servico,password) VALUES ('$profissional', '$apelido', '$cpf', '$rg', '$dataNasc', '$logradouro',$numero, '$complemento', '$bairro', '$cep', $id_cidade,'$whatsapp','$telefone', '$email', '$senha', '$confSenha','$tipoProf',$comissao,$qtd_servico,'$password')");
             $idProfissional = DB::getPdo()->lastInsertId();
-            $addProfissionalServico = $this->daoServicoProfissional->storeProfissionalServico($array, $idProfissional);
+            $addProfissionalServico = $this->daoServicoProfissional->storeServicoProfissional($array, $idProfissional);
             if (!$addProfissionalServico) {
                 return false;
             } else {
@@ -166,7 +166,7 @@ class DaoProfissional implements Dao
             );
             $deleteProfissionalServico = $this->daoServicoProfissional->delete($id);
             if ($deleteProfissionalServico) {
-                $addProfissionalServico = $this->daoServicoProfissional->storeProfissionalServico($array, $id);
+                $addProfissionalServico = $this->daoServicoProfissional->storeServicoProfissional($array, $id);
             }
             if (!$addProfissionalServico) {
                 return false;

@@ -32,16 +32,16 @@ class DaoServico_Profissional implements Dao
     {
     }
 
-    public function storeProfissionalServico($obj, $id)
+    public function storeServicoProfissional($obj, $id)
     {
-       // dd($obj,$id);
+        dd($obj,$id);
     }
 
     public function update(Request $request, $id)
     {
     }
 
-    public function updateProfissionalServico($obj, $id)
+    public function updateServicoProfissional($obj, $id)
     {
     }
 
@@ -73,7 +73,7 @@ class DaoServico_Profissional implements Dao
     {
     }
 
-    public function gerarProfissionalServico(array $dados)
+    public function gerarServicoProfissional(array $dados)
     {
     }
 }
