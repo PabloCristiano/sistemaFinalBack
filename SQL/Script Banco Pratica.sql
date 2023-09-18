@@ -304,18 +304,18 @@ create table contas_pagar(
 
 CREATE TABLE servico_profissional(
     id_profissional INT NOT NULL,
-    id_servico INT NOT NULL,
+    id INT NOT NULL,
     servico VARCHAR(100),
     tempo INT,
-    preco DECIMAL(10,6),
+    valor DECIMAL(10,6),
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (
        id_profissional,
-       id_servico
+       id
     ),
     FOREIGN KEY (id_profissional) REFERENCES profissionais (id),
-    FOREIGN KEY (id_servico) REFERENCES servicos (id)
+    FOREIGN KEY (id) REFERENCES servicos (id)
 )DEFAULT CHARSET = utf8;
 
 -- select s.servico from profissional_servico as ps join servicos as s on  id_servico = s.id where id_profissional = 22

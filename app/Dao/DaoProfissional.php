@@ -169,7 +169,7 @@ class DaoProfissional implements Dao
             $deleteProfissionalServico = $this->daoServicoProfissional->delete($id);
 
             if ($deleteProfissionalServico) {
-                $addProfissionalServico = $this->daoServicoProfissional->Update_ServicoProfissional($array, $id);
+                $addProfissionalServico = $this->daoServicoProfissional->storeServicoProfissional($array, $id);
             }
             if (!$addProfissionalServico) {
                 return false;
