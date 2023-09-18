@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Dao;
+
 use App\Dao\Dao;
 use App\Dao\DaoCidade;
 use App\Dao\DaoServico_Profissional;
@@ -82,7 +84,7 @@ class DaoProfissional implements Dao
     public function storeProfissional(Request $request)
     {
         $array = $request->servico;
-        $array = json_decode($array, true);
+        //$array = json_decode($array, true);
         //dd($array);
         $obj = $this->create($request->all());
         $profissional = $obj->getNome();

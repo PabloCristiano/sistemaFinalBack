@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Dao;
+
 use App\Dao\Dao;
 use App\Dao\DaoServico;
 use App\Models\Servico;
@@ -34,24 +35,27 @@ class DaoServico_Profissional implements Dao
     {
         try {
             DB::beginTransaction();
-            foreach ($obj as $key => $servico_obj) {     
-               $servico = $this->daoServico->findById($servico_obj['id'], false);
-               $valor =  floatval($servico[0]->valor);  
-               $sql = DB::INSERT("INSERT INTO servico_profissional (id_profissional,id_servico,servico,tempo,valor) 
+            foreach ($obj as $key => $servico_obj) {
+                $servico = $this->daoServico->findById($servico_obj['id'], false);
+                $valor =  floatval($servico[0]->valor);
+                $sql = DB::INSERT(
+                    "INSERT INTO servico_profissional (id_profissional,id_servico,servico,tempo,valor) 
                VALUES (?, ?, ?, ?, ?)",
-                   [
-                       $id,
-                       $servico[0]->id,
-                       $servico[0]->servico,
-                       $servico[0]->tempo,
-                       $valor,
-                   ]
-               );
+                    [
+                        $id,
+                        $servico[0]->id,
+                        $servico[0]->servico,
+                        $servico[0]->tempo,
+                        $valor,
+                    ]
+                );
             }
-            
-            dd($sql);
-           // DB::commit();
-           // return true;
+            if ($sql) {
+                DB::commit();
+                return true;
+            } else {
+                return false;
+            }
         } catch (QueryException $e) {
             $mensagem = $e->getMessage(); // Mensagem de erro
             $codigo = $e->getCode(); // Código do erro
