@@ -129,9 +129,9 @@ class DaoProfissional implements Dao
 
     public function update(Request $request, $id)
     {
-        $id = intval($id);
+       
         $array = $request->servico;
-        $array = json_decode($array, true);
+        //$array = json_decode($array, true);
         $obj = $this->create($request->all());
         $obj->setDataAlteracao(Carbon::now());
         $profissional = $obj->getNome();
@@ -169,7 +169,7 @@ class DaoProfissional implements Dao
             $deleteProfissionalServico = $this->daoServicoProfissional->delete($id);
 
             if ($deleteProfissionalServico) {
-                $addProfissionalServico = $this->daoServicoProfissional->storeServicoProfissional($array, $id);
+                $addProfissionalServico = $this->daoServicoProfissional->Update_ServicoProfissional($array, $id);
             }
             if (!$addProfissionalServico) {
                 return false;

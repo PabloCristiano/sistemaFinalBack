@@ -33,6 +33,7 @@ class DaoServico_Profissional implements Dao
 
     public function storeServicoProfissional($obj, $id)
     {
+        dd($obj);
         try {
             DB::beginTransaction();
             foreach ($obj as $key => $servico_obj) {
@@ -117,5 +118,40 @@ class DaoServico_Profissional implements Dao
 
     public function gerarServicoProfissional(array $dados)
     {
+    }
+
+    public function Update_ServicoProfissional($obj, $id)
+    {
+        try {
+            DB::beginTransaction();
+            foreach ($obj as $key => $servico_obj) {
+                $servico = $this->daoServico->findById($servico_obj['id'], false);
+                $valor =  floatval($servico[0]->valor);
+                $sql = DB::INSERT(
+                    "INSERT INTO servico_profissional (id_profissional,id_servico,servico,tempo,valor) 
+               VALUES (?, ?, ?, ?, ?)",
+                    [
+                        $id,
+                        $servico[0]->id,
+                        $servico[0]->servico,
+                        $servico[0]->tempo,
+                        $valor,
+                    ]
+                );
+            }
+            if ($sql) {
+                DB::commit();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
     }
 }
