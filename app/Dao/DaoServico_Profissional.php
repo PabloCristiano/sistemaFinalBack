@@ -4,7 +4,6 @@ namespace App\Dao;
 
 use App\Dao\Dao;
 use App\Dao\DaoServico;
-use App\Models\Servico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
