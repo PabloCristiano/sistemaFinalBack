@@ -130,7 +130,6 @@ class DaoProfissional implements Dao
     public function update(Request $request, $id)
     {
         $array = $request->servico;
-        dd($array);
         //$array = json_decode($array, true);
         $obj = $this->create($request->all());
         $obj->setDataAlteracao(Carbon::now());

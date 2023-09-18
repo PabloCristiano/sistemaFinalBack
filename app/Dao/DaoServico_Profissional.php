@@ -76,7 +76,20 @@ class DaoServico_Profissional implements Dao
 
     public function delete($id)
     {
-        dd($id);
+        $id = intval($id);
+        try {
+            DB::beginTransaction();
+            $sql = DB::Select("DELETE FROM  servico_profissional where id_profissional = '$id'");
+            DB::commit();
+            return true;
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
     }
 
     public function findById(int $id, bool $model = false)
