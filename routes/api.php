@@ -69,8 +69,7 @@ Route::prefix('v1')
         // Route::post('/contaspagar/{id}', 'App\Http\Controllers\ControllerContasPagar@getById');
 
         Route::apiResource('/criarAgenda', 'App\Http\Controllers\ControllerProfissionalServicoAgenda');
-        // Route::post('/compra/{id}', 'App\Http\Controllers\ControllerProfissionalServicoAgend@getByid');
-
+        Route::post('/agendaprofissional', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAgendaProfissional');
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');

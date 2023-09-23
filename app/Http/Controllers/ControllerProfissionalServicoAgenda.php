@@ -137,4 +137,18 @@ class ControllerProfissionalServicoAgenda extends Controller
         ];
         return $feedbacks;
     }
+
+    public function findAgendaProfissional(Request $request)
+    {
+        //  dd($request->all());
+        $id = $request->id;
+        $data = $request->data;
+        if (ctype_digit(strval($id))) {
+            $agendaProfissional = $this->daoProfissionalServicoAgenda->findAgendaProfissional($id, $data);
+            if ($agendaProfissional) {
+                return response::json(['Success' => true, 'Agenda' => $agendaProfissional], 200);
+            }
+        }
+        return response::json(['Success' => False, 'mensagem' => 'Agenda não encontrada...'], 400);
+    }
 }
