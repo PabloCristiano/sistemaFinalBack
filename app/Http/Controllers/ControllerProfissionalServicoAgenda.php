@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use InvalidArgumentException;
+use Carbon\Carbon;
 use PhpParser\Node\Stmt\TryCatch;
 
 class ControllerProfissionalServicoAgenda extends Controller
@@ -146,6 +147,25 @@ class ControllerProfissionalServicoAgenda extends Controller
             $agendaProfissional = $this->daoProfissionalServicoAgenda->findAgendaProfissional($id, $data);
             if ($agendaProfissional) {
                 return response::json(['Success' => true, 'Agenda' => $agendaProfissional], 200);
+            }
+        }
+        return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);
+    }
+
+    public function findCriarAgendaProfissional(Request $request)
+    {
+        $id = $request->id_profissional;
+        $carbonhorario_inicio = Carbon::createFromFormat('Y-m-d\TH:i', $request->horario_inicio);
+        $data_inicio = $carbonhorario_inicio->format('Y-m-d');
+        $hora_inicio = $carbonhorario_inicio->format('H:i');
+        $carbonhorario_fim = Carbon::createFromFormat('Y-m-d\TH:i', $request->horario_fim);
+        $data_fim = $carbonhorario_fim->format('Y-m-d');
+        $hora_fim = $carbonhorario_fim->format('H:i');
+       
+        if (ctype_digit(strval($id))) {
+            $agendaProfissional = $this->daoProfissionalServicoAgenda->findCriarAgendaProfissional($id, $data_inicio, $hora_inicio, $hora_fim);
+            if ($agendaProfissional) {
+                return response::json(['Success' => true, 'mensagem' => 'Agenda já tem Registros nesse período !'], 200);
             }
         }
         return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);

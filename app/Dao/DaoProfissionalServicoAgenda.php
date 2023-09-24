@@ -87,4 +87,10 @@ class DaoProfissionalServicoAgenda implements Dao
         $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ? and data = ?', [$id, $data]);
         return $dados;
     }
+    public function findCriarAgendaProfissional(int $id, string $data_inicio, string $hora_inicio, string $hora_fim)
+    {
+
+        $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ? and data = ? and horario_inicio >= ? and horario_inicio <=?', [$id, $data_inicio, $hora_inicio, $hora_fim]);
+        return $dados;
+    }
 }
