@@ -140,7 +140,6 @@ class ControllerProfissionalServicoAgenda extends Controller
 
     public function findAgendaProfissional(Request $request)
     {
-        //  dd($request->all());
         $id = $request->id_profissional;
         $data = $request->horario_inicio;
         if (ctype_digit(strval($id))) {
