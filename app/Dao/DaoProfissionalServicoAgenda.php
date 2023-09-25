@@ -37,20 +37,21 @@ class DaoProfissionalServicoAgenda implements Dao
             foreach ($obj as $item) {
                 $data = date_create_from_format('d/m/Y', $item['data'])->format('Y-m-d');
                 $horarioInicio = $item['horario_inicio'];
+                $minutos_mili = $this->minutosParaMilissegundos(intval($item['intervalo']));
+                $hora_mili   = $this->tempoParaMilissegundos($horarioInicio);
+                $horarioFim = $this->milissegundosParaTempo(($minutos_mili + $hora_mili));
                 $idProfissional = intval($item['id_profissional']);
                 $status = 'LIVRE';
-                DB::insert("INSERT INTO profissionais_servicos_agenda (id_profissional,data,horario_inicio,status) VALUES ($idProfissional,'$data','$horarioInicio','$status')");
+                DB::insert("INSERT INTO profissionais_servicos_agenda (id_profissional,data,horario_inicio,horario_fim,status) VALUES ($idProfissional,'$data','$horarioInicio','$horarioFim','$status')");
             }
             DB::commit();
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
             $error = ['error' => $th->getMessage(), 'CodigoError' => $th->getCode()];
-            return $error;
-            //return $th;
+            //return $error;
+            return $th;
         }
-
-        dd($obj);
     }
 
     public function storeProfissionalServico($obj, $id)
@@ -93,4 +94,42 @@ class DaoProfissionalServicoAgenda implements Dao
         $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ? and data = ? and horario_inicio >= ? and horario_inicio <=?', [$id, $data_inicio, $hora_inicio, $hora_fim]);
         return $dados;
     }
+
+
+    function tempoParaMilissegundos($tempo)
+    {
+        $carbon = Carbon::createFromFormat('H:i:s', $tempo);
+        $milissegundos = $carbon->hour * 3600000 + $carbon->minute * 60000 + $carbon->second * 1000;
+        return $milissegundos;
+    }
+
+    function milissegundosParaTempo($milissegundos)
+    {
+        $horas = floor($milissegundos / 3600000);
+        $milissegundos %= 3600000;
+        $minutos = floor($milissegundos / 60000);
+        $milissegundos %= 60000;
+        $segundos = floor($milissegundos / 1000);
+
+        $tempo = sprintf("%02d:%02d:%02d", $horas, $minutos, $segundos);
+        return $tempo;
+    }
+
+    function minutosParaMilissegundos($minutos)
+    {
+        $milissegundos = $minutos * 60000;
+        return $milissegundos;
+    }
+
+    // $minutos = 30; // Substitua pelo número de minutos que você deseja converter
+    // $milissegundos = minutosParaMilissegundos($minutos);
+    // echo $milissegundos;
+
+    // $tempo = "18:20:00";
+    // $milissegundos = tempoParaMilissegundos($tempo);
+    // echo $milissegundos;
+
+    // $milissegundos = 500000; // Substitua pelo valor de milissegundos que você deseja converter
+    // $tempo = milissegundosParaTempo($milissegundos);
+    // echo $tempo;
 }

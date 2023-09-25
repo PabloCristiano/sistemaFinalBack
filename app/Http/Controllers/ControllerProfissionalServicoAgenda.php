@@ -32,6 +32,7 @@ class ControllerProfissionalServicoAgenda extends Controller
 
     public function store(Request $request)
     {
+        
         $agendamendo = [];
         $agendamendo = $request->agenda;
         //$agendamendo = json_decode($request->agenda, true);
@@ -44,7 +45,6 @@ class ControllerProfissionalServicoAgenda extends Controller
             }
 
             $validator = Validator::make($agendamendo, $regrasagenda,  $feedbacksagenda);
-            // dd($validator->fails());
             if ($validator->fails()) {
                 $erros = $validator->errors();
                 $mensagensOrganizadas = [];
@@ -66,7 +66,7 @@ class ControllerProfissionalServicoAgenda extends Controller
                     return response()->json([
                         'message' => 'The given data was invalid.',
                         'errors' => [
-                            'produtos' => $errosAgenda
+                            'AGENDA' => $errosAgenda
                         ]
                     ], 422);
                 }
@@ -76,7 +76,7 @@ class ControllerProfissionalServicoAgenda extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         } catch (Exception $e) {
             // Lidar com outras exceções se necessário
-            return response()->json(['error' => 'Something went wrong'], 500);
+            return response()->json(['error' => 'Something went wrong','Tipo do erro' => $e], 500);
         }
         //$agenda = $this->daoProfissionalServicoAgenda->create($agendamendo);
         $store = $this->daoProfissionalServicoAgenda->store($agendamendo);
@@ -161,7 +161,7 @@ class ControllerProfissionalServicoAgenda extends Controller
         $carbonhorario_fim = Carbon::createFromFormat('Y-m-d\TH:i', $request->horario_fim);
         $data_fim = $carbonhorario_fim->format('Y-m-d');
         $hora_fim = $carbonhorario_fim->format('H:i');
-       
+
         if (ctype_digit(strval($id))) {
             $agendaProfissional = $this->daoProfissionalServicoAgenda->findCriarAgendaProfissional($id, $data_inicio, $hora_inicio, $hora_fim);
             if ($agendaProfissional) {
