@@ -32,7 +32,7 @@ class ControllerProfissionalServicoAgenda extends Controller
 
     public function store(Request $request)
     {
-        
+
         $agendamendo = [];
         $agendamendo = $request->agenda;
         //$agendamendo = json_decode($request->agenda, true);
@@ -76,7 +76,7 @@ class ControllerProfissionalServicoAgenda extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         } catch (Exception $e) {
             // Lidar com outras exceções se necessário
-            return response()->json(['error' => 'Something went wrong','Tipo do erro' => $e], 500);
+            return response()->json(['error' => 'Something went wrong', 'Tipo do erro' => $e], 500);
         }
         //$agenda = $this->daoProfissionalServicoAgenda->create($agendamendo);
         $store = $this->daoProfissionalServicoAgenda->store($agendamendo);
@@ -166,6 +166,19 @@ class ControllerProfissionalServicoAgenda extends Controller
             $agendaProfissional = $this->daoProfissionalServicoAgenda->findCriarAgendaProfissional($id, $data_inicio, $hora_inicio, $hora_fim);
             if ($agendaProfissional) {
                 return response::json(['Success' => true, 'mensagem' => 'Agenda já tem Registros nesse período !'], 200);
+            }
+        }
+        return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);
+    }
+
+    function findAllAgendaProfissional(Request $request)
+    {
+        $id = $request->id_profissional;
+
+        if (ctype_digit(strval($id))) {
+            $allAgenda = $this->daoProfissionalServicoAgenda->findAllAgendaProfissional($id);
+            if ($allAgenda) {
+                return response::json(['Success' => true, 'Agenda' => $allAgenda], 200);
             }
         }
         return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);

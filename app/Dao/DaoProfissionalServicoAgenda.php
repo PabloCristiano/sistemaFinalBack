@@ -132,4 +132,10 @@ class DaoProfissionalServicoAgenda implements Dao
     // $milissegundos = 500000; // Substitua pelo valor de milissegundos que você deseja converter
     // $tempo = milissegundosParaTempo($milissegundos);
     // echo $tempo;
+
+    function findAllAgendaProfissional($id)
+    {
+        $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ?', [$id]);
+        return $dados;
+    }
 }
