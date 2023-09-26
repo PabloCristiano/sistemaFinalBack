@@ -171,9 +171,8 @@ class ControllerProfissionalServicoAgenda extends Controller
         return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);
     }
 
-    function findAllAgendaProfissional(Request $request)
+    function findAllAgendaProfissional(Request $request, $id)
     {
-        $id = $request->id_profissional;
 
         if (ctype_digit(strval($id))) {
             $allAgenda = $this->daoProfissionalServicoAgenda->findAllAgendaProfissional($id);

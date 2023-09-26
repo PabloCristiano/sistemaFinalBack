@@ -71,7 +71,7 @@ Route::prefix('v1')
         Route::apiResource('/criarAgenda', 'App\Http\Controllers\ControllerProfissionalServicoAgenda');
         Route::post('/agendaprofissional', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAgendaProfissional');
         Route::post('/pesquisaAgenda', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findCriarAgendaProfissional');
-        Route::post('/allAgenda', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAllAgendaProfissional');
+        Route::post('/allAgenda/{id}', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAllAgendaProfissional');
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
