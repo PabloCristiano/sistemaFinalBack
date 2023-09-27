@@ -222,7 +222,7 @@ CREATE TABLE profissionais_servicos_agenda (
     status VARCHAR(20),
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(id_profissionais_servicos_agenda),
+    PRIMARY KEY(id_profissionais_servicos_agenda,id_profissional,horario_inicio),
     CONSTRAINT FK_idProfissional FOREIGN KEY (id_profissional) REFERENCES profissionais (id),
     CONSTRAINT FK_idServico FOREIGN KEY (id_servico) REFERENCES servicos (id),
     CONSTRAINT FK_idCliente FOREIGN KEY (id_cliente) REFERENCES clientes (id)
