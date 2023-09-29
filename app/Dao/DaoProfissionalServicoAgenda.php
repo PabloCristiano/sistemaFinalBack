@@ -140,12 +140,17 @@ class DaoProfissionalServicoAgenda implements Dao
     }
 
 
-    function findAgendaProfissionalProximoHorario($id_profissionais_servicos_agenda, $id_profissional, $qtd_horario)
+    function findAgendaProfissionalProximoHorario($id_profissionais_servicos_agenda, $id_profissional, $qtd_horario, $data)
     {
         for ($i = 0; $i < $qtd_horario; $i++) {
-            $id_profissionais_servicos_agenda = $id_profissionais_servicos_agenda + $i;
-            $dados = DB::select("select * from profissionais_servicos_agenda where id_profissional = ? and id_profissionais_servicos_agenda = ?", [$id_profissional, $id_profissionais_servicos_agenda]);
-            if ($dados[0]->status !=  "LIVRE") {
+            $agenda = 0;
+            $agenda = $id_profissionais_servicos_agenda + $i;
+            $dados = DB::select("select * from profissionais_servicos_agenda where id_profissional = ? and id_profissionais_servicos_agenda = ? and data  = ?", [$id_profissional, $agenda, $data]);
+            if (!empty($dados)) {
+                if ($dados[0]->status != "LIVRE") {
+                    return false;
+                }
+            } else {
                 return false;
             }
         }
