@@ -182,4 +182,16 @@ class ControllerProfissionalServicoAgenda extends Controller
         }
         return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);
     }
+
+    function findAgendaProfissionalProximoHorario(Request $request)
+    {
+        $id_profissionais_servicos_agenda = intval($request->index);
+        $id_profissional = intval($request->id_profissional);
+        $qtd_horario = intval($request->qtd_horario);
+        $proximoHorario = $this->daoProfissionalServicoAgenda->findAgendaProfissionalProximoHorario($id_profissionais_servicos_agenda, $id_profissional, $qtd_horario);
+        if ($proximoHorario) {
+            return response::json(['Success' => true], 200);
+        }
+        return response::json(['Success' => False], 200);
+    }
 }
