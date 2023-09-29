@@ -142,6 +142,8 @@ class DaoProfissionalServicoAgenda implements Dao
 
     function findAgendaProfissionalProximoHorario($id_profissionais_servicos_agenda, $id_profissional, $qtd_horario, $data)
     {
+
+        
         for ($i = 0; $i < $qtd_horario; $i++) {
             $agenda = 0;
             $agenda = $id_profissionais_servicos_agenda + $i;
