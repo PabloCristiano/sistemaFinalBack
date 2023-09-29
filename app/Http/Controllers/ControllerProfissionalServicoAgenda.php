@@ -189,8 +189,7 @@ class ControllerProfissionalServicoAgenda extends Controller
         $id_profissionais_servicos_agenda = intval($request->index);
         $id_profissional = intval($request->id_profissional);
         $qtd_horario = intval($request->qtd_horario);
-        $data = strval($request->data);
-
+        $data = $request->data;
         $proximoHorario = $this->daoProfissionalServicoAgenda->findAgendaProfissionalProximoHorario($id_profissionais_servicos_agenda, $id_profissional, $qtd_horario, $data);
         if ($proximoHorario) {
             return response::json(['Success' => true,], 200);
