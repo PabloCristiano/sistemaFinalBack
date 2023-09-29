@@ -145,7 +145,7 @@ class DaoProfissionalServicoAgenda implements Dao
         for ($i = 0; $i < $qtd_horario; $i++) {
             $agenda = 0;
             $agenda = $id_profissionais_servicos_agenda + $i;
-            $dados = DB::select("select * from profissionais_servicos_agenda where id_profissional = ? and id_profissionais_servicos_agenda = ? and data  = ?", [$id_profissional, $agenda, $data]);
+            $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ? and id_profissionais_servicos_agenda = ? and data  = ?', [$id_profissional, $agenda, $data]);
             if (!empty($dados)) {
                 if ($dados[0]->status != "LIVRE") {
                     return false;
