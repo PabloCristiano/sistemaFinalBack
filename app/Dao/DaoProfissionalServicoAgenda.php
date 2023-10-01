@@ -135,7 +135,10 @@ class DaoProfissionalServicoAgenda implements Dao
 
     function findAllAgendaProfissional($id)
     {
-        $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ?', [$id]);
+        $dataAtualFormatada = Carbon::now()->format('Y-m-d');
+        $dataAtual = Carbon::now();
+        $dataFutura = $dataAtual->addDays(6)->format('Y-m-d');
+        $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ? and data >= ? and data <=?', [$id, $dataAtualFormatada, $dataFutura]);
         return $dados;
     }
 
