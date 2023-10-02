@@ -102,7 +102,14 @@ class ControllerProfissionalServicoAgenda extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request->all(), $id);
+        $obj = $request->all();
+        $agendamento = $this->daoProfissionalServicoAgenda->updateProfissionalServico($obj, $id);
+        if ($agendamento === true) {
+            return response()->json(['success' => true, 'Msg' => 'Horário Agendado com Sucesso.'], 200);
+        }
+        if ($agendamento['error']) {
+            return response()->json(['erro' => $agendamento], 404);
+        }
     }
 
 

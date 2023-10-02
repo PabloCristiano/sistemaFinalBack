@@ -64,6 +64,39 @@ class DaoProfissionalServicoAgenda implements Dao
 
     public function updateProfissionalServico($obj, $id)
     {
+        // dd($obj, $id);
+        $id_servico = $obj['id_servico'];
+        $id_cliente = intval($obj['id_cliente']);
+        $preco = str_replace("R$ ", "", $obj['valor']);
+        $preco = str_replace(",", ".", $preco);
+        $preco = (float) $preco;
+        $status = 'RESERVADO';
+        $qtd_horario = intval($obj['qtd_horario']);
+        // $id_profissionais_servicos_agenda = 0;
+        $id_profissionais_servicos_agenda = intval($obj['index']);
+        $id_profissional = intval($obj['id_profissional']);
+        try {
+            DB::beginTransaction();
+            for ($i = 0; $i < $qtd_horario; $i++) {
+                $index = $id_profissionais_servicos_agenda + $i;
+                $sql = DB::UPDATE(
+                    'UPDATE
+                    profissionais_servicos_agenda
+                            SET id_servico = ?, id_cliente = ?, preco = ?, status = ?
+                            WHERE  id_profissionais_servicos_agenda = ? and id_profissional = ?',
+                    [$id_servico, $id_cliente, $preco, $status, $index, $id_profissional],
+                );
+            }
+            DB::commit();
+            return true;
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
     }
 
     public function delete($id)
