@@ -323,8 +323,9 @@ CREATE TABLE servico_profissional(
 -- join servicos as s on  id_servico = s.id where id_profissional = 22
 
 
-php artisan optimize:clear
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
+php artisan blade:clear
+php artisan optimize:clear
 php artisan cache:clear
