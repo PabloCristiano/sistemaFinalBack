@@ -321,3 +321,10 @@ CREATE TABLE servico_profissional(
 -- select s.servico from profissional_servico as ps join servicos as s on  id_servico = s.id where id_profissional = 22
 -- select s.id, s.servico, s.tempo, s.valor, s.comissao, s.observacoes, s.data_create, s.data_alt from profissional_servico 
 -- join servicos as s on  id_servico = s.id where id_profissional = 22
+
+
+php artisan optimize:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
