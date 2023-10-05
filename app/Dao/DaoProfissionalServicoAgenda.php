@@ -67,6 +67,7 @@ class DaoProfissionalServicoAgenda implements Dao
         // dd($obj, $id);
         $id_servico = $obj['id_servico'];
         $id_cliente = intval($obj['id_cliente']);
+        $nome_cliente = $obj['cliente'];
         $preco = str_replace("R$ ", "", $obj['valor']);
         $preco = str_replace(",", ".", $preco);
         $preco = (float) $preco;
@@ -82,9 +83,9 @@ class DaoProfissionalServicoAgenda implements Dao
                 $sql = DB::UPDATE(
                     'UPDATE
                     profissionais_servicos_agenda
-                            SET id_servico = ?, id_cliente = ?, preco = ?, status = ?
+                            SET id_servico = ?, id_cliente = ?, nome_cliente = ?, preco = ?, status = ?
                             WHERE  id_profissionais_servicos_agenda = ? and id_profissional = ?',
-                    [$id_servico, $id_cliente, $preco, $status, $index, $id_profissional],
+                    [$id_servico, $id_cliente, $nome_cliente, $preco, $status, $index, $id_profissional],
                 );
             }
             DB::commit();
