@@ -215,14 +215,20 @@ CREATE TABLE profissionais_servicos_agenda (
     id_profissional INT,
     id_servico INT,
     id_cliente INT,
+    nome_cliente VARCHAR(100),
     data date,
     horario_inicio TIME,
     horario_fim TIME,
     preco DECIMAL(10, 6),
     status VARCHAR(20),
+    execucao VARCHAR(25),
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(id_profissionais_servicos_agenda,id_profissional,horario_inicio),
+    PRIMARY KEY(
+        id_profissionais_servicos_agenda,
+        id_profissional,
+        horario_inicio
+    ),
     CONSTRAINT FK_idProfissional FOREIGN KEY (id_profissional) REFERENCES profissionais (id),
     CONSTRAINT FK_idServico FOREIGN KEY (id_servico) REFERENCES servicos (id),
     CONSTRAINT FK_idCliente FOREIGN KEY (id_cliente) REFERENCES clientes (id)
@@ -307,25 +313,22 @@ CREATE TABLE servico_profissional(
     id INT NOT NULL,
     servico VARCHAR(100),
     tempo INT,
-    valor DECIMAL(10,6),
+    valor DECIMAL(10, 6),
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (
-       id_profissional,
-       id
-    ),
+    PRIMARY KEY (id_profissional, id),
     FOREIGN KEY (id_profissional) REFERENCES profissionais (id),
     FOREIGN KEY (id) REFERENCES servicos (id)
-)DEFAULT CHARSET = utf8;
+) DEFAULT CHARSET = utf8;
 
 -- select s.servico from profissional_servico as ps join servicos as s on  id_servico = s.id where id_profissional = 22
 -- select s.id, s.servico, s.tempo, s.valor, s.comissao, s.observacoes, s.data_create, s.data_alt from profissional_servico 
 -- join servicos as s on  id_servico = s.id where id_profissional = 22
+ALTER TABLE
+    profissionais_servicos_agenda
+ADD
+    COLUMN execucao VARCHAR(25)
+AFTER
+    status;
 
-
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan blade:clear
-php artisan optimize:clear
-php artisan cache:clear
+php artisan config :clear php artisan route :clear php artisan view :clear php artisan blade :clear php artisan optimize :clear php artisan cache :clear

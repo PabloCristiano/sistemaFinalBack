@@ -73,6 +73,7 @@ Route::prefix('v1')
         Route::post('/pesquisaAgenda', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findCriarAgendaProfissional');
         Route::post('/allAgenda/{id}', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAllAgendaProfissional');
         Route::post('/agendamento/searchnexttime', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAgendaProfissionalProximoHorario');
+        Route::post('/agendamento/AtulizarExecucaoAgenda', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@AtulizarExecucaoAgenda');
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');

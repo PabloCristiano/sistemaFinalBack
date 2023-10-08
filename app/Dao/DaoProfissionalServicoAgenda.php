@@ -72,6 +72,7 @@ class DaoProfissionalServicoAgenda implements Dao
         $preco = str_replace(",", ".", $preco);
         $preco = (float) $preco;
         $status = 'RESERVADO';
+        $execucao = 'EXECUTAR';
         $qtd_horario = intval($obj['qtd_horario']);
         // $id_profissionais_servicos_agenda = 0;
         $id_profissionais_servicos_agenda = intval($obj['index']);
@@ -83,9 +84,9 @@ class DaoProfissionalServicoAgenda implements Dao
                 $sql = DB::UPDATE(
                     'UPDATE
                     profissionais_servicos_agenda
-                            SET id_servico = ?, id_cliente = ?, nome_cliente = ?, preco = ?, status = ?
+                            SET id_servico = ?, id_cliente = ?, nome_cliente = ?, preco = ?, status = ?, execucao = ?
                             WHERE  id_profissionais_servicos_agenda = ? and id_profissional = ?',
-                    [$id_servico, $id_cliente, $nome_cliente, $preco, $status, $index, $id_profissional],
+                    [$id_servico, $id_cliente, $nome_cliente, $preco, $status, $execucao, $index, $id_profissional],
                 );
             }
             DB::commit();
@@ -119,7 +120,22 @@ class DaoProfissionalServicoAgenda implements Dao
 
     public function findAgendaProfissional(int $id, string $data)
     {
-        $dados = DB::select('select * from profissionais_servicos_agenda where id_profissional = ? and data = ?', [$id, $data]);
+        $dados = DB::select('SELECT id_profissionais_servicos_agenda,
+        id_profissional,
+        id_servico,
+            s. servico,
+        id_cliente,
+        nome_cliente,
+        data,
+        horario_inicio,
+        horario_fim,
+        preco,
+        status,
+        execucao,
+        psa.data_create,
+        psa.data_alt FROM profissionais_servicos_agenda AS psa
+        LEFT JOIN servicos AS s ON s.id = psa.id_servico 
+        where id_profissional = ? and data = ?', [$id, $data]);
         return $dados;
     }
     public function findCriarAgendaProfissional(int $id, string $data_inicio, string $hora_inicio, string $hora_fim)
@@ -192,5 +208,17 @@ class DaoProfissionalServicoAgenda implements Dao
             }
         }
         return true;
+    }
+
+    function AtulizarExecucaoAgenda($obj)
+    {
+        //dd($obj);
+        $id_profissionais_servicos_agenda = intval($obj['id_profissionais_servicos_agenda']);
+        $id_profissional = intval($obj['id_profissional']);
+        $id_cliente = intval($obj['id_cliente']);
+        $horario_inicio = $obj['horario_inicio'];
+        $dataFormatada = Carbon::createFromFormat('d/m/Y', $obj['data']);
+        $dataFormatada = $dataFormatada->toDateString();
+        dd($dataFormatada, $id_profissionais_servicos_agenda, $id_profissional, $id_cliente, $horario_inicio,  'DAO');
     }
 }

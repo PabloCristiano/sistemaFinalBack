@@ -203,4 +203,14 @@ class ControllerProfissionalServicoAgenda extends Controller
         }
         return response::json(['Success' => False], 200);
     }
+
+    function AtulizarExecucaoAgenda(Request $request)
+    {
+        $obj = $request->all();
+        $atulizarExecucaoServico = $this->daoProfissionalServicoAgenda->AtulizarExecucaoAgenda($obj);
+        if ($atulizarExecucaoServico) {
+            return response::json(['Success' => true,], 200);
+        }
+        return response::json(['Success' => False], 200);
+    }
 }
