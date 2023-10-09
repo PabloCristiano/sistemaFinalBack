@@ -212,13 +212,55 @@ class DaoProfissionalServicoAgenda implements Dao
 
     function AtulizarExecucaoAgenda($obj)
     {
-        //dd($obj);
+
         $id_profissionais_servicos_agenda = intval($obj['id_profissionais_servicos_agenda']);
         $id_profissional = intval($obj['id_profissional']);
         $id_cliente = intval($obj['id_cliente']);
         $horario_inicio = $obj['horario_inicio'];
         $dataFormatada = Carbon::createFromFormat('d/m/Y', $obj['data']);
         $dataFormatada = $dataFormatada->toDateString();
-        dd($dataFormatada, $id_profissionais_servicos_agenda, $id_profissional, $id_cliente, $horario_inicio,  'DAO');
+        $execucao = $obj['execucao'];
+        $data_alt = Carbon::now();
+
+
+
+        //dd($execucao);
+        try {
+            DB::beginTransaction();
+
+            if ($execucao === 'EXECUTAR') {
+                $execucao = 'EXECUTANDO';
+                $sql = DB::UPDATE(
+                    'UPDATE
+                        profissionais_servicos_agenda
+                                SET  execucao = ?, data_alt = ?
+                                WHERE  id_profissionais_servicos_agenda = ? and id_profissional = ?',
+                    [$execucao, $data_alt, $id_profissionais_servicos_agenda, $id_profissional],
+                );
+                DB::commit();
+                return true;
+            }
+
+            if ($execucao === 'EXECUTANDO') {
+                $execucao = 'EXECUTADO';
+                $sql = DB::UPDATE(
+                    'UPDATE
+                        profissionais_servicos_agenda
+                                SET  execucao = ?, data_alt = ?
+                                WHERE  id_profissionais_servicos_agenda = ? and id_profissional = ?',
+                    [$execucao, $data_alt, $id_profissionais_servicos_agenda, $id_profissional],
+                );
+                DB::commit();
+                return true;
+            }
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
+        // dd($dataFormatada, $id_profissionais_servicos_agenda, $id_profissional, $id_cliente, $horario_inicio,  'DAO');
     }
 }
