@@ -45,6 +45,34 @@ class ControllerCompra extends Controller
         return response::json(true);
     }
 
+    public function verificaNumCompra(Request $request)
+    {
+
+        $regras = [
+            'modelo' => 'required|numeric|gt:0',
+            'serie' => 'required|numeric|gt:0',
+            'numero_nota' => 'required|numeric|gt:0',
+            'id_fornecedor' => 'required|integer|min:1',
+        ];
+
+        $feedbacks = [
+            'modelo.required' => 'O campo Modelo deve ser preenchido.',
+            'modelo.gt' => 'O campo modelo deve ser maior que zero.',
+            'serie.required' => 'O campo Série deve ser preenchido.',
+            'serie.gt' => 'O campo série deve ser maior que zero.',
+            'numero_nota.required' => 'O campo número da nota é obrigatório.',
+            'numero_nota.integer' => 'O campo número da nota deve ser um número inteiro.',
+            'numero_nota.min' => 'O campo número da nota deve ser maior que zero.',
+            'id_fornecedor.required' => 'O campo ID do fornecedor é obrigatório.',
+            'id_fornecedor.integer' => 'O ID do fornecedor deve ser um número inteiro.',
+            'id_fornecedor.min' => 'O ID do fornecedor deve ser no mínimo 1.',
+        ];
+        $request->validate($regras, $feedbacks);        
+        // dd($request->all());
+        $Validad = $this->daoCompra->verificaNumCompra($request->all());
+        return response::json($Validad);
+    }
+
     public function store(Request $request)
     {
         // dd($request->all());
@@ -367,6 +395,7 @@ class ControllerCompra extends Controller
         ];
         return $feedbacksCondicaoPagamento;
     }
+
     public function convertArray($array)
     {
 
