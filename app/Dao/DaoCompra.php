@@ -52,7 +52,7 @@ class DaoCompra implements Dao
 
     public function create(array $dados)
     {
-
+       
         $compra = new Compra();
 
         // auth('api')->user();
