@@ -213,9 +213,14 @@ class ControllerProfissionalServicoAgenda extends Controller
         }
         return response::json(['Success' => False], 200);
     }
-    
-    public function cancelarHorario(Request $request){
-       dd($request->all());
-    }
 
+    public function cancelarHorario(Request $request)
+    {
+        // dd($request->all());
+        $cancelamento = $this->daoProfissionalServicoAgenda->cancelarHorario($request);
+        if ($cancelamento) {
+            return response::json(['Success' => true,], 200);
+        }
+        return response::json(['Success' => False], 200);
+    }
 }

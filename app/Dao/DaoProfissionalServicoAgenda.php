@@ -263,4 +263,63 @@ class DaoProfissionalServicoAgenda implements Dao
         }
         // dd($dataFormatada, $id_profissionais_servicos_agenda, $id_profissional, $id_cliente, $horario_inicio,  'DAO');
     }
+
+    public function cancelarHorario(Request $request)
+    {
+        // dd($request->all());
+        try {
+
+            //pega Data ea  hora atual 
+            $dataHoraAtual = Carbon::now();
+            $data_atual = $dataHoraAtual->format('Y-m-d');
+            $hora_atual = $dataHoraAtual->format('H:i:s');
+
+            $data_atual_mili = $this->dataParaMilissegundos($data_atual);
+            $hora_atual_mili = $this->horaParaMilissegundos($hora_atual);
+
+            $Data_mili = $this->dataParaMilissegundos($request->data);
+            $Hora_mili = $this->horaParaMilissegundos($request->horario_inicio);
+
+            $soma_dataAtual = ($data_atual_mili + $hora_atual_mili);
+            $soma_data = ($Data_mili + $Hora_mili);
+
+            $id_profissionais_servicos_agenda = $request->id_profissionais_servicos_agenda;
+            $id_profissional = $request->id_profissional;
+            $horario_inicio = $request->horario_inicio;
+
+            if ($soma_data  >  $soma_dataAtual && $request->status === "RESERVADO") {
+                DB::beginTransaction();
+                $sql = DB::UPDATE(
+                    'UPDATE profissionais_servicos_agenda  SET  id_servico = null, id_cliente = null, id_servico = null, nome_cliente = null, status = "LIVRE", execucao = null   
+                    where id_profissionais_servicos_agenda = ? and id_profissional = ? and horario_inicio = ?',
+                    [$id_profissionais_servicos_agenda, $id_profissional, $horario_inicio],
+                );
+                DB::commit();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (QueryException $e) {
+            $mensagem = $e->getMessage(); // Mensagem de erro
+            $codigo = $e->getCode(); // Código do erro
+            $consulta = $e->getSql(); // Consulta SQL que causou o erro
+            $bindings = $e->getBindings(); // Valores passados como bind para a consulta
+            DB::rollBack();
+            return [$mensagem, $codigo, $consulta, $bindings];
+        }
+    }
+
+    public function dataParaMilissegundos($data)
+    {
+        $timestamp = strtotime(str_replace('/', '-', $data));
+        $milissegundos = $timestamp * 1000;
+        return  $milissegundos;
+    }
+
+    public function horaParaMilissegundos($hora)
+    {
+        list($horas, $minutos) = explode(':', $hora);
+        $milissegundos = ($horas * 3600 + $minutos * 60) * 1000;
+        return $milissegundos;
+    }
 }
