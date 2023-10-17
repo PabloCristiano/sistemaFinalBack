@@ -178,7 +178,7 @@ class ControllerProfissionalServicoAgenda extends Controller
         return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);
     }
 
-    function findAllAgendaProfissional(Request $request, $id)
+    public function findAllAgendaProfissional(Request $request, $id)
     {
 
         if (ctype_digit(strval($id))) {
@@ -190,7 +190,7 @@ class ControllerProfissionalServicoAgenda extends Controller
         return response::json(['Success' => False, 'mensagem' => 'Agenda sem Registro nesse período !'], 200);
     }
 
-    function findAgendaProfissionalProximoHorario(Request $request)
+    public function findAgendaProfissionalProximoHorario(Request $request)
     {
         // return response::json(['Success' => true, $request->all()], 200);
         $id_profissionais_servicos_agenda = intval($request->index);
@@ -204,11 +204,21 @@ class ControllerProfissionalServicoAgenda extends Controller
         return response::json(['Success' => False], 200);
     }
 
-    function AtulizarExecucaoAgenda(Request $request)
+    public function AtulizarExecucaoAgenda(Request $request)
     {
         $obj = $request->all();
         $atulizarExecucaoServico = $this->daoProfissionalServicoAgenda->AtulizarExecucaoAgenda($obj);
         if ($atulizarExecucaoServico) {
+            return response::json(['Success' => true,], 200);
+        }
+        return response::json(['Success' => False], 200);
+    }
+
+    public function cancelarHorario(Request $request)
+    {
+        // dd($request->all());
+        $cancelamento = $this->daoProfissionalServicoAgenda->cancelarHorario($request);
+        if ($cancelamento) {
             return response::json(['Success' => true,], 200);
         }
         return response::json(['Success' => False], 200);

@@ -52,7 +52,7 @@ class DaoCompra implements Dao
 
     public function create(array $dados)
     {
-
+       
         $compra = new Compra();
 
         // auth('api')->user();
@@ -362,12 +362,30 @@ class DaoCompra implements Dao
         return $dataNova->format('Y-m-d');
     }
 
-    function calcularMediaPonderada($produto_estoque, $produto_precoCusto, $compraProduto_precoCusto, $compraProduto_qtd)
+    public function calcularMediaPonderada($produto_estoque, $produto_precoCusto, $compraProduto_precoCusto, $compraProduto_qtd)
     {
         $num1 = ($produto_estoque * $produto_precoCusto);
         $num2 = ($compraProduto_qtd * $compraProduto_precoCusto);
         $num3 =  $num1 + $num2;
         $mediaPonderada = ($num3 / ($produto_estoque + $compraProduto_qtd));
         return $mediaPonderada;
+    }
+
+    public function verificaNumCompra($obj)
+    {
+
+        $modelo = $obj['modelo'];
+        $numero_nota = $obj['numero_nota'];
+        $serie = $obj['serie'];
+        $id_fornecedor = $obj['id_fornecedor'];
+
+        $dados = DB::select("SELECT * 
+         FROM compra where modelo = ? and numero_nota = ? and serie = ? and id_fornecedor = ?", [$modelo, $numero_nota, $serie, $id_fornecedor]);
+
+        if (!empty($dados)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

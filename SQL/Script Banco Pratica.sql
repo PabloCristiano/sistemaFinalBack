@@ -276,9 +276,9 @@ CREATE TABLE compra_produto (
         compra_modelo,
         compra_numero_nota,
         compra_serie,
-        id_produto
+        compra_id_fornecedor
     ),
-    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie) REFERENCES compra (modelo, numero_nota, serie),
+    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie,compra_id_fornecedor) REFERENCES compra (modelo, numero_nota, serie,id_fornecedor),
     FOREIGN KEY (id_produto) REFERENCES produtos (id)
 ) DEFAULT CHARSET = utf8;
 
@@ -303,9 +303,10 @@ create table contas_pagar(
         numero_parcela,
         compra_modelo,
         compra_numero_nota,
-        compra_serie
+        compra_serie,
+        compra_id_fornecedor
     ),
-    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie) REFERENCES compra (modelo, numero_nota, serie)
+    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie,compra_id_fornecedor) REFERENCES compra (modelo, numero_nota, serie,id_fornecedor)
 ) DEFAULT CHARSET = utf8;
 
 CREATE TABLE servico_profissional(

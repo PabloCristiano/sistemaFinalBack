@@ -45,6 +45,34 @@ class ControllerCompra extends Controller
         return response::json(true);
     }
 
+    public function verificaNumCompra(Request $request)
+    {
+
+        $regras = [
+            'modelo' => 'required|numeric|gt:0',
+            'serie' => 'required|numeric|gt:0',
+            'numero_nota' => 'required|numeric|gt:0',
+            'id_fornecedor' => 'required|integer|min:1',
+        ];
+
+        $feedbacks = [
+            'modelo.required' => 'O campo Modelo deve ser preenchido.',
+            'modelo.gt' => 'O campo modelo deve ser maior que zero.',
+            'serie.required' => 'O campo Série deve ser preenchido.',
+            'serie.gt' => 'O campo série deve ser maior que zero.',
+            'numero_nota.required' => 'O campo número da nota é obrigatório.',
+            'numero_nota.integer' => 'O campo número da nota deve ser um número inteiro.',
+            'numero_nota.min' => 'O campo número da nota deve ser maior que zero.',
+            'id_fornecedor.required' => 'O campo ID do fornecedor é obrigatório.',
+            'id_fornecedor.integer' => 'O ID do fornecedor deve ser um número inteiro.',
+            'id_fornecedor.min' => 'O ID do fornecedor deve ser no mínimo 1.',
+        ];
+        $request->validate($regras, $feedbacks);        
+        // dd($request->all());
+        $Validad = $this->daoCompra->verificaNumCompra($request->all());
+        return response::json($Validad);
+    }
+
     public function store(Request $request)
     {
         // dd($request->all());
@@ -53,22 +81,25 @@ class ControllerCompra extends Controller
         $request->validate($regras, $feedbacks);
         $produtos = [];
         $parcelas = [];
+        
         // $produtos = json_decode($request->produtos, true);
         $produtos = $request->produtos;
-        //$parcelas = json_decode($request->condicaopagamento, true);
+        
+        // $parcelas = json_decode($request->condicaopagamento, true);
         $parcelas = $request->condicaopagamento;
+
         try {
             $regrasProdutos = $this->rulesProduto();
             $feedbacksProdutos = $this->feedbacksProduto();
-
+            
             // Certifique-se de que $produtos é um array válido antes de usar na validação
             if (!is_array($produtos)) {
                 throw new InvalidArgumentException('$produtos deve ser um array válido.');
             }
-
+            
             // Validação do array de Produtos
             $validator = Validator::make($produtos, $regrasProdutos, $feedbacksProdutos);
-
+            
             if ($validator->fails()) {
                 $erros = $validator->errors();
                 $mensagensOrganizadas = [];
@@ -104,7 +135,7 @@ class ControllerCompra extends Controller
             // Lidar com outras exceções se necessário
             return response()->json(['error' => 'Something went wrong'], 500);
         }
-
+       
         try {
             $regrasCondicaoPagamento = $this->rulesCondicaoPagamento();
             $feedbacksCondicaoPagamento = $this->feedbacksCondicaoPagamento();
@@ -152,7 +183,7 @@ class ControllerCompra extends Controller
             // Lidar com outras exceções se necessário
             return response()->json(['error' => 'Something went wrong'], 500);
         }
-
+       
         $payLoad = $this->convertArray($request->all());
         //$payLoad = $request->all();
         // dd($payLoad);
@@ -205,7 +236,8 @@ class ControllerCompra extends Controller
         $regras = [
             'modelo' => 'required|numeric|gt:0',
             'serie' => 'required|numeric|gt:0',
-            'numero_nota' => 'required|numeric|gt:0|unique:compra',
+            // 'numero_nota' => 'required|numeric|gt:0|unique:compra',
+            'numero_nota' => 'required|numeric|gt:0',
             'id_fornecedor' => 'required|integer|min:1|exists:fornecedores,id',
             'id_profissional' => 'required|integer|min:1|exists:profissionais,id',
             'fornecedor' => 'required|min:3|max:50',
@@ -367,9 +399,10 @@ class ControllerCompra extends Controller
         ];
         return $feedbacksCondicaoPagamento;
     }
+
     public function convertArray($array)
     {
-
+        
         $array['id_fornecedor'] = intval($array['id_fornecedor']);
         $array['id_condicaopg'] = intval($array['id_condicaopg']);
         $array['total_compra'] = floatval($array['total_compra']);
@@ -382,11 +415,12 @@ class ControllerCompra extends Controller
         $array['outras_despesas'] = floatval($array['outras_despesas']);
         $array['produtos'] = $this->convertProdutoArray($array['produtos']);
         $array['condicaopagamento'] = $this->convertValorParcelaToFloat($array['condicaopagamento']);
-
+        
         return $array;
     }
     public function convertValorParcelaToFloat($array)
     {
+        // $array = json_decode($array, true);
         foreach ($array as &$item) {
             $valorParcela = str_replace(['R$', ' '], '', $item['valor_parcela']);
             $item['valor_parcela'] = floatval(str_replace(',', '.', $valorParcela));
@@ -395,15 +429,14 @@ class ControllerCompra extends Controller
     }
     public function convertProdutoArray($array)
     {
+        // $array = json_decode($array, true);
+       // dd($array[0]['produto']);
         foreach ($array as &$item) {
             $item['qtd_produto'] = intval($item['qtd_produto']);
-
             $valorUnitario = str_replace(',', '.', $item['valor_unitario']);
             $item['valor_unitario'] = floatval($valorUnitario);
-
             $desconto = str_replace(',', '.', $item['desconto']);
             $item['desconto'] = floatval($desconto);
-
             $totalProduto = str_replace(',', '.', $item['total_produto']);
             $item['total_produto'] = floatval($totalProduto);
 

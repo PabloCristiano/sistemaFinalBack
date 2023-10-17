@@ -64,6 +64,7 @@ Route::prefix('v1')
         Route::apiResource('/compra', 'App\Http\Controllers\ControllerCompra');
         Route::post('/compra/{id}', 'App\Http\Controllers\ControllerCompra@getByid');
         Route::post('/compra/validaNumNota/{id}', 'App\Http\Controllers\ControllerCompra@validaNumNota');
+        Route::post('/compra/compra/verificaNumCompra', 'App\Http\Controllers\ControllerCompra@verificaNumCompra');
 
         Route::apiResource('/contaspagar', 'App\Http\Controllers\ControllerContasPagar');
         // Route::post('/contaspagar/{id}', 'App\Http\Controllers\ControllerContasPagar@getById');
@@ -74,6 +75,7 @@ Route::prefix('v1')
         Route::post('/allAgenda/{id}', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAllAgendaProfissional');
         Route::post('/agendamento/searchnexttime', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@findAgendaProfissionalProximoHorario');
         Route::post('/agendamento/AtulizarExecucaoAgenda', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@AtulizarExecucaoAgenda');
+        Route::post('/agendamento/CancelarHorario', 'App\Http\Controllers\ControllerProfissionalServicoAgenda@cancelarHorario');
     });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
