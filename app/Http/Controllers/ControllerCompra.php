@@ -75,7 +75,7 @@ class ControllerCompra extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        //dd($request->all());
         $regras = $this->rules();
         $feedbacks = $this->feedbacks();
         $request->validate($regras, $feedbacks);
@@ -185,7 +185,7 @@ class ControllerCompra extends Controller
         }
        
         $payLoad = $this->convertArray($request->all());
-        //$payLoad = $request->all();
+        // $payLoad = $request->all();
         // dd($payLoad);
         $compras = $this->daoCompra->create($payLoad);
         $store = $this->daoCompra->store($compras);

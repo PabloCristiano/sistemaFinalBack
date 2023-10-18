@@ -258,12 +258,37 @@ create table Compra(
     FOREIGN KEY (id_fornecedor) REFERENCES fornecedores (id)
 ) DEFAULT CHARSET = utf8;
 
+-- CREATE TABLE compra_produto (
+--     compra_modelo VARCHAR(15) NOT NULL,
+--     compra_numero_nota VARCHAR(15) NOT NULL,
+--     compra_serie VARCHAR(15) NOT NULL,
+--     id_produto INT NOT NULL,
+--     compra_id_fornecedor INT NOT NULL,
+--     qtd_produto INT NOT NULL,
+--     valor_unitario DECIMAL(10, 6) NOT NULL,
+--     valor_custo DECIMAL(10, 6) NOT NULL,
+--     total_produto DECIMAL(10, 6) NOT NULL,
+--     unidade VARCHAR(20) NOT NULL,
+--     desconto DECIMAL(10, 6),
+--     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--     PRIMARY KEY (
+--         compra_modelo,
+--         compra_numero_nota,
+--         compra_serie,
+--         compra_id_fornecedor
+--     ),
+--     FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie,compra_id_fornecedor) REFERENCES compra (modelo, numero_nota, serie,id_fornecedor),
+--     FOREIGN KEY (id_produto) REFERENCES produtos (id)
+-- ) DEFAULT CHARSET = utf8;
+
 CREATE TABLE compra_produto (
     compra_modelo VARCHAR(15) NOT NULL,
     compra_numero_nota VARCHAR(15) NOT NULL,
     compra_serie VARCHAR(15) NOT NULL,
     id_produto INT NOT NULL,
     compra_id_fornecedor INT NOT NULL,
+    item INT NOT NULL, -- Adicionando a coluna "item"
     qtd_produto INT NOT NULL,
     valor_unitario DECIMAL(10, 6) NOT NULL,
     valor_custo DECIMAL(10, 6) NOT NULL,
@@ -276,10 +301,10 @@ CREATE TABLE compra_produto (
         compra_modelo,
         compra_numero_nota,
         compra_serie,
-        compra_id_fornecedor
+        compra_id_fornecedor,
+        item -- Adicionando "item" como parte da chave primária
     ),
-    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie,compra_id_fornecedor) REFERENCES compra (modelo, numero_nota, serie,id_fornecedor),
-    FOREIGN KEY (id_produto) REFERENCES produtos (id)
+    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie, compra_id_fornecedor) REFERENCES compra (modelo, numero_nota, serie, id_fornecedor)
 ) DEFAULT CHARSET = utf8;
 
 create table contas_pagar(

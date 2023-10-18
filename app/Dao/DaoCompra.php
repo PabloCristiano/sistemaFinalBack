@@ -52,7 +52,7 @@ class DaoCompra implements Dao
 
     public function create(array $dados)
     {
-       
+
         $compra = new Compra();
 
         // auth('api')->user();
@@ -112,7 +112,7 @@ class DaoCompra implements Dao
 
     public function store($compra)
     {
-
+        // dd($compra);
         $modelo = $compra->getModelo();
         $numero_nota = $compra->getNumeroNota();
         $serie = $compra->getSerie();
@@ -161,11 +161,14 @@ class DaoCompra implements Dao
                 ]
             );
             try {
-                foreach ($compraProduto_array  as  $produto) {
+                foreach ($compraProduto_array  as $index => $produto) {
+                    $item = 0;
+                    $item = $index + 1;
                     $result = DB::INSERT(
-                        "INSERT INTO compra_produto (compra_modelo,compra_numero_nota,compra_serie,id_produto,compra_id_fornecedor,qtd_produto,valor_unitario,valor_custo,total_produto,desconto,unidade) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO compra_produto (item,compra_modelo,compra_numero_nota,compra_serie,id_produto,compra_id_fornecedor,qtd_produto,valor_unitario,valor_custo,total_produto,desconto,unidade) 
+                        VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         [
+                            $item,
                             $modelo,
                             $numero_nota,
                             $serie,
@@ -226,7 +229,6 @@ class DaoCompra implements Dao
                 DB::rollBack();
                 return [$mensagem, $codigo, $consulta, $bindings];
             }
-
             foreach ($compraProduto_array as $compraProduto) {
                 $id_produto = $compraProduto['id_produto'];
                 $collection = Collection::make($this->daoProduto->findById($id_produto, true));
@@ -339,6 +341,7 @@ class DaoCompra implements Dao
 
     public function calcularRateioCusto(&$produtos, $custos)
     {
+
         $totalCusto = 0;
         foreach ($produtos as $key => &$produto) {
             $quantidade = $produto['qtd_produto'];
