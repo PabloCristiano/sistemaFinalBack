@@ -1,5 +1,5 @@
 ﻿# Host: localhost  (Version 5.5.5-10.4.25-MariaDB)
-# Date: 2023-10-15 22:11:53
+# Date: 2023-10-17 22:02:57
 # Generator: MySQL-Front 6.0  (Build 2.20)
 
 
@@ -291,7 +291,37 @@ CREATE TABLE `compra` (
 # Data for table "compra"
 #
 
-INSERT INTO `compra` VALUES ('55','1','1',43,488,134,'2023-10-13','2023-10-13',1,217.820000,NULL,'ATIVA','','2023-10-13 19:09:01','2023-10-13 19:09:01',120.000000,65.520000,0.000000,0.000000),('55','1','1',68,488,134,'2023-10-13','2023-10-13',1,178.520000,NULL,'ATIVA','','2023-10-13 19:08:31','2023-10-13 19:08:31',120.000000,58.520000,0.000000,0.000000),('55','2','1',68,631,134,'2023-10-13','2023-10-13',1,285.000000,NULL,'ATIVA','','2023-10-13 19:15:21','2023-10-13 19:15:21',200.000000,85.000000,0.000000,0.000000),('55','3','1',68,488,134,'2023-10-13','2023-10-13',1,75.000000,NULL,'ATIVA','','2023-10-13 19:27:41','2023-10-13 19:27:41',75.000000,0.000000,0.000000,0.000000),('55','4','1',68,488,134,'2023-10-14','2023-10-14',1,238.860000,NULL,'ATIVA','','2023-10-14 15:29:41','2023-10-14 15:29:41',213.500000,25.360000,0.000000,0.000000);
+INSERT INTO `compra` VALUES ('55','1','1',68,488,134,'2023-10-17','2023-10-17',2,1321.470000,NULL,'ATIVA','','2023-10-17 21:58:41','2023-10-17 21:58:41',1250.000000,71.470000,0.000000,0.000000),('55','2','1',68,488,134,'2023-10-17','2023-10-17',1,80.000000,NULL,'ATIVA','','2023-10-17 22:00:12','2023-10-17 22:00:12',80.000000,0.000000,0.000000,0.000000);
+
+#
+# Structure for table "compra_produto"
+#
+
+DROP TABLE IF EXISTS `compra_produto`;
+CREATE TABLE `compra_produto` (
+  `compra_modelo` varchar(15) NOT NULL,
+  `compra_numero_nota` varchar(15) NOT NULL,
+  `compra_serie` varchar(15) NOT NULL,
+  `id_produto` int(11) NOT NULL,
+  `compra_id_fornecedor` int(11) NOT NULL,
+  `item` int(11) NOT NULL,
+  `qtd_produto` int(11) NOT NULL,
+  `valor_unitario` decimal(10,6) NOT NULL,
+  `valor_custo` decimal(10,6) NOT NULL,
+  `total_produto` decimal(10,6) NOT NULL,
+  `unidade` varchar(20) NOT NULL,
+  `desconto` decimal(10,6) DEFAULT NULL,
+  `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
+  `data_alt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`compra_modelo`,`compra_numero_nota`,`compra_serie`,`compra_id_fornecedor`,`item`),
+  CONSTRAINT `compra_produto_ibfk_1` FOREIGN KEY (`compra_modelo`, `compra_numero_nota`, `compra_serie`, `compra_id_fornecedor`) REFERENCES `compra` (`modelo`, `numero_nota`, `serie`, `id_fornecedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Data for table "compra_produto"
+#
+
+INSERT INTO `compra_produto` VALUES ('55','1','1',45,68,1,100,10.000000,10.571760,1000.000000,'UNIDADE',0.000000,'2023-10-17 21:58:41','2023-10-17 21:58:41'),('55','1','1',46,68,2,50,5.000000,5.285880,250.000000,'UNIDADE',0.000000,'2023-10-17 21:58:41','2023-10-17 21:58:41'),('55','2','1',45,68,1,10,8.000000,8.000000,80.000000,'UNIDADE',0.000000,'2023-10-17 22:00:12','2023-10-17 22:00:12');
 
 #
 # Structure for table "contas_pagar"
@@ -324,7 +354,7 @@ CREATE TABLE `contas_pagar` (
 # Data for table "contas_pagar"
 #
 
-INSERT INTO `contas_pagar` VALUES ('55','1','1',1,43,2,'2023-10-13','2024-01-21',1.000000,1.000000,NULL,NULL,217.820000,'PENDENTE','2023-10-13 19:09:01','2023-10-13 19:09:01'),('55','1','1',1,68,2,'2023-10-13','2024-01-21',1.000000,1.000000,NULL,NULL,178.520000,'PENDENTE','2023-10-13 19:08:31','2023-10-13 19:08:31'),('55','2','1',1,68,2,'2023-10-13','2023-11-12',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','3','1',1,68,2,'2023-10-13','2024-01-21',1.000000,1.000000,NULL,NULL,75.000000,'PENDENTE','2023-10-13 19:27:41','2023-10-13 19:27:41'),('55','4','1',1,68,2,'2023-10-14','2024-01-22',1.000000,1.000000,NULL,NULL,238.860000,'PENDENTE','2023-10-14 15:29:41','2023-10-14 15:29:41'),('55','2','1',2,68,2,'2023-10-13','2023-12-12',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',3,68,2,'2023-10-13','2024-01-11',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',4,68,2,'2023-10-13','2024-02-10',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',5,68,2,'2023-10-13','2024-03-11',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',6,68,2,'2023-10-13','2024-04-10',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',7,68,2,'2023-10-13','2024-05-10',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',8,68,2,'2023-10-13','2024-06-09',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',9,68,2,'2023-10-13','2024-07-09',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','2','1',10,68,2,'2023-10-13','2024-08-08',0.000000,0.000000,NULL,NULL,28.500000,'PENDENTE','2023-10-13 19:15:21','2023-10-13 19:15:21');
+INSERT INTO `contas_pagar` VALUES ('55','1','1',1,68,2,'2023-10-17','2024-01-25',1.000000,1.000000,NULL,NULL,1321.470000,'PENDENTE','2023-10-17 21:58:41','2023-10-17 21:58:41'),('55','2','1',1,68,2,'2023-10-17','2024-01-25',1.000000,1.000000,NULL,NULL,80.000000,'PENDENTE','2023-10-17 22:00:12','2023-10-17 22:00:12');
 
 #
 # Structure for table "clientes"
@@ -415,44 +445,13 @@ CREATE TABLE `produtos` (
   KEY `id_fornecedor` (`id_fornecedor`),
   CONSTRAINT `produtos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id`),
   CONSTRAINT `produtos_ibfk_2` FOREIGN KEY (`id_fornecedor`) REFERENCES `fornecedores` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "produtos"
 #
 
-INSERT INTO `produtos` VALUES (42,'POMADA TEIA','unidade',79,68,45,21.39,22.50,23.89,'2023-10-14 15:29:41','','2023-10-13 18:31:59','2023-10-13 19:13:12'),(43,'PRODUTO 1','unidade',79,68,0,0.00,1.00,0.00,'','','2023-10-13 18:32:24','2023-10-13 18:32:30'),(44,'PRODUTO 2','unidade',79,68,0,0.00,1.00,0.00,'','','2023-10-13 18:32:51','2023-10-13 18:32:51');
-
-#
-# Structure for table "compra_produto"
-#
-
-DROP TABLE IF EXISTS `compra_produto`;
-CREATE TABLE `compra_produto` (
-  `compra_modelo` varchar(15) NOT NULL,
-  `compra_numero_nota` varchar(15) NOT NULL,
-  `compra_serie` varchar(15) NOT NULL,
-  `id_produto` int(11) NOT NULL,
-  `compra_id_fornecedor` int(11) NOT NULL,
-  `qtd_produto` int(11) NOT NULL,
-  `valor_unitario` decimal(10,6) NOT NULL,
-  `valor_custo` decimal(10,6) NOT NULL,
-  `total_produto` decimal(10,6) NOT NULL,
-  `unidade` varchar(20) NOT NULL,
-  `desconto` decimal(10,6) DEFAULT NULL,
-  `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
-  `data_alt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`compra_modelo`,`compra_numero_nota`,`compra_serie`,`compra_id_fornecedor`),
-  KEY `id_produto` (`id_produto`),
-  CONSTRAINT `compra_produto_ibfk_1` FOREIGN KEY (`compra_modelo`, `compra_numero_nota`, `compra_serie`, `compra_id_fornecedor`) REFERENCES `compra` (`modelo`, `numero_nota`, `serie`, `id_fornecedor`),
-  CONSTRAINT `compra_produto_ibfk_2` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-#
-# Data for table "compra_produto"
-#
-
-INSERT INTO `compra_produto` VALUES ('55','1','1',42,43,10,12.000000,18.552000,120.000000,'unidade',0.000000,'2023-10-13 19:09:01','2023-10-13 19:09:01'),('55','1','1',42,68,10,12.000000,17.852000,120.000000,'unidade',0.000000,'2023-10-13 19:08:31','2023-10-13 19:08:31'),('55','2','1',42,68,10,20.000000,28.500000,200.000000,'unidade',0.000000,'2023-10-13 19:15:21','2023-10-13 19:15:21'),('55','3','1',42,68,5,15.000000,15.000000,75.000000,'unidade',0.000000,'2023-10-13 19:27:41','2023-10-13 19:27:41'),('55','4','1',42,68,10,21.350000,23.886000,213.500000,'unidade',0.000000,'2023-10-14 15:29:41','2023-10-14 15:29:41');
+INSERT INTO `produtos` VALUES (45,'PRODUTO 1','UNIDADE',79,68,110,10.34,1.00,8.00,'2023-10-17 22:00:12','','2023-10-17 21:32:00','2023-10-17 21:32:00'),(46,'PRODUTO 2','UNIDADE',79,68,50,5.29,1.00,5.29,'2023-10-17 21:58:41','','2023-10-17 21:32:25','2023-10-17 21:32:25');
 
 #
 # Structure for table "servicos"
