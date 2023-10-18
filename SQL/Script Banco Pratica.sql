@@ -304,7 +304,8 @@ CREATE TABLE compra_produto (
         compra_id_fornecedor,
         item -- Adicionando "item" como parte da chave primária
     ),
-    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie, compra_id_fornecedor) REFERENCES compra (modelo, numero_nota, serie, id_fornecedor)
+    FOREIGN KEY (compra_modelo, compra_numero_nota, compra_serie, compra_id_fornecedor) REFERENCES compra (modelo, numero_nota, serie, id_fornecedor),
+    FOREIGN KEY (id_produto) REFERENCES produtos (id)
 ) DEFAULT CHARSET = utf8;
 
 create table contas_pagar(
