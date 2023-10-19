@@ -234,29 +234,53 @@ CREATE TABLE profissionais_servicos_agenda (
     CONSTRAINT FK_idCliente FOREIGN KEY (id_cliente) REFERENCES clientes (id)
 ) DEFAULT CHARSET = utf8;
 
-create table Compra(
-    modelo varchar(15) NOT NULL,
-    numero_nota varchar(15) NOT NULL,
-    serie varchar(15) NOT NULL,
-    id_fornecedor int NOT NULL,
-    id_condicaopg int NOT NULL,
-    id_profissional int NOT NULL,
-    data_emissao date NOT NULL,
-    data_chegada date NOT NULL,
-    qtd_produto int NOT NULL,
+CREATE TABLE Compra (
+    modelo VARCHAR(15) NOT NULL,
+    numero_nota VARCHAR(15) NOT NULL,
+    serie VARCHAR(15) NOT NULL,
+    id_fornecedor INT NOT NULL,
+    id_condicaopg INT NOT NULL,
+    id_profissional INT NOT NULL,
+    data_emissao DATE NOT NULL,
+    data_chegada DATE NOT NULL,
+    qtd_produto INT NOT NULL,
     valor_produto DECIMAL(10, 6) NOT NULL,
     frete DECIMAL(10, 6) NOT NULL,
     seguro DECIMAL(10, 6) NOT NULL,
     outras_despesas DECIMAL(10, 6) NOT NULL,
     valor_compra DECIMAL(10, 6) NOT NULL,
-    data_cancelamento date,
-    status varchar(20),
-    obs varchar(255),
+    data_cancelamento DATE,
+    status VARCHAR(20),
+    observacao VARCHAR(255),
     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (modelo, numero_nota, serie, id_fornecedor),
-    FOREIGN KEY (id_fornecedor) REFERENCES fornecedores (id)
-) DEFAULT CHARSET = utf8;
+    FOREIGN KEY (id_fornecedor) REFERENCES fornecedores (id),
+    FOREIGN KEY (id_condicaopg) REFERENCES condicao_pg (id)
+) DEFAULT CHARACTER SET utf8;
+-- create table Compra(
+--     modelo varchar(15) NOT NULL,
+--     numero_nota varchar(15) NOT NULL,
+--     serie varchar(15) NOT NULL,
+--     id_fornecedor int NOT NULL,
+--     id_condicaopg int NOT NULL,
+--     id_profissional int NOT NULL,
+--     data_emissao date NOT NULL,
+--     data_chegada date NOT NULL,
+--     qtd_produto int NOT NULL,
+--     valor_produto DECIMAL(10, 6) NOT NULL,
+--     frete DECIMAL(10, 6) NOT NULL,
+--     seguro DECIMAL(10, 6) NOT NULL,
+--     outras_despesas DECIMAL(10, 6) NOT NULL,
+--     valor_compra DECIMAL(10, 6) NOT NULL,
+--     data_cancelamento date,
+--     status varchar(20),
+--     obs varchar(255),
+--     data_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     data_alt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     PRIMARY KEY (modelo, numero_nota, serie, id_fornecedor),
+--     FOREIGN KEY (id_fornecedor) REFERENCES fornecedores (id)
+-- ) DEFAULT CHARSET = utf8;
 
 -- CREATE TABLE compra_produto (
 --     compra_modelo VARCHAR(15) NOT NULL,
@@ -359,3 +383,5 @@ AFTER
     status;
 
 php artisan config :clear php artisan route :clear php artisan view :clear php artisan blade :clear php artisan optimize :clear php artisan cache :clear
+
+ALTER TABLE sua_tabela AUTO_INCREMENT = 1;
