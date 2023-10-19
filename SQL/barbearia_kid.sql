@@ -1,5 +1,5 @@
-﻿# Host: localhost  (Version 5.5.5-10.4.25-MariaDB)
-# Date: 2023-10-19 07:25:06
+﻿# Host: localhost  (Version 5.5.5-10.4.20-MariaDB)
+# Date: 2023-10-19 15:19:20
 # Generator: MySQL-Front 6.0  (Build 2.20)
 
 
@@ -242,20 +242,20 @@ CREATE TABLE `fornecedores` (
   `cpf` varchar(14) DEFAULT NULL,
   `rg` varchar(15) DEFAULT NULL,
   `id_condicaopg` int(11) DEFAULT NULL,
-  `limiteCredito` float DEFAULT NULL,
+  `limiteCredito` decimal(65,6) DEFAULT NULL,
   `obs` varchar(255) DEFAULT NULL,
   `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_alt` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `id_cidade` (`id_cidade`),
   CONSTRAINT `fornecedores_ibfk_1` FOREIGN KEY (`id_cidade`) REFERENCES `cidades` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "fornecedores"
 #
 
-INSERT INTO `fornecedores` VALUES (43,'JURIDICA','SS COMÉRCIO DE COSMÉTICOS E PRODUTOS DE HIGIENE PE','JEQUETI','APELIDO','AV. DAS COMUNICAÇÕES','927','','VILA JARAGUA','06276-906',68,'','(45) 99838-9796','','HTTP://WWW.JEQUITI.COM.BR','JOÃO','07.278.350/0001-63','','048.376.259-83',NULL,487,0,'','2021-11-01 09:01:38','2023-08-06 20:53:49'),(68,'FISICA','PABLO CRISTIANO CONSTÂNCIO','GUERREIRO','GUERREIRO','AVENIDA ANDRADINA','1902','','LANCASTER','85869-380',170,'','(45) 99538-9739','PABLO@TESTE.COM','','','23.597.681/0001-12','','194.762.110-67',NULL,487,0,'','2023-05-25 18:28:55','2023-08-06 20:08:15');
+INSERT INTO `fornecedores` VALUES (73,'JURIDICA','FORNECEDOR TESTE','FORNECEDOR TESTE','APELIDO','AVENIDA AYRTON SENNA','1902','','PANORAMA','85856-450',170,'','(45) 99893-8973','','','PABLO CRISTIANO CONSTâNCIO','12.683.952/0001-36','','',NULL,487,0.000000,'','2023-10-19 14:20:36','2023-10-19 14:20:48'),(74,'JURIDICA','FORNECEDOR 2 TESTE','TESTE 2','','RUA LUIZA WANDSCHEER','145','','PANORAMA','85856-470',169,'','(45) 03575-4350','','','PABLO CRISTIANO CONSTâNCIO','52.455.494/0001-00','','','',487,0.000000,'','2023-10-19 14:53:04','2023-10-19 14:53:04');
 
 #
 # Structure for table "compra"
@@ -272,11 +272,11 @@ CREATE TABLE `compra` (
   `data_emissao` date NOT NULL,
   `data_chegada` date NOT NULL,
   `qtd_produto` int(11) NOT NULL,
-  `valor_produto` decimal(10,6) NOT NULL,
-  `frete` decimal(10,6) NOT NULL,
-  `seguro` decimal(10,6) NOT NULL,
-  `outras_despesas` decimal(10,6) NOT NULL,
-  `valor_compra` decimal(10,6) NOT NULL,
+  `valor_produto` decimal(65,6) DEFAULT NULL,
+  `frete` decimal(65,6) DEFAULT NULL,
+  `seguro` decimal(65,6) DEFAULT NULL,
+  `outras_despesas` decimal(65,6) DEFAULT NULL,
+  `valor_compra` decimal(65,6) DEFAULT NULL,
   `data_cancelamento` date DEFAULT NULL,
   `status` varchar(20) DEFAULT NULL,
   `observacao` varchar(255) DEFAULT NULL,
@@ -293,7 +293,6 @@ CREATE TABLE `compra` (
 # Data for table "compra"
 #
 
-INSERT INTO `compra` VALUES ('55','1','1',68,633,134,'2023-10-18','2023-10-18',2,1250.000000,0.000000,0.000000,0.000000,1250.000000,NULL,'ATIVA','','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','2','1',68,488,134,'2023-10-18','2023-10-18',1,500.000000,0.000000,0.000000,0.000000,500.000000,NULL,'ATIVA','','2023-10-18 21:44:16','2023-10-18 21:44:16'),('55','3','1',68,488,134,'2023-10-18','2023-10-18',3,1921.600000,100.000000,0.000000,0.000000,2021.600000,NULL,'ATIVA','','2023-10-18 21:45:11','2023-10-18 21:45:11');
 
 #
 # Structure for table "contas_pagar"
@@ -309,11 +308,11 @@ CREATE TABLE `contas_pagar` (
   `id_formapagamento` int(11) NOT NULL,
   `data_emissao` date NOT NULL,
   `data_vencimento` date NOT NULL,
-  `desconto` decimal(10,6) DEFAULT NULL,
-  `juros` decimal(10,6) DEFAULT NULL,
-  `valor_pago` decimal(10,6) DEFAULT NULL,
+  `desconto` decimal(65,6) DEFAULT NULL,
+  `juros` decimal(65,6) DEFAULT NULL,
+  `valor_pago` decimal(65,6) DEFAULT NULL,
   `data_pagamento` date DEFAULT NULL,
-  `valor_parcela` decimal(10,6) DEFAULT NULL,
+  `valor_parcela` decimal(65,6) DEFAULT NULL,
   `status` varchar(25) DEFAULT NULL,
   `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_alt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -326,7 +325,6 @@ CREATE TABLE `contas_pagar` (
 # Data for table "contas_pagar"
 #
 
-INSERT INTO `contas_pagar` VALUES ('55','1','1',1,68,82,'2023-10-18','2023-11-17',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','2','1',1,68,2,'2023-10-18','2024-01-26',1.000000,1.000000,NULL,NULL,500.000000,'PENDENTE','2023-10-18 21:44:16','2023-10-18 21:44:16'),('55','3','1',1,68,2,'2023-10-18','2024-01-26',1.000000,1.000000,NULL,NULL,2021.600000,'PENDENTE','2023-10-18 21:45:11','2023-10-18 21:45:11'),('55','1','1',2,68,82,'2023-10-18','2023-12-17',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',3,68,82,'2023-10-18','2024-01-16',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',4,68,82,'2023-10-18','2024-02-15',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',5,68,82,'2023-10-18','2024-03-16',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',6,68,82,'2023-10-18','2024-04-15',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',7,68,82,'2023-10-18','2024-05-15',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',8,68,82,'2023-10-18','2024-06-14',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',9,68,82,'2023-10-18','2024-07-14',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',10,68,82,'2023-10-18','2024-08-13',0.000000,0.000000,NULL,NULL,125.000000,'PENDENTE','2023-10-18 21:40:52','2023-10-18 21:40:52');
 
 #
 # Structure for table "clientes"
@@ -404,10 +402,10 @@ CREATE TABLE `produtos` (
   `unidade` varchar(50) DEFAULT NULL,
   `id_categoria` int(11) DEFAULT NULL,
   `id_fornecedor` int(11) DEFAULT NULL,
-  `qtdEstoque` int(11) DEFAULT NULL,
-  `precoCusto` decimal(10,2) DEFAULT NULL,
-  `precoVenda` decimal(10,2) DEFAULT NULL,
-  `custoUltCompra` decimal(10,2) DEFAULT NULL,
+  `qtdEstoque` bigint(20) DEFAULT NULL,
+  `precoCusto` decimal(65,2) DEFAULT NULL,
+  `precoVenda` decimal(65,2) DEFAULT NULL,
+  `custoUltCompra` decimal(65,2) DEFAULT NULL,
   `dataUltCompra` varchar(255) DEFAULT NULL,
   `dataUltVenda` varchar(255) DEFAULT NULL,
   `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -417,13 +415,13 @@ CREATE TABLE `produtos` (
   KEY `id_fornecedor` (`id_fornecedor`),
   CONSTRAINT `produtos_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id`),
   CONSTRAINT `produtos_ibfk_2` FOREIGN KEY (`id_fornecedor`) REFERENCES `fornecedores` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "produtos"
 #
 
-INSERT INTO `produtos` VALUES (1,'PRODUTO 1','UNIDADE',79,68,100,10.00,1.00,10.00,'2023-10-18 21:40:52','','2023-10-18 21:14:29','2023-10-18 21:14:29'),(2,'PRODUTO 2','UNIDADE',79,43,110,7.77,1.00,10.52,'2023-10-18 21:45:11','','2023-10-18 21:14:50','2023-10-18 21:14:50'),(3,'PRODUTO 3','UNIDADE',79,68,25,12.62,1.00,12.62,'2023-10-18 21:45:11','','2023-10-18 21:16:06','2023-10-18 21:16:06'),(4,'PRODUTO 4','UNIDADE',79,68,60,26.68,1.00,26.68,'2023-10-18 21:45:11','','2023-10-18 21:16:25','2023-10-18 21:16:44');
+INSERT INTO `produtos` VALUES (6,'PRODUTO 1','UNIDADE',79,73,520045,38.46,1.00,10.00,'2023-10-19 15:16:03','','2023-10-19 14:21:41','2023-10-19 14:21:41'),(7,'PRODUTO 2','UNIDADE',79,73,600501,14.03,1.00,13.00,'2023-10-19 15:16:03','','2023-10-19 14:22:26','2023-10-19 14:22:26'),(8,'PRODUTO 3','UNIDADE',79,74,100503,12.34,1.00,12.30,'2023-10-19 15:16:03','','2023-10-19 14:53:39','2023-10-19 14:53:39');
 
 #
 # Structure for table "compra_produto"
@@ -438,11 +436,11 @@ CREATE TABLE `compra_produto` (
   `compra_id_fornecedor` int(11) NOT NULL,
   `item` int(11) NOT NULL,
   `qtd_produto` int(11) NOT NULL,
-  `valor_unitario` decimal(10,6) NOT NULL,
-  `valor_custo` decimal(10,6) NOT NULL,
-  `total_produto` decimal(10,6) NOT NULL,
+  `valor_unitario` decimal(65,6) DEFAULT NULL,
+  `valor_custo` decimal(65,6) DEFAULT NULL,
+  `total_produto` decimal(65,6) DEFAULT NULL,
   `unidade` varchar(20) NOT NULL,
-  `desconto` decimal(10,6) DEFAULT NULL,
+  `desconto` decimal(65,6) DEFAULT NULL,
   `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_alt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`compra_modelo`,`compra_numero_nota`,`compra_serie`,`compra_id_fornecedor`,`item`),
@@ -455,7 +453,6 @@ CREATE TABLE `compra_produto` (
 # Data for table "compra_produto"
 #
 
-INSERT INTO `compra_produto` VALUES ('55','1','1',1,68,1,100,10.000000,10.000000,1000.000000,'UNIDADE',0.000000,'2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','1','1',2,68,2,50,5.000000,5.000000,250.000000,'UNIDADE',0.000000,'2023-10-18 21:40:52','2023-10-18 21:40:52'),('55','2','1',2,68,1,50,10.000000,10.000000,500.000000,'UNIDADE',0.000000,'2023-10-18 21:44:16','2023-10-18 21:44:16'),('55','3','1',2,68,1,10,10.000000,10.520400,100.000000,'UNIDADE',0.000000,'2023-10-18 21:45:11','2023-10-18 21:45:11'),('55','3','1',3,68,2,25,12.000000,12.624480,300.000000,'UNIDADE',0.000000,'2023-10-18 21:45:11','2023-10-18 21:45:11'),('55','3','1',4,68,3,60,25.360000,26.679734,1521.600000,'UNIDADE',0.000000,'2023-10-18 21:45:11','2023-10-18 21:45:11');
 
 #
 # Structure for table "servicos"
@@ -466,7 +463,7 @@ CREATE TABLE `servicos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `servico` varchar(50) NOT NULL,
   `tempo` int(11) NOT NULL,
-  `valor` decimal(10,2) DEFAULT NULL,
+  `valor` decimal(65,2) DEFAULT NULL,
   `comissao` float DEFAULT NULL,
   `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_alt` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -533,7 +530,7 @@ CREATE TABLE `servico_profissional` (
   `id` int(11) NOT NULL,
   `servico` varchar(100) DEFAULT NULL,
   `tempo` int(11) DEFAULT NULL,
-  `valor` decimal(10,6) DEFAULT NULL,
+  `valor` decimal(65,6) DEFAULT NULL,
   `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_alt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id_profissional`,`id`),
@@ -562,7 +559,7 @@ CREATE TABLE `profissionais_servicos_agenda` (
   `data` date DEFAULT NULL,
   `horario_inicio` time NOT NULL,
   `horario_fim` time DEFAULT NULL,
-  `preco` decimal(10,6) DEFAULT NULL,
+  `preco` decimal(65,6) DEFAULT NULL,
   `status` varchar(20) DEFAULT NULL,
   `execucao` varchar(25) DEFAULT NULL,
   `data_create` timestamp NOT NULL DEFAULT current_timestamp(),
