@@ -385,3 +385,15 @@ AFTER
 php artisan config :clear php artisan route :clear php artisan view :clear php artisan blade :clear php artisan optimize :clear php artisan cache :clear
 
 ALTER TABLE sua_tabela AUTO_INCREMENT = 1;
+
+
+acessar o banco
+" mysql -u seu_usuario -p "
+Excluir
+DROP DATABASE nome_do_banco_de_dados;
+Criar
+CREATE DATABASE nome_do_bando_de_dados;
+Comando para selecione o Banco 
+" USE nome_banco "
+COMANDO IMPORTAR OS DADOS
+"source /caminho/completo/para/arquivo.sql;"
