@@ -42,7 +42,6 @@ class DaoContasPagar implements Dao
 
     public function create(array $dados)
     {
-        // dd($dados);
         $contasPagar = new ContasPagar;
 
         $contasPagar->setDataCadastro($dados['data_create'] ?? null);
