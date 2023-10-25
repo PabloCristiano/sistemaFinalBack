@@ -9,11 +9,15 @@ use Illuminate\Database\QueryException;
 use Carbon\Carbon;
 
 use App\Models\ContasPagar;
+use App\Dao\DaoFornecedor;
 
 class DaoContasPagar implements Dao
 {
+    protected $daoFornecedor;
+
     public function __construct()
     {
+        $this->daoFornecedor = new DaoFornecedor();
     }
     public function all(bool $json = false)
     {
@@ -35,12 +39,17 @@ class DaoContasPagar implements Dao
 
     public function create(array $dados)
     {
+        // dd($dados);
         $contasPagar = new ContasPagar;
 
         $contasPagar->setNumeroNota($dados['compra_numero_nota']);
         $contasPagar->setSerie($dados['compra_serie']);
         $contasPagar->setModelo($dados['compra_modelo']);
         $contasPagar->setParcela($dados['numero_parcela']);
+        $fornecedor = $this->daoFornecedor->findById($dados['compra_id_fornecedor'], false);
+        $fornecedor = $this->daoFornecedor->create(get_object_vars($fornecedor));
+        $contasPagar->setFonecedor($fornecedor);
+        dd($contasPagar);
         return $contasPagar;
     }
 
