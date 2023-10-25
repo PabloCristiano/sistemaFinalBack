@@ -224,6 +224,7 @@ class DaoFornecedor implements Dao
 
     public function getData(Fornecedor $fornecedor)
     {
+        
         $dados = [
             'id' => $fornecedor->getId(),
             'tipo_pessoa' => $fornecedor->getTipoPessoa(),
