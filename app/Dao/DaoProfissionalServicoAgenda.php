@@ -266,7 +266,7 @@ class DaoProfissionalServicoAgenda implements Dao
 
     public function cancelarHorario(Request $request)
     {
-        // dd($request->all());
+
         try {
 
             //pega Data ea  hora atual 
@@ -286,16 +286,20 @@ class DaoProfissionalServicoAgenda implements Dao
             $id_profissionais_servicos_agenda = $request->id_profissionais_servicos_agenda;
             $id_profissional = $request->id_profissional;
             $horario_inicio = $request->horario_inicio;
-
-            if ($soma_data  >  $soma_dataAtual && $request->status === "RESERVADO") {
-                DB::beginTransaction();
-                $sql = DB::UPDATE(
-                    'UPDATE profissionais_servicos_agenda  SET  id_servico = null, id_cliente = null, id_servico = null, nome_cliente = null, status = "LIVRE", execucao = null   
-                    where id_profissionais_servicos_agenda = ? and id_profissional = ? and horario_inicio = ?',
-                    [$id_profissionais_servicos_agenda, $id_profissional, $horario_inicio],
-                );
-                DB::commit();
-                return true;
+            $execucao = $request->execucao;
+            if ($execucao != 'EXECUTADO' && $execucao != 'EXECUTANDO') {
+                if ($soma_data  >  $soma_dataAtual && $request->status === "RESERVADO") {
+                    DB::beginTransaction();
+                    $sql = DB::UPDATE(
+                        'UPDATE profissionais_servicos_agenda  SET  id_servico = null, id_cliente = null, id_servico = null, nome_cliente = null, status = "LIVRE", execucao = null   
+                        where id_profissionais_servicos_agenda = ? and id_profissional = ? and horario_inicio = ?',
+                        [$id_profissionais_servicos_agenda, $id_profissional, $horario_inicio],
+                    );
+                    DB::commit();
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
