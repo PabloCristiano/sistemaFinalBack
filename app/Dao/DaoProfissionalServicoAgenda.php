@@ -287,6 +287,7 @@ class DaoProfissionalServicoAgenda implements Dao
             $id_profissional = $request->id_profissional;
             $horario_inicio = $request->horario_inicio;
             $execucao = $request->execucao;
+            
             if ($execucao != 'EXECUTADO' && $execucao != 'EXECUTANDO') {
                 if ($soma_data  >  $soma_dataAtual && $request->status === "RESERVADO") {
                     DB::beginTransaction();
