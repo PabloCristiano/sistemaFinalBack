@@ -77,6 +77,42 @@ class DaoContasPagar implements Dao
 
     public function store($obj)
     {
+
+        $fornecedor = [];
+        // $fornecedor = json_decode($obj['fornecedor'], true);
+        $fornecedor = $obj['fornecedor'];
+        $status = "PAGO";
+        $dataHoraAtual = Carbon::now();
+        $data_pagamento = $dataHoraAtual->format('Y-m-d');
+        $compra_modelo = $obj["compra_modelo"];
+        $compra_numero_nota = $obj["compra_numero_nota"];
+        $compra_serie = $obj["compra_serie"];
+        $compra_id_fornecedor =  $fornecedor['id'];
+        $numero_parcela = intval($obj["numero_parcela"]);
+        $valor_parcela = $obj["valor_parcela"];
+        $valor_pago = str_replace(['R$', ','], ['', '.'], $valor_parcela);
+        $valor_pago = (float)$valor_pago;
+        try {
+            DB::beginTransaction();
+            DB::UPDATE(
+                'UPDATE contas_pagar 
+                SET status = ?, 
+                    data_pagamento = ?, 
+                    valor_pago = ? 
+                WHERE compra_modelo = ?
+                    AND compra_numero_nota = ? 
+                    AND compra_serie = ? 
+                    AND numero_parcela = ?
+                    AND compra_id_fornecedor = ?',
+                [$status, $data_pagamento, $valor_pago, $compra_modelo, $compra_numero_nota, $compra_serie, $numero_parcela, $compra_id_fornecedor]
+            );
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $error = ['error' => $e->getMessage(), 'CodigoError' => $e->getCode()];
+            return $error;
+        }
     }
 
     public function update(Request $request, $id)
