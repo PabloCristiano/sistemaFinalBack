@@ -104,6 +104,7 @@ class DaoContasPagar implements Dao
             'valor_parcela' => $contasPagar->getValorParcela(),
             'data_emissao' => $contasPagar->getDataEmissao(),
             'data_vencimento' => $contasPagar->getDataVencimeto(),
+            'data_pagamento' => $contasPagar->getDataPagamento(),
             'juros' => $contasPagar->getJuros(),
             'desconto' => $contasPagar->getDesconto(),
             'valor_pago' => $contasPagar->getValorPago(),
