@@ -382,7 +382,12 @@ ADD
 AFTER
     status;
 
-php artisan config :clear php artisan route :clear php artisan view :clear php artisan blade :clear php artisan optimize :clear php artisan cache :clear
+php artisan config:clear 
+php artisan route:clear 
+php artisan view:clear 
+php artisan blade:clear 
+php artisan optimize:clear 
+php artisan cache:clear
 
 ALTER TABLE sua_tabela AUTO_INCREMENT = 1;
 
